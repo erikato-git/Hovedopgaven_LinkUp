@@ -167,6 +167,11 @@ paths:
             schema:
               type: object
               properties:
+                accountId:
+                  type: string
+                  format: guid
+                  example: 9fb538b8-57ca-4497-9911-57f780befce2
+                  description: ""
                 firstName:
                   type: string
                   example: Harry

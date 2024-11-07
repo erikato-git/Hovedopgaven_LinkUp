@@ -1,0 +1,239 @@
+# UC7: Send pitch
+
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Sample API
+  description: A sample API to illustrate OpenAPI concepts
+
+servers:
+  # - url: https://api.example.com
+  #   description: Production server
+  - url: http://localhost:8080/api/v1/pitch/
+    description: Local development server
+  - url: https://localhost:8080/api/v1/pitch/
+    description: Local development server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Profile:
+      type: object
+      properties:
+        profileId:
+          type: string
+          format: guid
+          example: 9fb538b8-57ca-4497-9911-57f780befce2
+          description: Name of the user
+        profilePicture:
+          type: string
+          example: "[datatype?]"
+          description: TODO - figure out what fileformat / datatype profile picture should be
+        name:
+          type: string
+          example: "Alice Smith"
+          description: Name of the user
+        age:
+          type: number
+          example: 27
+          description: Derived from birth date
+        title:
+          type: string
+          example: guitarist
+          description: ""
+        alternativeTitle:
+          type: string
+          example: music teacher
+          description: ""
+        yearsOfExperience:
+          type: number
+          example: 7
+          description: ""
+        institution:
+          type: string
+          example: EAAA
+          description: ""
+        graduationYear:
+          type: number
+          example: 2019
+          description: ""
+        availability:
+          type: string
+          example: Meget tilgængelig
+          description: ""
+        flag:
+          type: boolean
+          example: true
+          description: Flag if the current user has saved the profile for later visit
+    ProfilePitch:
+      type: object
+      properties:
+        profileId:
+          type: string
+          format: guid
+          example: 9fb538b8-57ca-4497-9911-57f780befce2
+          description: Id of the profile
+        profilePicture:
+          type: string
+          example: "[datatype?]"
+          description: TODO - figure out what fileformat / datatype profile picture should be
+        name:
+          type: string
+          example: "Alice Smith"
+          description: Name of the user
+        title:
+          type: string
+          example: guitarist
+          description: ""
+        textMessage:
+          type: object
+          example: [Association?]
+          description: "Passage of the pitch-text"
+        sendingDate:
+          type: object
+          example: [Association?]
+          description: "Date and time that the message was send"
+
+
+
+paths:
+  /sendPitch:
+    post:
+      summary: ""
+      description: User want to send a "pitch" to a profile on another account (UC7)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                profileId:
+                  type: string
+                  format: guid
+                  example: 9fb538b8-57ca-4497-9911-57f780befce2
+                  description: "id of profile the user wants to send a pitch to"
+                textMessage:
+                  type: string
+                  example: Im looking for people with technical skills for collaboration ...
+                  description: ""
+              required:
+                - profileId
+                - textMessage
+      responses:
+        "200":
+          description: pitch has succesfully been send to the other account's profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Pitch has succesfully been send"
+        "401":
+          description: User hasn't signed in before sending a pitch
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You have to sign in before you can send a pitch to another profile"
+        "403":
+          description: User tries to send a pitch to another profile from a profile that doesn't belong to the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You're tyring to send a pitch to another profile from a profile that doesn't belong to your account"
+        "404":
+          description: User tries to send a pitch to a profile that doesn't exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The profile that you're trying to send a pitch to doesn't exist"
+        "409":
+          description: User needs to create a profile before the user can send a pitch to another profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to create a profile before you can send a pitch to another profile"
+
+  /pitches/{id}:
+    get:
+      summary: "all incoming and outcoming pitches for user's account"
+      description: User wants to access all incoming and outcoming pitches for his / her profiles to other profiles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            description: id of the account for the user 
+            format: guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        "200":
+          description: user has succesfully extracted all incoming and outcoming pitches from his / her profiles to other user's profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfilePitch' 
+                description: array of all the pitches attached to user's account
+        "401":
+          description: User hasn't signed in to access all pitches for his / her account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You have to sign in before you can access your pitches for your account"
+        "403":
+          description: User tries to access pitches for another user's account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You don't have permission to access pitches for this account"
+        "409":
+          description: User doesn't have a profile where he / she can send pitches from or receive pitches from other users' profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to create a profile before you can send or receive pitches"
+
+
+
+

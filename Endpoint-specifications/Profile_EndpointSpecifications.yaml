@@ -2,7 +2,12 @@
 # UC3: Søg profiler
 # UC4: Udvid søgning
 # UC5: Se profiler
-
+# UC6: Gem profil
+# UC8.1: Opret profil
+# UC8.2: Opdater profil
+# UC8.3: Slet profil
+# UC8.4: Læs profil
+# UC9: Se gemte profiler
 
 openapi: 3.0.0
 info:
@@ -25,9 +30,14 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    Profile:
+    ProfileAccountPersonInfo_Search:
       type: object
       properties:
+        profileId:
+          type: string
+          format: guid
+          example: 9fb538b8-57ca-4497-9911-57f780befce2
+          description: Id of the user
         profilePicture:
           type: string
           example: "[datatype?]"
@@ -60,25 +70,169 @@ components:
           type: number
           example: 2019
           description: ""
-        email:
+        availability:
           type: string
-          description: Email address of the user
-          example: "alice.smith@example.com"
-        phoneNumber:
+          example: Meget tilgængelig
+          description: ""
+        flag:
+          type: boolean
+          example: true
+          description: Flag if the current user has saved the profile for later visit
+    ProfileKeywordPortfolio_Create:
+      type: object
+      properties:
+        profession:
           type: string
-          description: Phone number in E.164 format
-          example: "+12025550143"
-        createdDate:
+          example: musician
+          description: ""
+        title:
           type: string
-          format: date-time
-          description: Date when the user profile was created
-          example: "2023-04-15T10:30:00Z"
+          example: guitarist
+          description: ""
+        alternativeTitle:
+          type: string
+          example: music teacher
+          description: ""
+        profilePicture:
+          type: string
+          example: "[datatype?]"
+          description: TODO - figure out what fileformat / datatype profile picture should be 
+        profileDescription:
+          type: string
+          example: I have been a musician for 10 years ...
+          description: ""
+        keywords:
+          type: object
+          example: "[Association?]"
+          description: "keyword properties"
+        portfolio:
+          type: object
+          example: "[Association?]"
+          description: ""
+        audienceSpecifications:
+          type: object
+          example: "[Association?]"
+          description: ""
+    ProfileKeywordPortfolio_ReadUpdate:
+      type: object
+      properties:
+        profileId:
+          type: string
+          format: guid
+          example: 9fb538b8-57ca-4497-9911-57f780befce2
+          description: Id of the user
+        profession:
+          type: string
+          example: musician
+          description: ""
+        title:
+          type: string
+          example: guitarist
+          description: ""
+        alternativeTitle:
+          type: string
+          example: music teacher
+          description: ""
+        profilePicture:
+          type: string
+          example: "[datatype?]"
+          description: TODO - figure out what fileformat / datatype profile picture should be 
+        profileDescription:
+          type: string
+          example: I have been a musician for 10 years ...
+          description: ""
+        keywords:
+          type: object
+          example: "[Association?]"
+          description: "keyword properties"
+        portfolio:
+          type: object
+          example: "[Association?]"
+          description: ""
+        audienceSpecifications:
+          type: object
+          example: "[Association?]"
+          description: ""
+
 
 paths:
   /searchProfiles:
+    get:
+      summary: ""
+      description: User finds other profiles from search criteria (UC3, UC4 and UC5). Parameters should be passed like a query-string like '/searchProfiles?profession=musician&title=guitarist&...'
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: profession
+          in: query
+          required: true
+          schema:
+            type: string
+            example: musician
+            description: ""
+        - name: title
+          in: query
+          required: true
+          schema:
+            type: string
+            example: guitarist
+            description: ""
+        - name: gender
+          in: query
+          schema:
+            type: string
+            example: male
+            description: ""
+        - name: age
+          in: query
+          schema:
+            type: integer
+            example: 27
+            description: "Derived from birth date"
+        - name: availability
+          in: query
+          schema:
+            type: string
+            example: "?"
+            description: ""
+        - name: yearsOfExperience
+          in: query
+          schema:
+            type: integer
+            example: 7
+            description: ""
+        - name: education
+          in: query
+          schema:
+            type: string
+            example: "?"
+            description: ""
+      responses:
+        '200':
+          description: System displays other profiles on the platform based on search criteria. (This response extract information from Account, PersonInformation, Profile, Keyword, Portfolio and Education) 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfileAccountPersonInfo_Search'                      
+                description: if no profiles match the search criteria the system will just return an empty array
+        '401':
+          description: User hasn't signed in to use search functionality
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You have to sign in before you can search for other profiles"
+
+  # TODO: Consider to change it to PUT
+  /rememberProfile:
     post:
       summary: ""
-      description: User finds other profiles from search criteria (UC3, UC4 and UC5)
+      description: User saves a profile for later visit (UC6), the profile will be added to a list at the user that keeps track of who is flagged
       security:
         - BearerAuth: []
       requestBody:
@@ -88,48 +242,74 @@ paths:
             schema:
               type: object
               properties:
-                profession:
+                profileId:
                   type: string
-                  example: musician
-                  description: ""
-                title:
-                  type: string
-                  example: guitarist
-                  description: ""
-                gender:
-                  type: string
-                  example: male
-                  description: ""
-                age:
-                  type: number
-                  example: 27
-                  description: "derived from birth date"
-                availability:
-                  type: string
-                  example: "?"
-                  description: ""
-                yearsOfExperience:
-                  type: number
-                  example: 7
-                  description: ""
-                education:
-                  type: string
-                  example: "?"
+                  format: guid
+                  example: 9fb538b8-57ca-4497-9911-57f780befce2
+                  description: "id of profile the user wants to save"
+                flag:
+                  type: boolean
+                  example: true
                   description: ""
               required:
-                - firstName
-                - surname
+                - profileId
+                - flag
       responses:
         '200':
-          description: System displays other profiles on the platform based on search criteria. (This response extract information from Account, PersonInformation, Profile, Keyword, Portfolio and Education) 
+          description: toggles profile that has been added / removed to user's list for later visit 
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Profile'                      
-
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile has been added for later visit / Profile has been removed for later visit"
         '401':
+          description: User hasn't signed in before adding a profile for later visit
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to sign in before you can add or remove a profile for later visit"
+        '404':
+          description: User tries to add a profile for later visit that doesn't exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The profile you try to added for later visit doesn't exist"
+
+  /createProfile:
+    post:
+      summary: ""
+      description: User wants to create a profile and add profile to his / her account (UC8.1)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileKeywordPortfolio_Create'
+      responses:
+        '201':
+          description: User has created a profile in his / her account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile has been created"
+        '400':
           description: Invalid information provided
           content:
             application/json:
@@ -138,9 +318,9 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "One or more of you person information are not entered correctly"
-        '409':
-          description: email is already taken, vulnerable for attackers but a service for real users
+                    example: "One or more of your profile details are not entered correctly"
+        '401':
+          description: User hasn't signed in before adding a profile for later visit
           content:
             application/json:
               schema:
@@ -148,5 +328,283 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Email is already taken by another account"
+                    example: "You need to sign in before you can add a profile to your account"
+        '403':
+          description: User tries to add a profile for another account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You have not permission to add a profile for this account"
+
+  /updateProfile:
+    put:
+      summary: ""
+      description: User wants to update a certain profile in his / her account (UC8.2)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileKeywordPortfolio_ReadUpdate'
+      responses:
+        '200':
+          description: User has updated a profile in his / her account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile has been updated"
+        '400':
+          description: Invalid information provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "One or more of your profile details are not entered correctly"
+        '401':
+          description: User hasn't signed in before updating one of his / her profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to sign in before you can update a profile in your account"
+        '403':
+          description: User tries to update a profile for another account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You have not permission to update details for this profile"
+
+  /deleteProfile/{id}:
+    delete:
+      summary: ""
+      description: User wants to delete one of his / her own profiles (UC8.3)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            description: id of the profile
+            format: guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        '200':
+          description: User has deleted the specific profile from his / her account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile has been deleted"
+        '401':
+          description: User hasn't signed in before deleting one of his / her profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to sign in before you can delete a profile in your account"
+        '403':
+          description: User tries to delete a profile for another account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You don't have not permission to delete this profile"
+
+  /readProfile/{id}:
+    get:
+      summary: ""
+      description: User wants to update a certain profile in his / her account (UC8.4)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            description: id of the profile 
+            format: guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        '200':
+          description: User gets profile details of the specific profile from his account
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/ProfileKeywordPortfolio_ReadUpdate'
+        '401':
+          description: User can't access his / her profile before he / she signs in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to sign in before you can access profiles from your accounts"
+        '404':
+          description: User tries to access a profile that doesn't exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile your attempt to access doesn't exist"
+        '409':
+          description: User needs to have min one profile by himself / herself before he / she can access other people's profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to create min. one profile before you can access other people's profiles"
+
+  /getAllProfilesForAccount/{id}:
+    get:
+      summary: ""
+      description: User wants to get all profiles for his / her account (no use case attached)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            description: id of the account 
+            format: guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        '200':
+          description: User gets profiles for his account
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfileKeywordPortfolio_ReadUpdate' 
+                description: array of all the users own profiles provided with details
+        '401':
+          description: User can't access all his / her profiles before he / she signs in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to sign in before you can access your profiles"
+        '403':
+          description: User provides an account-id that doesn't belongs to the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Id for account doesn't belongs to this account"
+        '404':
+          description: User provides an account-id that doesn't exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account doesn't exist"
+
+  /getRememberedProfiles/{id}:
+    get:
+      summary: ""
+      description: User wants to access profiles saved for later visit (UC9)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            description: id of the account for the user 
+            format: guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        '200':
+          description: User gets profiles for his for later visit for his / her account
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfileKeywordPortfolio_ReadUpdate' 
+                description: array of all the profiles the user has saved for later visit
+        '401':
+          description: User can't access all his / her profiles before he / she signs in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to sign in before you can access your profiles for later visit"
+        '403':
+          description: User provides an account-id that doesn't belongs to the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Provided id for the account doesn't belongs to this account"
+        '404':
+          description: User provides an account-id that doesn't exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account doesn't exist"
 
