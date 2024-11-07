@@ -1,0 +1,152 @@
+
+# UC3: Søg profiler
+# UC4: Udvid søgning
+# UC5: Se profiler
+
+
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Sample API
+  description: A sample API to illustrate OpenAPI concepts
+
+servers:
+  # - url: https://api.example.com
+  #   description: Production server
+  - url: http://localhost:8080/api/v1/profile/
+    description: Local development server
+  - url: https://localhost:8080/api/v1/profile/
+    description: Local development server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Profile:
+      type: object
+      properties:
+        profilePicture:
+          type: string
+          example: "[datatype?]"
+          description: TODO - figure out what fileformat / datatype profile picture should be 
+        name:
+          type: string
+          example: "Alice Smith"
+          description: Name of the user
+        age:
+          type: number
+          example: 27
+          description: Derived from birth date
+        title:
+          type: string
+          example: guitarist
+          description: ""
+        alternativeTitle:
+          type: string
+          example: music teacher
+          description: ""
+        yearsOfExperience:
+          type: number
+          example: 7
+          description: ""
+        institution:
+          type: string
+          example: EAAA
+          description: ""
+        graduationYear:
+          type: number
+          example: 2019
+          description: ""
+        email:
+          type: string
+          description: Email address of the user
+          example: "alice.smith@example.com"
+        phoneNumber:
+          type: string
+          description: Phone number in E.164 format
+          example: "+12025550143"
+        createdDate:
+          type: string
+          format: date-time
+          description: Date when the user profile was created
+          example: "2023-04-15T10:30:00Z"
+
+paths:
+  /searchProfiles:
+    post:
+      summary: ""
+      description: User finds other profiles from search criteria (UC3, UC4 and UC5)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                profession:
+                  type: string
+                  example: musician
+                  description: ""
+                title:
+                  type: string
+                  example: guitarist
+                  description: ""
+                gender:
+                  type: string
+                  example: male
+                  description: ""
+                age:
+                  type: number
+                  example: 27
+                  description: "derived from birth date"
+                availability:
+                  type: string
+                  example: "?"
+                  description: ""
+                yearsOfExperience:
+                  type: number
+                  example: 7
+                  description: ""
+                education:
+                  type: string
+                  example: "?"
+                  description: ""
+              required:
+                - firstName
+                - surname
+      responses:
+        '200':
+          description: System displays other profiles on the platform based on search criteria. (This response extract information from Account, PersonInformation, Profile, Keyword, Portfolio and Education) 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'                      
+
+        '401':
+          description: Invalid information provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "One or more of you person information are not entered correctly"
+        '409':
+          description: email is already taken, vulnerable for attackers but a service for real users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Email is already taken by another account"
+
