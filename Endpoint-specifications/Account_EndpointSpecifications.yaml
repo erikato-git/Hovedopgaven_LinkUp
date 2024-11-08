@@ -203,13 +203,7 @@ paths:
                   format: password
                   description: ""
               required:
-                - firstName
-                - surname
-                - email
-                - phone
-                - birthDate
-                - gender
-                - password
+                - accountId
       responses:
         '200':
           description: System has updated new account informations entered correctly
@@ -262,7 +256,7 @@ paths:
                     type: string
                     example: "Email is already taken by another account"
 
-  /readAccount/{id}:
+  /getAccount/{id}:
     get:
       summary: ""
       description: User access information of his / her own account (UC2.?)
