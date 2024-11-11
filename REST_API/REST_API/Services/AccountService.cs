@@ -20,26 +20,31 @@ namespace REST_API.Services
             {
                 var result = _accountRepository.FindAccountByEmailAndPassword(dto);
 
+                // Success
+
+                if (result.isSuccess && result.Data != null)
+                {
+                    // TODO: add JWT
+
+                    return ResultDTO.SuccesResult(result.Data, "Data with JWT");
+                }
+
                 // Errors
 
                 if (result.Message.Equals(ErrorMessages.AccountRepository_FindAccountByEmailAndPassword_EmailAndPasswordDontMatch))
                 {
                     return ResultDTO.FailureResult(ErrorMessages.AccountService_Login_401InvalidCredentials);       // generic reponse 
                 }
-
-
-                // Success
-
-                return ResultDTO.SuccesResult(null, "");
             }
             catch (Exception ex)
             {
                 // TODO: logging(ex)
-                /*
-                 * Helpful information for users, not helpful for attackers
-                 */
-                return ResultDTO.FailureResult("Login failed");         // default Error-Message
             }
+
+            /*
+             *  Helpful information for users, not helpful for attackers
+             */
+            return ResultDTO.FailureResult("Login failed");         // default Error-Message
         }
 
 

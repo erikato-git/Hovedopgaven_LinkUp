@@ -31,16 +31,24 @@ namespace REST_API.Controllers
             /*
              * ModelState: https://code-maze.com/aspnetcore-modelstate-validation-web-api/
              */
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return Unauthorized(ModelState);
             }
 
             var result = _accountService.Login(dto);
 
+            /*
+             * login in ServiceAccount doesn't return a nullable, just in case future programmers set it to nullable the AccountController won't break
+             */
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
             // Succes 
 
-            if(result.isSuccess)
+            if (result.isSuccess)
             {
                 return Ok("JWT token");
             }
@@ -59,12 +67,17 @@ namespace REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public IActionResult CreateAccount([FromBody] CreateAccountDTO dto)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var result = _accountService.CreateAccount(dto);
+
+            if(result == null)
+            {
+                return BadRequest();
+            }
 
             // Succes
 
@@ -96,16 +109,21 @@ namespace REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public IActionResult UpdateAccount([FromBody] UpdateAccountDTO dto)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var result = _accountService.UpdateAccount(dto);
 
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
             // Sucess
 
-            if(result.isSuccess)
+            if (result.isSuccess)
             {
                 return Ok(result.Data);
             }
@@ -137,16 +155,21 @@ namespace REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAccountById([FromQuery] Guid id)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             var result = _accountService.GetAccountById(id);
 
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
             // Success
 
-            if(result.isSuccess)
+            if (result.isSuccess)
             {
                 return Ok(result.Data);
             }

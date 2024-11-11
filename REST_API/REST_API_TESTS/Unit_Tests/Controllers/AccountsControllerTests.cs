@@ -18,7 +18,7 @@ using System.Threading.Tasks;
  * Naming-convention: methodName_should_returnStatusCode_when_stateUnderTest
  * Testing-targets: methods will be tested for that they return proper status-codes and objects
  * Purpose of the tests: Tests for business-logic in AccountController class, usually if-else checks for Message property in ResultDTO receiving from instance of AccountService class. The purpose is only to test how business-logic behave to response from the instance from AccountService class, why input from user is redundat in this case - it will be tested in the integrations-test
- * OBS: Authentication will be tested at integration-tests, it's not a part of the business-logic in the controller-class and is configured by dependency injection
+ * OBS: Authentication will be tested at integration-tests, it's not a part of the business-logic in the controller-class and is configured by dependency injection. ModelState.Valid wouldn't be tested either because validation of properties takes place on the pipeline during run-time: https://stackoverflow.com/questions/50071938/model-validation-not-working-in-unit-test
  */
 
 
@@ -69,18 +69,6 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             // TODO: Shoul also test if a JWT token is returned
         }
 
-        [Fact]
-        public void Login_Should_Return401Unauthorized_When_CredentialsAreInvalid()
-        {
-            // Arrange
-            var loginDto = TestHelper.GenerateFakeInvalidLoginDTO();
-
-            // Act
-            var result = _sut.Login(loginDto);
-
-            // Assert
-            Assert.IsType<UnauthorizedObjectResult>(result);
-        }
 
         [Fact]
         public void Login_Should_Return400Badrequest_When_NoneConditionalChecksAreMet()
@@ -154,23 +142,6 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             Assert.Equal("", badrequestResult.Value);
         }
 
-        /*
-         * TODO: If time left, test for each property in CreateAccountDTO
-         */
-        [Fact]
-        public void CreateAccount_Should_Return400BadRequest_When_ProvidedAccountDetailsAreInvalid()
-        {
-            // Arrange
-            var createAccount = TestHelper.GenerateFakeInvalidCreateAccountDTO();
-
-            // Act
-            var result = _sut.CreateAccount(createAccount);
-
-            // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
-        }
-
-
         // UpdateAccount
 
         [Fact]
@@ -239,21 +210,6 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             Assert.Equal("", badrequestResult.Value);
         }
 
-        [Fact]
-        public void UpdateAccount_Should_Return400BadRequest_When_ProvidedAccountDetailsAreInvalid()
-        {
-            // Arrange
-            var updateAccount = TestHelper.GenerateFakeInvalidUpdateAccountDTO();
-
-            // Act
-            var result = _sut.UpdateAccount(updateAccount);
-
-            // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
-        }
-
-
-
         // GetAccountById
         [Fact]
         public void GetAccountById_Should_Return200Ok_When_AccountExist()
@@ -312,6 +268,9 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         {
             // Arrange
             var guid = Guid.Empty;
+            var resultDto = ResultDTO.FailureResult("");
+            _accountService.Setup(service => service.GetAccountById(guid)).Returns(resultDto);
+
 
             // Act
             var result = _sut.GetAccountById(guid);
