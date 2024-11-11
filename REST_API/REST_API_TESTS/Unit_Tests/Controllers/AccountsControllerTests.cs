@@ -22,7 +22,6 @@ using System.Threading.Tasks;
  */
 
 
-
 namespace REST_API_TESTS.Unit_Tests.Controllers
 {
     public class AccountsControllerTests
@@ -45,9 +44,8 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         }
 
         // Login
-        // TODO: should create a fake JWT token I can insert in SuccesRusult(...)
         [Fact]
-        public void Login_Should_Return200Ok_When_CredentiaAreIsValid()
+        public void Login_Should_Return200Ok_When_CredentiaAreValid()
         {
             /*
              * loginDto: parameters is redundant in this case, it just has to be provided for login(LoginDTO) in AccountService and AccountController
@@ -57,6 +55,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             var loginDto = _fixture.Create<LoginDTO>();     
             var resultDto = ResultDTO.SuccesResult("JWT token", "Valid credentials");   
             _accountService.Setup(service => service.Login(loginDto)).Returns(resultDto);
+            var JWT = false;
 
             // Act
             var result = _sut.Login(loginDto);
@@ -66,7 +65,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
              */
             // Assert
             Assert.IsType<OkObjectResult>(result);
-            // TODO: Shoul also test if a JWT token is returned
+            Assert.True(JWT);
         }
 
 
@@ -93,7 +92,6 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         }
 
         // CreateAccount
-        // TODO: should also retrun a JWT-token for unit test
         [Fact]
         public void CreateAccount_Should_Return201Created_When_AccountHasBeenCreated()
         {
@@ -101,13 +99,14 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             var createAccountDto = _fixture.Create<CreateAccountDTO>();
             var resultDto = ResultDTO.SuccesResult("JWT token", "Account has succesfully been created.");
             _accountService.Setup(service => service.CreateAccount(createAccountDto)).Returns(resultDto);
+            var JWT = false;
 
             // Act
             var result = _sut.CreateAccount(createAccountDto);
 
             // Assert
             Assert.IsType<CreatedResult>(result);
-            // TODO: Shoul also test if a JWT token is returned
+            Assert.True(JWT);
         }
 
         [Fact]
@@ -223,6 +222,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             var account = TestHelper.GenerateFakeAccount();
             var resultDto = ResultDTO.SuccesResult(account, "Account is found");
             _accountService.Setup(service => service.GetAccountById(guid)).Returns(resultDto);
+            var hasAuthorization = false;
 
             // Act
             var result = _sut.GetAccountById(guid);
@@ -230,6 +230,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(account, okResult.Value);
+            Assert.True(hasAuthorization);
         }
 
         [Fact]

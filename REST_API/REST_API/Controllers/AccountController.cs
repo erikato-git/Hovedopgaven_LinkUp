@@ -40,6 +40,7 @@ namespace REST_API.Controllers
 
             /*
              * login in ServiceAccount doesn't return a nullable, just in case future programmers set it to nullable the AccountController won't break
+             * TODO: Consider to wrap the implementation in try-catch-blocks like in the service-classes and repository-classes
              */
             if (result == null)
             {
