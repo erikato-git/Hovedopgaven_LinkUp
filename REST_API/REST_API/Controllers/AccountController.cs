@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using REST_API.DTOs;
 using REST_API.Models;
@@ -27,10 +28,26 @@ namespace REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Login([FromBody]LoginDTO dto)
         {
+            /*
+             * ModelState: https://code-maze.com/aspnetcore-modelstate-validation-web-api/
+             */
+            if (ModelState.IsValid)
+            {
+                return Unauthorized(ModelState);
+            }
+
             var result = _accountService.Login(dto);
 
-            // TDD ...
+            // Succes 
 
+            if(result.isSuccess)
+            {
+                return Ok("JWT token");
+            }
+
+            // Errors
+
+            // more checks ...
 
             return BadRequest(result.Message);          // default response
         }
@@ -42,9 +59,28 @@ namespace REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public IActionResult CreateAccount([FromBody] CreateAccountDTO dto)
         {
+            if (ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var result = _accountService.CreateAccount(dto);
 
-            // TDD ...
+            // Succes
+
+            if(result.isSuccess)
+            {
+                return Created();
+            }
+
+            // Errors
+
+            if(result.Message.Equals(ErrorMessages.AccountService_CreateAccount_409InvalidEmail))
+            {
+                return Conflict(result.Message);
+            }
+
+            // more checks ...
 
 
             return BadRequest(result.Message);          // default response
@@ -60,10 +96,33 @@ namespace REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public IActionResult UpdateAccount([FromBody] UpdateAccountDTO dto)
         {
+            if (ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var result = _accountService.UpdateAccount(dto);
 
-            // TDD ...
+            // Sucess
 
+            if(result.isSuccess)
+            {
+                return Ok(result.Data);
+            }
+
+            // Errors
+
+            if(result.Message.Equals(ErrorMessages.AccountService_UpdateAccount_403CannotUpdateAnotherAccount))
+            {
+                return Forbid();
+            }
+
+            if (result.Message.Equals(ErrorMessages.AccountService_UpdateAccount_409UserChangeEmailToAnotherEmailThatAlreadyExist))
+            {
+                return Conflict(result.Message);
+            }
+
+            // more checks ...
 
             return BadRequest(result.Message);          // default response
         }
@@ -78,14 +137,37 @@ namespace REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetAccountById([FromQuery] Guid id)
         {
+            if (ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var result = _accountService.GetAccountById(id);
 
-            // TDD ...
+            // Success
+
+            if(result.isSuccess)
+            {
+                return Ok(result.Data);
+            }
+
+            // Errors
+
+            if (result.Message.Equals(ErrorMessages.AccountService_GetAccountById_403UserTriesToAccessAnotherAccount))
+            {
+                return Forbid();
+            }
+
+            // more checks ...
 
 
             return BadRequest(result.Message);          // default response
         }
 
+
+
+        // TODO: DeleteAccountById
+        // make specifications first
 
     }
 }

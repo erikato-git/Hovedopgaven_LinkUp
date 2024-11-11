@@ -223,6 +223,16 @@ paths:
                   message:
                     type: string
                     example: "You don't have permission to access pitches for this account"
+        "404":
+          description: User tries to send a pitch to a profile that doesn't exist longer
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You don't have permission to access pitches for this account"
         "409":
           description: User doesn't have a profile where he / she can send pitches from or receive pitches from other users' profiles
           content:

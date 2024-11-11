@@ -3,6 +3,10 @@ using REST_API.Models;
 
 namespace REST_API.Data
 {
+    /*
+     * TODO: Do I need to call it MssqlContext, isn't Mssql secondary and the DbContext-class sets options for EntityFramework and can be applied to all kind of databases just by changing the connection-string?
+     * Trade-off: high-cohesion vs reusability / DRY
+     */
     public class MssqlContext : DbContext
     {
         /*

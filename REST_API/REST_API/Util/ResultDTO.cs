@@ -1,5 +1,9 @@
 ﻿namespace REST_API.Util
 {
+    /*
+     * Result-Pattern
+     * TODO: mere tekst eller en henvisning til hvor man kan læse mere om det
+     */
     public class ResultDTO
     {
         public bool isSuccess { get; set; }
