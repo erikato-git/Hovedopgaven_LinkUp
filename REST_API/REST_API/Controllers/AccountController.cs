@@ -21,101 +21,82 @@ namespace REST_API.Controllers
             _accountService = accountService;
         }
 
-
+        [AllowAnonymous]
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]             // JWT token
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult Login([FromBody]LoginDTO dto)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Login([FromBody]LoginDTO dto)
         {
-            /*
-             * ModelState: https://code-maze.com/aspnetcore-modelstate-validation-web-api/
-             */
             if (!ModelState.IsValid)
             {
                 return Unauthorized(ModelState);
             }
 
-            var result = _accountService.Login(dto);
+            var result = await _accountService.Login(dto);
 
-            /*
-             * login in ServiceAccount doesn't return a nullable, just in case future programmers set it to nullable the AccountController won't break
-             * TODO: Consider to wrap the implementation in try-catch-blocks like in the service-classes and repository-classes
-             */
             if (result == null)
             {
                 return BadRequest();
             }
 
-            // Succes 
-
             if (result.isSuccess)
             {
-                return Ok("JWT token");
+                return Ok(result.Data);
             }
 
-            // Errors
-
-            // more checks ...
-
-            return BadRequest(result.Message);          // default response
+            return BadRequest(result.Message);
         }
 
-
+        [AllowAnonymous]
         [HttpPost("createAccount")]
         [ProducesResponseType(StatusCodes.Status201Created)]             // JWT token
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public IActionResult CreateAccount([FromBody] CreateAccountDTO dto)
+        public async Task<IActionResult> CreateAccount([FromBody] CreateAccountDTO dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = _accountService.CreateAccount(dto);
+            var result = await _accountService.CreateAccount(dto);
 
             if(result == null)
             {
                 return BadRequest();
             }
 
-            // Succes
-
             if(result.isSuccess)
             {
-                return Created();
+                return Created("", result.Data);
             }
 
-            // Errors
-
-            if(result.Message.Equals(ErrorMessages.AccountService_CreateAccount_409InvalidEmail))
+            if(result.Message.Equals(ErrorMessages.AccountService_EmailForAccountAlreadyExist))
             {
                 return Conflict(result.Message);
             }
 
-            // more checks ...
 
-
-            return BadRequest(result.Message);          // default response
+            return BadRequest(result.Message);
         }
 
 
-        [HttpPut("updateAccount")]
         [Authorize]
+        [HttpPut("updateAccount")]
         [ProducesResponseType(StatusCodes.Status200OK)]            
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public IActionResult UpdateAccount([FromBody] UpdateAccountDTO dto)
+        public async Task<IActionResult> UpdateAccount([FromBody] UpdateAccountDTO dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = _accountService.UpdateAccount(dto);
+            var result = await _accountService.UpdateAccount(dto);
 
             if (result == null)
             {
@@ -131,14 +112,21 @@ namespace REST_API.Controllers
 
             // Errors
 
-            if(result.Message.Equals(ErrorMessages.AccountService_UpdateAccount_403CannotUpdateAnotherAccount))
+            if(result.Message.Equals(ErrorMessages.AccountSerivce_YouCannotUpdateAnotherPersonsAccount))
             {
-                return Forbid();
+                /*
+                 * Implementation like forbid() that carries a message in an object
+                 */
+                return new ObjectResult(new { })
+                {
+                    Value = result.Message,
+                    StatusCode = StatusCodes.Status403Forbidden
+                };
             }
 
-            if (result.Message.Equals(ErrorMessages.AccountService_UpdateAccount_409UserChangeEmailToAnotherEmailThatAlreadyExist))
+            if (result.Message.Equals(ErrorMessages.AccountSerivce_YouMustBeSignedInBeforeYouCanUpdateYourAccount))
             {
-                return Conflict(result.Message);
+                return Unauthorized(result.Message);
             }
 
             // more checks ...
@@ -147,21 +135,21 @@ namespace REST_API.Controllers
         }
 
 
-        [HttpGet("getAccount/{id}")]
         [Authorize]
+        [HttpGet("getAccount/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Account))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetAccountById([FromQuery] Guid id)
+        public async Task<IActionResult> GetAccountById([FromQuery] Guid id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = _accountService.GetAccountById(id);
+            var result = await _accountService.GetAccountById(id);
 
             if (result == null)
             {
@@ -177,7 +165,7 @@ namespace REST_API.Controllers
 
             // Errors
 
-            if (result.Message.Equals(ErrorMessages.AccountService_GetAccountById_403UserTriesToAccessAnotherAccount))
+            if (result.Message.Equals(""))
             {
                 return Forbid();
             }

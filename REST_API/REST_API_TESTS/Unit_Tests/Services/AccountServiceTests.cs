@@ -6,6 +6,7 @@ using REST_API.DTOs;
 using REST_API.Models;
 using REST_API.Repositories;
 using REST_API.Services;
+using REST_API.Services.Helpers;
 using REST_API.Util;
 using REST_API_TESTS.Helpers;
 using System;
@@ -19,6 +20,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
     public class AccountServiceTests
     {
         private readonly Mock<IAccountRepository> _accountRepository;
+        private readonly Mock<IAccountServiceHelper> _accountServiceHelper;
         private readonly Fixture _fixture;
         private readonly AccountService _sut;
 
@@ -26,6 +28,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         {
             _fixture = new Fixture();
             _accountRepository = new Mock<IAccountRepository>();
+            _accountServiceHelper = new Mock<IAccountServiceHelper>();
 
             _sut = new AccountService(_accountRepository.Object);
         }
@@ -34,172 +37,110 @@ namespace REST_API_TESTS.Unit_Tests.Services
         // Login
 
         [Fact]
-        public void Login_Should_ReturnAccountWithJWT_When_CredentialsAreValid()
+        public async Task Login_Should_ReturnAccount_When_AccountExistAndPasswordsMatch()
         {
             // Arrange
-            var loginDto = _fixture.Create<LoginDTO>();
-            var account = TestHelper.GenerateFakeAccount();
-            var resultDto = ResultDTO.SuccesResult(account, "Valid credentials");
-            _accountRepository.Setup(repo => repo.FindAccountByEmailAndPassword(loginDto)).Returns(resultDto);
-            var JWT = false;
+            var account = TestHelper.GenerateValidFakeAccount();
+            var loginDto = new LoginDTO { Email = "user@mail.com,", Password = "SecurePassword123" };   // make sure account.Password == loginDto.Password
+            _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync(account);
+            _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password));
 
             // Act
-            var result = _sut.Login(loginDto);
+            var result = await _sut.Login(loginDto);
 
             // Assert
-            Assert.True(JWT);
+            Assert.Equal(account, result.Data);
         }
 
         [Fact]
-        public void Login_Should_ReturnGenericErrorMessage_When_EmailAndPasswordDontMatch()
+        public async Task Login_Should_ReturnErrorMessage_When_AccountExistButPasswordsDontMatch()
         {
             // Arrange
+            var account = TestHelper.GenerateValidFakeAccount();
             var loginDto = _fixture.Create<LoginDTO>();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountRepository_FindAccountByEmailAndPassword_EmailAndPasswordDontMatch);
-            _accountRepository.Setup(repo => repo.FindAccountByEmailAndPassword(loginDto)).Returns(resultDto);
+            //_accountService.Setup(service => service.Login(loginDto)).Returns(resultDto);
+            _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync(account);
+            _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password));
 
             // Act
-            var result = _sut.Login(loginDto);
+            var result = await _sut.Login(loginDto);
 
             // Assert
-            Assert.False(result.isSuccess);
-            Assert.Equal(ErrorMessages.AccountService_Login_401InvalidCredentials, result.Message);
+            Assert.Equal(ErrorMessages.AccountService_InvalidEmailOrPassword, result.Message);
+        }
+
+
+        [Fact]
+        public async Task Login_Should_ReturnErrorMessage_When_AccountDoesntExist()
+        {
+            // Arrange
+            var account = TestHelper.GenerateValidFakeAccount();
+            var loginDto = _fixture.Create<LoginDTO>();
+            _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync((Account)null);
+            _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password));
+
+            // Act
+            var result = await _sut.Login(loginDto);
+
+            // Assert
+            Assert.Equal(ErrorMessages.AccountService_InvalidEmailOrPassword, result.Message);
         }
 
 
         // CreateAccount
 
         [Fact]
-        public void CreateAccount_Should_ReturnAccount_When_AccountHasBeenCreated()
+        public async Task CreateAccount_Should_ReturnAccountAndAuthentication_When_ValidCreateAccountDetails()
         {
             // Arrange
-            var createAccountDto = _fixture.Create<CreateAccountDTO>();
-            var account = TestHelper.GenerateFakeAccount();
-            var resultDto = ResultDTO.SuccesResult(account, "Account has succesfully been created");
-            _accountRepository.Setup(repo => repo.CreateAccount(createAccountDto)).Returns(resultDto);
-            var JWT = false;
+            var account = TestHelper.GenerateValidFakeAccount();
+            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(false);
+            _accountRepository.Setup(repo => repo.AddAsync(createAccountDto)).ReturnsAsync(account);
+            bool hasAuthentication = false;     // TODO
 
             // Act
-            var result = _sut.CreateAccount(createAccountDto);
+            var result = await _sut.CreateAccount(createAccountDto);
 
             // Assert
-            Assert.True(result.isSuccess);
-            Assert.True(JWT);
+            Assert.Equal(account, result.Data);
+            Assert.True(hasAuthentication);
+        }
+
+        [Fact]
+        public async Task CreateAccount_Should_ReturnErrorMessage_When_ProvidedEmailIsAlreadyTaken()
+        {
+            // Arrange
+            var account = TestHelper.GenerateValidFakeAccount();
+            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(true);
+
+            // Act
+            var result = await _sut.CreateAccount(createAccountDto);
+
+            // Assert
+            Assert.Equal(ErrorMessages.AccountService_EmailForAccountAlreadyExist, result.Message);
+        }
+
+
+        // UpdateAccount
+        [Fact]
+        public async Task UpdateAccount_Should_ReturnAccount_When_UserIsLoggedInAndProvideValidUpdateAccountDetails()
+        {
+            // Arrange
+            var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            var account = TestHelper.GenerateValidFakeAccount();
+            var idClaim = updateAccountDto.AccountId;
+            _accountServiceHelper.Setup(service => service.CheckIdsMatch(updateAccountDto.AccountId,idClaim)).Returns(true);   // true
+            _accountRepository.Setup(repo => repo.UpdateAsync(updateAccountDto)).ReturnsAsync(account);
+
+            // Act
+            var result = await _sut.UpdateAccount(updateAccountDto);
+
+            // Assert
             Assert.Equal(account, result.Data);
         }
 
-        [Fact]
-        public void CreateAccount_Should_ReturnErrorMessage_When_EmailIsAlreadyTaken()
-        {
-            // Arrange
-            var createAccountDto = _fixture.Create<CreateAccountDTO>();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountRepository_CreateAccount_EmailAlreadyTaken);
-            _accountRepository.Setup(repo => repo.CreateAccount(createAccountDto)).Returns(resultDto);
-
-            // Act
-            var result = _sut.CreateAccount(createAccountDto);
-
-            // Assert
-            Assert.False(result.isSuccess);
-            Assert.Equal(ErrorMessages.AccountService_CreateAccount_409InvalidEmail, result.Message);
-        }
-
-
-        //UpdateAccount
-
-        [Fact]
-        public void UpdateAccount_Should_ReturnUpdatedAccount_When_AccountHasBeenUpdated()
-        {
-            /*
-             * TODO: Make sure object in SuccesResult is the updated account
-             */
-            // Arrange
-            var updatedAccountDto = _fixture.Create<UpdateAccountDTO>();
-            var account = TestHelper.GenerateFakeAccount();
-            var resultDto = ResultDTO.SuccesResult(account, "Account has succesfully been updated");
-            _accountRepository.Setup(repo => repo.UpdateAccount(updatedAccountDto)).Returns(resultDto);
-
-            // Act
-            var result = _sut.UpdateAccount(updatedAccountDto);
-
-            // Assert
-            Assert.True(result.isSuccess);
-            Assert.IsType<Account>(result.Data);
-        }
-
-        [Fact]
-        public void UpdateAccount_Should_ReturnErrorMessage_When_LoggedInUserTriesToUpdateAnotherAccount()
-        {
-            // Arrange
-            var updatedAccountDto = _fixture.Create<UpdateAccountDTO>();
-                // TODO: Set claim for AccountId to a specific guid
-
-            // Act
-            var result = _sut.UpdateAccount(updatedAccountDto);
-
-            // Assert
-            Assert.False(result.isSuccess);
-            Assert.Equal(ErrorMessages.AccountService_UpdateAccount_403CannotUpdateAnotherAccount, result.Message);
-        }
-
-
-        //GetAccountById
-
-        [Fact]
-        public void GetAccountById_Should_ReturnAccount_When_UserHasAuthorizationAndAccountExist()
-        {
-            // Arrange
-            var guid = _fixture.Create<Guid>();
-            var account = TestHelper.GenerateFakeAccount();
-            var resultDto = ResultDTO.SuccesResult(account, "Account is found");
-            _accountRepository.Setup(repo => repo.FindAccountById(guid)).Returns(resultDto);
-            var hasAuthorization = false;
-
-            // Act
-            var result = _sut.GetAccountById(guid);
-
-            // Assert
-            Assert.True(result.isSuccess);
-            Assert.IsType<Account>(result.Data);
-            Assert.True(hasAuthorization);
-        }
-
-
-        [Fact]
-        public void GetAccountById_Should_ReturnErrorMessage_When_LoggedInUserTriesToAccessAnotherAccount()
-        {
-            // Arrange
-            var guid = _fixture.Create<Guid>();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_GetAccountById_403UserTriesToAccessAnotherAccount);
-            var hasAuthorization = false;
-
-            // Act
-            var result = _sut.GetAccountById(guid);
-
-            // Assert
-            Assert.False(result.isSuccess);
-            Assert.Equal(ErrorMessages.AccountService_GetAccountById_403UserTriesToAccessAnotherAccount, result.Message);
-            Assert.True(hasAuthorization);
-        }
-
-
-        [Fact]
-        public void GetAccountById_Should_ReturnErrorMessage_When_AccountWasNotFound()
-        {
-            // Arrange
-            var guid = _fixture.Create<Guid>();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountRepository_FindAccountById_AccountWasNotFound);
-            _accountRepository.Setup(repo => repo.FindAccountById(guid)).Returns(resultDto);
-            var hasAuthorization = false;
-
-            // Act
-            var result = _sut.GetAccountById(guid);
-
-            // Assert
-            Assert.False(result.isSuccess);
-            Assert.Equal(ErrorMessages.AccountRepository_FindAccountById_AccountWasNotFound, result.Message);
-            Assert.True(hasAuthorization);
-        }
 
     }
 }

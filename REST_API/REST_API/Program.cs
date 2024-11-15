@@ -1,6 +1,7 @@
 using REST_API.Data;
 using REST_API.Repositories;
 using REST_API.Services;
+using REST_API.Services.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<IAccountService,AccountService>();
+builder.Services.AddScoped<IAccountServiceHelper,AccountServiceHelper>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

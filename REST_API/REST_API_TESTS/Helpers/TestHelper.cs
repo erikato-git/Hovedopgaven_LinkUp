@@ -13,7 +13,7 @@ namespace REST_API_TESTS.Helpers
         /*
          * AutoFixture didn't work to create fakes for complex objects
          */
-        public static Account GenerateFakeAccount()
+        public static Account GenerateValidFakeAccount()
         {
             var personInfo = new PersonInformation
             {
@@ -74,6 +74,24 @@ namespace REST_API_TESTS.Helpers
                 BirthDate = null,
                 Gender = null,
                 Password = null
+            };
+        }
+
+
+        public static UpdateAccountDTO GenerateFakeValidUpdateAccountDTO()
+        {
+            return new UpdateAccountDTO
+            {
+                AccountId = Guid.NewGuid(), // Required field
+
+                // Optional fields (include if you want to update them)
+                FirstName = "Alice",
+                Surname = "Smith",
+                Email = "alice.smith@example.com",
+                Phone = "+1234567890",
+                BirthDate = new DateTime(1995, 5, 20),
+                Gender = "Female",
+                Password = "Secure@1234" // Meets all password criteria
             };
         }
     }

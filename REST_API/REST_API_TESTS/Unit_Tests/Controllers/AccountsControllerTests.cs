@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using REST_API.Controllers;
@@ -43,242 +44,156 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             _sut = new AccountController(_accountService.Object);
         }
 
+
         // Login
-        [Fact]
-        public void Login_Should_Return200Ok_When_CredentiaAreValid()
-        {
-            /*
-             * loginDto: parameters is redundant in this case, it just has to be provided for login(LoginDTO) in AccountService and AccountController
-             * ResultDTO.SuccesResult(): when calling this method the property "isSuccess" is set to true
-             */
-            // Arrange
-            var loginDto = _fixture.Create<LoginDTO>();     
-            var resultDto = ResultDTO.SuccesResult("JWT token", "Valid credentials");   
-            _accountService.Setup(service => service.Login(loginDto)).Returns(resultDto);
-            var JWT = false;
-
-            // Act
-            var result = _sut.Login(loginDto);
-
-            /*
-             * OkObjectResult: an OK response that contains an object
-             */
-            // Assert
-            Assert.IsType<OkObjectResult>(result);
-            Assert.True(JWT);
-        }
-
 
         [Fact]
-        public void Login_Should_Return400Badrequest_When_NoneConditionalChecksAreMet()
+        public async Task Login_Should_Return200OkWithAccountWithJWT_When_ValidLoginCredentials()
         {
-            /*
-             * ResultDTO.FailureResult(): takes empty strings as args so it passes all checks in AccountController until it reached BadRequest()
-             */
             // Arrange
             var loginDto = _fixture.Create<LoginDTO>();
-            var resultDto = ResultDTO.FailureResult("");
-            _accountService.Setup(service => service.Login(loginDto)).Returns(resultDto);
+            var account = TestHelper.GenerateValidFakeAccount();
+            var accountJWT = new { account = account, JWT = "JWT-dummy-string" };
+            var resultDto = ResultDTO.SuccesResult(accountJWT, "You are succesfully logged in!");
+            _accountService.Setup(service => service.Login(loginDto)).ReturnsAsync(resultDto);
 
             // Act
-            var result = _sut.Login(loginDto);
-
-            /*
-             * Assert.IsType<T>: checks is result match the expected T and type-cast result to T
-             */
-            // Assert
-            var badrequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("", badrequestResult.Value);
-        }
-
-        // CreateAccount
-        [Fact]
-        public void CreateAccount_Should_Return201Created_When_AccountHasBeenCreated()
-        {
-            // Arrange
-            var createAccountDto = _fixture.Create<CreateAccountDTO>();
-            var resultDto = ResultDTO.SuccesResult("JWT token", "Account has succesfully been created.");
-            _accountService.Setup(service => service.CreateAccount(createAccountDto)).Returns(resultDto);
-            var JWT = false;
-
-            // Act
-            var result = _sut.CreateAccount(createAccountDto);
-
-            // Assert
-            Assert.IsType<CreatedResult>(result);
-            Assert.True(JWT);
-        }
-
-        [Fact]
-        public void CreateAccount_Should_Return409Conflict_When_EmailIsAlreadyTaken()
-        {
-            // Arrange
-            var createAccountDto = _fixture.Create<CreateAccountDTO>();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_CreateAccount_409InvalidEmail);
-            _accountService.Setup(service => service.CreateAccount(createAccountDto)).Returns(resultDto);
-
-            // Act
-            var result = _sut.CreateAccount(createAccountDto);
-
-            // Assert
-            var conflictResult = Assert.IsType<ConflictObjectResult>(result);
-            Assert.Equal(ErrorMessages.AccountService_CreateAccount_409InvalidEmail, conflictResult.Value);
-        }
-
-        [Fact]
-        public void CreateAccount_Should_Return400Badrequest_When_NoneConditionalChecksAreMet()
-        {
-            // Arrange
-            var createAccountDto = _fixture.Create<CreateAccountDTO>();
-            var resultDto = ResultDTO.FailureResult("");
-            _accountService.Setup(service => service.CreateAccount(createAccountDto)).Returns(resultDto);
-
-            // Act
-            var result = _sut.CreateAccount(createAccountDto);
-
-            // Assert
-            var badrequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("", badrequestResult.Value);
-        }
-
-        // UpdateAccount
-
-        [Fact]
-        public void UpdateAccount_Should_Return200Ok_When_AccountDetailsHaveBeenUpdated()
-        {
-            // Arrange
-            var updateAccountDTO = _fixture.Create<UpdateAccountDTO>();
-            var resultDto = ResultDTO.SuccesResult(updateAccountDTO, "Account details have been updated");
-            _accountService.Setup(service => service.UpdateAccount(updateAccountDTO)).Returns(resultDto);
-
-            // Act
-            var result = _sut.UpdateAccount(updateAccountDTO);
+            var result = await _sut.Login(loginDto);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(updateAccountDTO, okResult.Value);
+            Assert.Equal(accountJWT, okResult.Value);
         }
 
+
         [Fact]
-        public void UpdateAccount_Should_Return403Forbidden_When_LoggedInUserTriesToUpdateAnotherAccount()
+        public async Task Login_Should_Return400BadRequestWithErrorMessage_When_InvalidLoginCredentials()
         {
             // Arrange
-            var updateAccountDTO = _fixture.Create<UpdateAccountDTO>();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_UpdateAccount_403CannotUpdateAnotherAccount);
-            _accountService.Setup(service => service.UpdateAccount(updateAccountDTO)).Returns(resultDto);
+            var loginDto = _fixture.Create<LoginDTO>();
+            var account = TestHelper.GenerateValidFakeAccount();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_InvalidEmailOrPassword);
+            _accountService.Setup(service => service.Login(loginDto)).ReturnsAsync(resultDto);
 
             // Act
-            var result = _sut.UpdateAccount(updateAccountDTO);
+            var result = await _sut.Login(loginDto);
 
-            /*
-             * TODO: if time left, research if forbid should return any message to the user and how
-             */
             // Assert
-            Assert.IsType<ForbidResult>(result);
+            var badResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal(ErrorMessages.AccountService_InvalidEmailOrPassword, badResult.Value);
         }
 
+
+        // CreateAccount
+
         [Fact]
-        public void UpdateAccount_Should_Return409Conflict_When_EmailIsAlreadyTaken()
+        public async Task CreateAccount_Should_Return201OkWithAccountAndAuthentication_When_ValidCreateAccountDetails()
         {
             // Arrange
-            var updateAccountDTO = _fixture.Create<UpdateAccountDTO>();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_UpdateAccount_409UserChangeEmailToAnotherEmailThatAlreadyExist);
-            _accountService.Setup(service => service.UpdateAccount(updateAccountDTO)).Returns(resultDto);
+            var account = TestHelper.GenerateValidFakeAccount();
+            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            var accountJWT = new { account = account, JWT = "JWT-dummy-string" };
+            var resultDto = ResultDTO.SuccesResult(accountJWT, "Valid new account details");
+            _accountService.Setup(service => service.CreateAccount(createAccountDto)).ReturnsAsync(resultDto);
 
             // Act
-            var result = _sut.UpdateAccount(updateAccountDTO);
+            var result = await _sut.CreateAccount(createAccountDto);
+
+            // Assert
+            var createdResult = Assert.IsType<CreatedResult>(result);
+            Assert.Equal(accountJWT, createdResult.Value);
+        }
+
+
+        [Fact]
+        public async Task CreateAccount_Should_Return409WithErrorMessage_When_AccountAlreadyExist()
+        {
+            // Arrange
+            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_EmailForAccountAlreadyExist);
+            _accountService.Setup(service => service.CreateAccount(createAccountDto)).ReturnsAsync(resultDto);
+
+            // Act
+            var result = await _sut.CreateAccount(createAccountDto);
 
             // Assert
             var conflictResult = Assert.IsType<ConflictObjectResult>(result);
-            Assert.Equal(ErrorMessages.AccountService_UpdateAccount_409UserChangeEmailToAnotherEmailThatAlreadyExist, conflictResult.Value);
+            Assert.Equal(ErrorMessages.AccountService_EmailForAccountAlreadyExist, conflictResult.Value);
         }
 
         [Fact]
-        public void UpdateAccount_Should_Return400Badrequest_When_NoneConditionalChecksAreMet()
+        public async Task CreateAccount_Should_Return500WithErrorMessage_When_CreateAccountFailed()
         {
             // Arrange
-            var updateAccountDTO = _fixture.Create<UpdateAccountDTO>();
-            var resultDto = ResultDTO.FailureResult("");
-            _accountService.Setup(service => service.UpdateAccount(updateAccountDTO)).Returns(resultDto);
+            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_EmailForAccountAlreadyExist);
+            _accountService.Setup(service => service.CreateAccount(createAccountDto)).ReturnsAsync(resultDto);
 
             // Act
-            var result = _sut.UpdateAccount(updateAccountDTO);
+            var result = await _sut.CreateAccount(createAccountDto);
 
             // Assert
-            var badrequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("", badrequestResult.Value);
+            var conflictResult = Assert.IsType<ConflictObjectResult>(result);
+            Assert.Equal(ErrorMessages.AccountService_EmailForAccountAlreadyExist, conflictResult.Value);
         }
 
-        // GetAccountById
+
+
+        // UpdateAccount
         [Fact]
-        public void GetAccountById_Should_Return200Ok_When_AccountExist()
+        public async Task UpdateAccount_Should_Return200OkWithAccount_When_ValidUpdateAccountDetails()
         {
-            /*
-             * guid: query-parameter from URL
-             * account: when GetAccountById in AccountService has succesfully received an account from AccountRepository by AccountId
-             */
             // Arrange
-            var guid = _fixture.Create<Guid>();
-            var account = TestHelper.GenerateFakeAccount();
-            var resultDto = ResultDTO.SuccesResult(account, "Account is found");
-            _accountService.Setup(service => service.GetAccountById(guid)).Returns(resultDto);
-            var hasAuthorization = false;
+            var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            var account = TestHelper.GenerateValidFakeAccount();
+            var resultDto = ResultDTO.SuccesResult(account, "Updated account");
+            _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
+            bool hasAuthentication = false;     // TODO
 
             // Act
-            var result = _sut.GetAccountById(guid);
+            var result = await _sut.UpdateAccount(updateAccountDto);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(account, okResult.Value);
-            Assert.True(hasAuthorization);
+            Assert.True(hasAuthentication);
         }
+
 
         [Fact]
-        public void GetAccountById_Should_Return403Forbidden_When_LoggedInUserTriesToAccessAnotherAccount()
+        public async Task UpdateAccount_Should_Return403ForbiddenWithErrorMessage_When_UserTriesToUpdateAnotherAccount()
         {
             // Arrange
-            var guid = _fixture.Create<Guid>();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_GetAccountById_403UserTriesToAccessAnotherAccount);
-            _accountService.Setup(service => service.GetAccountById(guid)).Returns(resultDto);
+            var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_YouCannotUpdateAnotherPersonsAccount);
+            _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
+            bool hasAuthentication = false;     // TODO
 
             // Act
-            var result = _sut.GetAccountById(guid);
+            var result = await _sut.UpdateAccount(updateAccountDto);
 
             // Assert
-            Assert.IsType<ForbidResult>(result);
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status403Forbidden, objectResult.StatusCode);      // 403Forbidden
+            Assert.Equal(ErrorMessages.AccountSerivce_YouCannotUpdateAnotherPersonsAccount, objectResult.Value);
+            Assert.True(hasAuthentication);
         }
+
 
         [Fact]
-        public void GetAccountById_Should_Return400Badrequest_When_NoneConditionalChecksAreMet()
+        public async Task UpdateAccount_Should_Return401UnAuthorizedWithErrorMessage_When_InvalidUpdateAccountDetails()
         {
             // Arrange
-            var guid = _fixture.Create<Guid>();
-            var resultDto = ResultDTO.FailureResult("");
-            _accountService.Setup(service => service.GetAccountById(guid)).Returns(resultDto);
+            var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_YouMustBeSignedInBeforeYouCanUpdateYourAccount);
+            _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
 
             // Act
-            var result = _sut.GetAccountById(guid);
+            var result = await _sut.UpdateAccount(updateAccountDto);
 
             // Assert
-            var badrequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("", badrequestResult.Value);
+            var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(ErrorMessages.AccountSerivce_YouMustBeSignedInBeforeYouCanUpdateYourAccount, unauthResult.Value);
         }
-
-        [Fact]
-        public void GetAccountById_Should_Return400BadRequest_When_ProvidedWithInvalidGuid()
-        {
-            // Arrange
-            var guid = Guid.Empty;
-            var resultDto = ResultDTO.FailureResult("");
-            _accountService.Setup(service => service.GetAccountById(guid)).Returns(resultDto);
-
-
-            // Act
-            var result = _sut.GetAccountById(guid);
-
-            // Assert
-            Assert.IsType<BadRequestObjectResult>(result);
-        }
-
     }
 }

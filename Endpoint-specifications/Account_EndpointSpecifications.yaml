@@ -61,7 +61,7 @@ paths:
                     type: string
                     description: JWT token to be used in Authorization header
                     example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        '401':
+        '400':
           description: Unauthorized, invalid credentials, doesn't verify if email exist it will only help hackers
           content:
             application/json:
@@ -328,8 +328,26 @@ paths:
                   message:
                     type: string
                     example: "You don't have permission to access this account"
-        '404':
-          description: User tries to access an account that doesn't exist
+
+  /deleteAccount/{id}:
+    delete:
+      summary: ""
+      description: User wants to delete his / her account (UC2.?)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            description: id is a guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        '204':
+          description: Account has been deleted.
+        '401':
+          description: User is not signed in
           content:
             application/json:
               schema:
@@ -337,7 +355,18 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Account does not exist"
+                    example: "You need to sign in before you can delete your account"
+        '403':
+          description: User tries to delete another user's account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You can only delete your own account"
+
 
 
 

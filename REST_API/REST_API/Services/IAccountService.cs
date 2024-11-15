@@ -5,9 +5,10 @@ namespace REST_API.Services
 {
     public interface IAccountService
     {
-        ResultDTO Login(LoginDTO dto);
-        ResultDTO CreateAccount(CreateAccountDTO dto);
-        ResultDTO UpdateAccount(UpdateAccountDTO dto);
-        ResultDTO GetAccountById(Guid id);
+        Task<ResultDTO> Login(LoginDTO dto);
+        Task<ResultDTO> CreateAccount(CreateAccountDTO dto);
+        Task<ResultDTO> UpdateAccount(UpdateAccountDTO dto);
+        Task<ResultDTO> GetAccountById(Guid id);
+        bool CheckPasswordsMatch(string loginDtoPassword, string accountPassword);
     }
 }
