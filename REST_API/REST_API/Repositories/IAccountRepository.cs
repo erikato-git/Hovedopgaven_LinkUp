@@ -7,10 +7,10 @@ namespace REST_API.Repositories
     public interface IAccountRepository
     {
         // Common repository methods
-        Task<Account> GetByIdAsync(Guid id);
-        Task<IEnumerable<Account>> GetAllAsync();
-        Task<Account> AddAsync(CreateAccountDTO dto);
-        Task<Account> UpdateAsync(UpdateAccountDTO dto); 
+        Task<Account?> GetByIdAsync(Guid id);
+        Task<IEnumerable<Account>?> GetAllAsync();
+        Task<Account?> AddAsync(CreateAccountDTO dto);
+        Task<Account?> UpdateAsync(UpdateAccountDTO dto); 
         Task<bool> DeleteAsync(Guid id);
         Task<bool> SaveChangesAsync();
 

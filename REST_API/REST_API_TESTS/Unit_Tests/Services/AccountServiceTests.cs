@@ -30,88 +30,106 @@ namespace REST_API_TESTS.Unit_Tests.Services
             _accountRepository = new Mock<IAccountRepository>();
             _accountServiceHelper = new Mock<IAccountServiceHelper>();
 
-            _sut = new AccountService(_accountRepository.Object);
+            _sut = new AccountService(_accountRepository.Object, _accountServiceHelper.Object);
         }
 
 
         // Login
 
         [Fact]
-        public async Task Login_Should_ReturnAccount_When_AccountExistAndPasswordsMatch()
+        public async Task Login_Should_ReturnAccountWithJWT_When_AccountExistAndPasswordsMatch()
         {
             // Arrange
+            var loginDto = new LoginDTO { Email = "user@mail.com,", Password = "SecurePassword123" };
             var account = TestHelper.GenerateValidFakeAccount();
-            var loginDto = new LoginDTO { Email = "user@mail.com,", Password = "SecurePassword123" };   // make sure account.Password == loginDto.Password
+            var JWTDummy = "JWT-dummy-string";
             _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync(account);
-            _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password));
+            _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password)).Returns(true);
+            _accountServiceHelper.Setup(service => service.GenerateJWT(account)).Returns(JWTDummy);
+            var expected = new LoginResponseDTO { Account = account, JWT = JWTDummy };
 
             // Act
             var result = await _sut.Login(loginDto);
 
             // Assert
-            Assert.Equal(account, result.Data);
+            var actual = Assert.IsType<LoginResponseDTO>(result.Data);
+            Assert.Equal(expected.Account, actual.Account);
+            Assert.Equal(expected.JWT, actual.JWT);
         }
 
         [Fact]
         public async Task Login_Should_ReturnErrorMessage_When_AccountExistButPasswordsDontMatch()
         {
             // Arrange
+            var loginDto = new LoginDTO { Email = "user@mail.com,", Password = "SecurePassword123" };
             var account = TestHelper.GenerateValidFakeAccount();
-            var loginDto = _fixture.Create<LoginDTO>();
-            //_accountService.Setup(service => service.Login(loginDto)).Returns(resultDto);
             _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync(account);
-            _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password));
+            _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password)).Returns(false);
 
             // Act
             var result = await _sut.Login(loginDto);
 
             // Assert
-            Assert.Equal(ErrorMessages.AccountService_InvalidEmailOrPassword, result.Message);
+            Assert.Equal(ErrorMessages.AccountService_Login_InvalidEmailOrPassword, result.Message);
         }
-
 
         [Fact]
         public async Task Login_Should_ReturnErrorMessage_When_AccountDoesntExist()
         {
             // Arrange
-            var account = TestHelper.GenerateValidFakeAccount();
-            var loginDto = _fixture.Create<LoginDTO>();
+            var loginDto = new LoginDTO { Email = "user@mail.com,", Password = "SecurePassword123" };
             _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync((Account)null);
-            _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password));
 
             // Act
             var result = await _sut.Login(loginDto);
 
             // Assert
-            Assert.Equal(ErrorMessages.AccountService_InvalidEmailOrPassword, result.Message);
+            Assert.Equal(ErrorMessages.AccountService_Login_InvalidEmailOrPassword, result.Message);
         }
 
 
         // CreateAccount
 
         [Fact]
-        public async Task CreateAccount_Should_ReturnAccountAndAuthentication_When_ValidCreateAccountDetails()
+        public async Task CreateAccount_Should_ReturnAccountWithJWT_When_ValidCreateAccountDetails()
         {
             // Arrange
-            var account = TestHelper.GenerateValidFakeAccount();
             var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
             _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(false);
+            var account = TestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.AddAsync(createAccountDto)).ReturnsAsync(account);
-            bool hasAuthentication = false;     // TODO
+            var JWTDummy = "JWT-dummy-string";
+            _accountServiceHelper.Setup(service => service.GenerateJWT(account)).Returns(JWTDummy);
+            var expected = new LoginResponseDTO { Account = account, JWT = JWTDummy };
 
             // Act
             var result = await _sut.CreateAccount(createAccountDto);
 
             // Assert
-            Assert.Equal(account, result.Data);
-            Assert.True(hasAuthentication);
+            var actual = Assert.IsType<LoginResponseDTO>(result.Data);
+            Assert.Equal(expected.Account, actual.Account);
+            Assert.Equal(expected.JWT, actual.JWT);
         }
 
         [Fact]
-        public async Task CreateAccount_Should_ReturnErrorMessage_When_ProvidedEmailIsAlreadyTaken()
+        public async Task CreateAccount_Should_ReturnErrorMessage_When_ValidCreateAccountDetailsButCreateAccountDidntSucceed()
         {
             // Arrange
-            var account = TestHelper.GenerateValidFakeAccount();
+            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(false);
+            _accountRepository.Setup(repo => repo.AddAsync(createAccountDto)).ReturnsAsync((Account)null);
+
+            // Act
+            var result = await _sut.CreateAccount(createAccountDto);
+
+            // Assert
+            Assert.Equal(ErrorMessages.AccountSerivce_CreateAccount_CreateAccountFailed, result.Message);
+        }
+
+        [Fact]
+        public async Task CreateAccount_Should_ReturnErrorMessage_When_EmailAlreadyTakenForCreateAccountDetails()
+        {
+            // Arrange
             var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
             _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(true);
 
@@ -119,28 +137,150 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var result = await _sut.CreateAccount(createAccountDto);
 
             // Assert
-            Assert.Equal(ErrorMessages.AccountService_EmailForAccountAlreadyExist, result.Message);
+            Assert.Equal(ErrorMessages.AccountService_CreateAccount_EmailForAccountAlreadyExist, result.Message);
         }
 
-
         // UpdateAccount
+
         [Fact]
-        public async Task UpdateAccount_Should_ReturnAccount_When_UserIsLoggedInAndProvideValidUpdateAccountDetails()
+        public async Task UpdateAccount_Should_ReturnAccount_When_ValidUpdateAccountDetails()
         {
             // Arrange
-            var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            var updateAccountDTO = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId)).Returns(true);
             var account = TestHelper.GenerateValidFakeAccount();
-            var idClaim = updateAccountDto.AccountId;
-            _accountServiceHelper.Setup(service => service.CheckIdsMatch(updateAccountDto.AccountId,idClaim)).Returns(true);   // true
-            _accountRepository.Setup(repo => repo.UpdateAsync(updateAccountDto)).ReturnsAsync(account);
+            _accountRepository.Setup(repo => repo.UpdateAsync(updateAccountDTO)).ReturnsAsync(account);
 
             // Act
-            var result = await _sut.UpdateAccount(updateAccountDto);
+            var result = await _sut.UpdateAccount(updateAccountDTO);
 
             // Assert
             Assert.Equal(account, result.Data);
         }
 
+        [Fact]
+        public async Task UpdateAccount_Should_ReturnErrorMessage_When_ValidUpdateAccountDetailsButUpdateFailed()
+        {
+            // Arrange
+            var updateAccountDTO = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId)).Returns(true);
+            _accountRepository.Setup(repo => repo.UpdateAsync(updateAccountDTO)).ReturnsAsync((Account)null);
+
+            // Act
+            var result = await _sut.UpdateAccount(updateAccountDTO);
+
+            // Assert
+            Assert.Equal(ErrorMessages.AccountSerivce_UpdateAccount_UpdateAccountFailed, result.Message);
+        }
+
+        [Fact]
+        public async Task UpdateAccount_Should_ReturnErrorMessage_When_InvalidUpdateAccountDetails()
+        {
+            // Arrange
+            var updateAccountDTO = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId)).Returns(false);
+
+            // Act
+            var result = await _sut.UpdateAccount(updateAccountDTO);
+
+            // Assert
+            Assert.Equal(ErrorMessages.AccountSerivce_UpdateAccount_YouCannotUpdateAnotherPersonsAccount, result.Message);
+        }
+
+
+        // GetAccount/{id}
+
+        [Fact]
+        public async Task GetAccountById_Should_ReturnAccount_When_IdIsValid()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(true);
+            var account = TestHelper.GenerateValidFakeAccount();
+            _accountRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync(account);
+
+            // Act
+            var result = await _sut.GetAccountById(id);
+
+            // Assert
+            Assert.Equal(account, result.Data);
+        }
+
+        [Fact]
+        public async Task GetAccountById_Should_ReturnErrorMessage_When_IdIsValidButRetrieveAccountFailed()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(true);
+            _accountRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync((Account)null);
+
+            // Act
+            var result = await _sut.GetAccountById(id);
+
+            // Assert
+            Assert.Equal(ErrorMessages.AccountSerivce_GetAccountById_FailedToRetrieveAccountInternalServerError, result.Message);
+        }
+
+        [Fact]
+        public async Task GetAccountById_Should_ReturnErrorMessage_When_IdIsInvalid()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(false);
+
+            // Act
+            var result = await _sut.GetAccountById(id);
+
+            // Assert
+            Assert.Equal(ErrorMessages.AccountSerivce_GetAccountById_CannotRetrieveAnothersAccount, result.Message);
+        }
+
+
+        // DeleteAccount/{id}
+
+        [Fact]
+        public async Task DeleteAccount_Should_ReturnTrue_When_IdIsValid()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(true);
+            _accountRepository.Setup(repo => repo.DeleteAsync(id)).ReturnsAsync(true);
+
+            // Act
+            var result = await _sut.DeleteAccountById(id);
+
+            // Assert
+            Assert.Equal(true, result.Data);
+        }
+
+        [Fact]
+        public async Task DeleteAccount_Should_ReturnErrorMessage_When_IdIsValidButDeleteAccountFailed()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(true);
+            _accountRepository.Setup(repo => repo.DeleteAsync(id)).ReturnsAsync(false);
+
+            // Act
+            var result = await _sut.DeleteAccountById(id);
+
+            // Assert
+            Assert.Equal(ErrorMessages.AccountSerivce_DeleteAccount_DeleteAccountFailed, result.Message);
+        }
+
+        [Fact]
+        public async Task DeleteAccount_Should_ReturnErrorMessage_When_IdIsInvalid()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(false);
+
+            // Act
+            var result = await _sut.DeleteAccountById(id);
+
+            // Assert
+            Assert.Equal(ErrorMessages.AccountSerivce_DeleteAccountById_CannotDeleteAnotherPersonsAccound, result.Message);
+        }
 
     }
 }

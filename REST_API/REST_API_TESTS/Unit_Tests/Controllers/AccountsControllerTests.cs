@@ -72,7 +72,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             // Arrange
             var loginDto = _fixture.Create<LoginDTO>();
             var account = TestHelper.GenerateValidFakeAccount();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_InvalidEmailOrPassword);
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_Login_InvalidEmailOrPassword);
             _accountService.Setup(service => service.Login(loginDto)).ReturnsAsync(resultDto);
 
             // Act
@@ -80,7 +80,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
 
             // Assert
             var badResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal(ErrorMessages.AccountService_InvalidEmailOrPassword, badResult.Value);
+            Assert.Equal(ErrorMessages.AccountService_Login_InvalidEmailOrPassword, badResult.Value);
         }
 
 
@@ -110,7 +110,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         {
             // Arrange
             var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_EmailForAccountAlreadyExist);
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_CreateAccount_EmailForAccountAlreadyExist);
             _accountService.Setup(service => service.CreateAccount(createAccountDto)).ReturnsAsync(resultDto);
 
             // Act
@@ -118,7 +118,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
 
             // Assert
             var conflictResult = Assert.IsType<ConflictObjectResult>(result);
-            Assert.Equal(ErrorMessages.AccountService_EmailForAccountAlreadyExist, conflictResult.Value);
+            Assert.Equal(ErrorMessages.AccountService_CreateAccount_EmailForAccountAlreadyExist, conflictResult.Value);
         }
 
         [Fact]
@@ -126,29 +126,29 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         {
             // Arrange
             var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_EmailForAccountAlreadyExist);
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_CreateAccount_CreateAccountFailed);
             _accountService.Setup(service => service.CreateAccount(createAccountDto)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.CreateAccount(createAccountDto);
 
             // Assert
-            var conflictResult = Assert.IsType<ConflictObjectResult>(result);
-            Assert.Equal(ErrorMessages.AccountService_EmailForAccountAlreadyExist, conflictResult.Value);
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+            Assert.Equal(ErrorMessages.AccountSerivce_CreateAccount_CreateAccountFailed, objectResult.Value);
         }
 
 
 
         // UpdateAccount
         [Fact]
-        public async Task UpdateAccount_Should_Return200OkWithAccount_When_ValidUpdateAccountDetails()
+        public async Task UpdateAccount_Should_Return200OkWithAccount_When_AccountIsUpdated()
         {
             // Arrange
             var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
             var account = TestHelper.GenerateValidFakeAccount();
             var resultDto = ResultDTO.SuccesResult(account, "Updated account");
             _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
-            bool hasAuthentication = false;     // TODO
 
             // Act
             var result = await _sut.UpdateAccount(updateAccountDto);
@@ -156,18 +156,15 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(account, okResult.Value);
-            Assert.True(hasAuthentication);
         }
-
 
         [Fact]
         public async Task UpdateAccount_Should_Return403ForbiddenWithErrorMessage_When_UserTriesToUpdateAnotherAccount()
         {
             // Arrange
             var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_YouCannotUpdateAnotherPersonsAccount);
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_UpdateAccount_YouCannotUpdateAnotherPersonsAccount);
             _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
-            bool hasAuthentication = false;     // TODO
 
             // Act
             var result = await _sut.UpdateAccount(updateAccountDto);
@@ -175,25 +172,128 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             // Assert
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(StatusCodes.Status403Forbidden, objectResult.StatusCode);      // 403Forbidden
-            Assert.Equal(ErrorMessages.AccountSerivce_YouCannotUpdateAnotherPersonsAccount, objectResult.Value);
-            Assert.True(hasAuthentication);
+            Assert.Equal(ErrorMessages.AccountSerivce_UpdateAccount_YouCannotUpdateAnotherPersonsAccount, objectResult.Value);
         }
 
-
         [Fact]
-        public async Task UpdateAccount_Should_Return401UnAuthorizedWithErrorMessage_When_InvalidUpdateAccountDetails()
+        public async Task UpdateAccount_Should_Return500InternalServerErrorWithErrorMessage_When_UpdateAccountHasFailed()
         {
             // Arrange
             var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_YouMustBeSignedInBeforeYouCanUpdateYourAccount);
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_UpdateAccount_UpdateAccountFailed);
             _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.UpdateAccount(updateAccountDto);
 
             // Assert
-            var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
-            Assert.Equal(ErrorMessages.AccountSerivce_YouMustBeSignedInBeforeYouCanUpdateYourAccount, unauthResult.Value);
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+            Assert.Equal(ErrorMessages.AccountSerivce_UpdateAccount_UpdateAccountFailed, objectResult.Value);
         }
+
+        // GetAccount/{id}
+        [Fact]
+        public async Task GetAccount_Should_Return200OkWithAccount_When_ValidId()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            var account = TestHelper.GenerateValidFakeAccount();
+            var resultDto = ResultDTO.SuccesResult(account, "Account found");
+            _accountService.Setup(service => service.GetAccountById(id)).ReturnsAsync(resultDto);
+
+            // Act
+            var result = await _sut.GetAccountById(id);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(account, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetAccount_Should_Return404NotFound_When_InvalidId()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            var account = TestHelper.GenerateValidFakeAccount();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_GetAccountById_AccountNotFound);
+            _accountService.Setup(service => service.GetAccountById(id)).ReturnsAsync(resultDto);
+
+            // Act
+            var result = await _sut.GetAccountById(id);
+
+            // Assert
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal(ErrorMessages.AccountSerivce_GetAccountById_AccountNotFound, notFoundResult.Value);
+        }
+
+        [Fact]
+        public async Task GetAccount_Should_Return403ForbidWithErrorMessage_When_InvalidId()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_GetAccountById_YouCannotAccessAnotherAccount);
+            _accountService.Setup(service => service.GetAccountById(id)).ReturnsAsync(resultDto);
+
+            // Act
+            var result = await _sut.GetAccountById(id);
+
+            // Assert
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status403Forbidden, objectResult.StatusCode);
+            Assert.Equal(ErrorMessages.AccountSerivce_GetAccountById_YouCannotAccessAnotherAccount, objectResult.Value);
+        }
+
+        // DeleteAccount/{id}
+        [Fact]
+        public async Task DeleteAccount_Should_Return204NoContent_When_ValidId()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            var resultDto = ResultDTO.SuccesResult(true, "Account is deleted");
+            _accountService.Setup(service => service.DeleteAccountById(id)).ReturnsAsync(resultDto);
+
+            // Act
+            var result = await _sut.DeleteAccountById(id);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteAccount_Should_Return500InternalServerErrorWithErrorMessage_When_DeleteAccountFailed()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_DeleteAccount_DeleteAccountFailed);
+            _accountService.Setup(service => service.DeleteAccountById(id)).ReturnsAsync(resultDto);
+
+            // Act
+            var result = await _sut.DeleteAccountById(id);
+
+            // Assert
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+            Assert.Equal(ErrorMessages.AccountSerivce_DeleteAccount_DeleteAccountFailed, objectResult.Value);
+        }
+
+        [Fact]
+        public async Task DeleteAccount_Should_Return400BadRequestWithErrorMessage_When_InvalidId()
+        {
+            // Arrange
+            var id = It.IsAny<Guid>();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_DeleteAccount_YouCannotDeleteAnotherAccount);
+            _accountService.Setup(service => service.DeleteAccountById(id)).ReturnsAsync(resultDto);
+
+            // Act
+            var result = await _sut.DeleteAccountById(id);
+
+            // Assert
+            var badResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal(ErrorMessages.AccountSerivce_DeleteAccount_YouCannotDeleteAnotherAccount, badResult.Value);
+        }
+
+
+
     }
 }

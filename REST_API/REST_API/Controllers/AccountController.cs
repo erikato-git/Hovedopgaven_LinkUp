@@ -73,9 +73,18 @@ namespace REST_API.Controllers
                 return Created("", result.Data);
             }
 
-            if(result.Message.Equals(ErrorMessages.AccountService_EmailForAccountAlreadyExist))
+            if(result.Message.Equals(ErrorMessages.AccountService_CreateAccount_EmailForAccountAlreadyExist))
             {
                 return Conflict(result.Message);
+            }
+
+            if(result.Message.Equals(ErrorMessages.AccountSerivce_CreateAccount_CreateAccountFailed))
+            {
+                return new ObjectResult(new { })
+                {
+                    Value = result.Message,
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
             }
 
 
@@ -103,20 +112,13 @@ namespace REST_API.Controllers
                 return BadRequest();
             }
 
-            // Sucess
-
             if (result.isSuccess)
             {
                 return Ok(result.Data);
             }
 
-            // Errors
-
-            if(result.Message.Equals(ErrorMessages.AccountSerivce_YouCannotUpdateAnotherPersonsAccount))
+            if(result.Message.Equals(ErrorMessages.AccountSerivce_UpdateAccount_YouCannotUpdateAnotherPersonsAccount))
             {
-                /*
-                 * Implementation like forbid() that carries a message in an object
-                 */
                 return new ObjectResult(new { })
                 {
                     Value = result.Message,
@@ -124,14 +126,22 @@ namespace REST_API.Controllers
                 };
             }
 
-            if (result.Message.Equals(ErrorMessages.AccountSerivce_YouMustBeSignedInBeforeYouCanUpdateYourAccount))
+            if (result.Message.Equals(ErrorMessages.AccountSerivce_UpdateAccount_YouMustBeSignedInBeforeYouCanUpdateYourAccount))
             {
                 return Unauthorized(result.Message);
             }
 
-            // more checks ...
+            if(result.Message.Equals(ErrorMessages.AccountSerivce_UpdateAccount_UpdateAccountFailed))
+            {
+                return new ObjectResult(new { })
+                {
+                    Value = result.Message,
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
 
-            return BadRequest(result.Message);          // default response
+
+            return BadRequest(result.Message);
         }
 
 
@@ -156,30 +166,67 @@ namespace REST_API.Controllers
                 return BadRequest();
             }
 
-            // Success
-
             if (result.isSuccess)
             {
                 return Ok(result.Data);
             }
 
-            // Errors
-
-            if (result.Message.Equals(""))
+            if(result.Message.Equals(ErrorMessages.AccountSerivce_GetAccountById_AccountNotFound))
             {
-                return Forbid();
+                return NotFound(result.Message);
             }
 
-            // more checks ...
+            if (result.Message.Equals(ErrorMessages.AccountSerivce_GetAccountById_YouCannotAccessAnotherAccount))
+            {
+                return new ObjectResult(new { })
+                {
+                    Value = result.Message,
+                    StatusCode = StatusCodes.Status403Forbidden
+                };
+            }
 
 
-            return BadRequest(result.Message);          // default response
+            return BadRequest(result.Message);
         }
 
 
+        [Authorize]
+        [HttpDelete("deleteAccount/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteAccountById([FromQuery] Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        // TODO: DeleteAccountById
-        // make specifications first
+            var result = await _accountService.DeleteAccountById(id);
+
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            if (result.isSuccess)
+            {
+                return NoContent();
+            }
+
+            if (result.Message.Equals(ErrorMessages.AccountSerivce_DeleteAccount_DeleteAccountFailed))
+            {
+                return new ObjectResult(new { })
+                {
+                    Value = result.Message,
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
+
+
+            return BadRequest(result.Message); 
+        }
 
     }
 }

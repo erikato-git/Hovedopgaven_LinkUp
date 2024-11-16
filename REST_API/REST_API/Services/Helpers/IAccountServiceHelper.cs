@@ -1,11 +1,12 @@
 ﻿using Microsoft.Identity.Client;
+using REST_API.Models;
 
 namespace REST_API.Services.Helpers
 {
     public interface IAccountServiceHelper
     {
-        bool CheckIdsMatch(Guid id1, Guid id2);
-        bool AddAuthentication(Guid id);
+        bool CheckAccountIdMatchLoginId(Guid accountId);
+        String GenerateJWT(Account account);
         bool CheckPasswordsMatch(string password1, string password2);
     }
 }

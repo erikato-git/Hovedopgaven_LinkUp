@@ -156,136 +156,6 @@ components:
 
 
 paths:
-  /searchProfiles:
-    get:
-      summary: ""
-      description: User finds other profiles from search criteria (UC3, UC4 and UC5). Parameters should be passed like a query-string like '/searchProfiles?profession=musician&title=guitarist&...'
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: profession
-          in: query
-          required: true
-          schema:
-            type: string
-            example: musician
-            description: ""
-        - name: title
-          in: query
-          required: true
-          schema:
-            type: string
-            example: guitarist
-            description: ""
-        - name: gender
-          in: query
-          schema:
-            type: string
-            example: male
-            description: ""
-        - name: age
-          in: query
-          schema:
-            type: integer
-            example: 27
-            description: "Derived from birth date"
-        - name: availability
-          in: query
-          schema:
-            type: string
-            example: "?"
-            description: ""
-        - name: yearsOfExperience
-          in: query
-          schema:
-            type: integer
-            example: 7
-            description: ""
-        - name: education
-          in: query
-          schema:
-            type: string
-            example: "?"
-            description: ""
-      responses:
-        '200':
-          description: System displays other profiles on the platform based on search criteria. (This response extract information from Account, PersonInformation, Profile, Keyword, Portfolio and Education) 
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProfileAccountPersonInfo_Search'                      
-                description: if no profiles match the search criteria the system will just return an empty array
-        '401':
-          description: User hasn't signed in to use search functionality
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You have to sign in before you can search for other profiles"
-
-  # TODO: Consider to change it to PUT
-  /rememberProfile:
-    post:
-      summary: ""
-      description: User saves a profile for later visit (UC6), the profile will be added to a list at the user that keeps track of who is flagged
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                profileId:
-                  type: string
-                  format: guid
-                  example: 9fb538b8-57ca-4497-9911-57f780befce2
-                  description: "id of profile the user wants to save"
-                flag:
-                  type: boolean
-                  example: true
-                  description: ""
-              required:
-                - profileId
-                - flag
-      responses:
-        '200':
-          description: toggles profile that has been added / removed to user's list for later visit 
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Profile has been added for later visit / Profile has been removed for later visit"
-        '401':
-          description: User hasn't signed in before adding a profile for later visit
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You need to sign in before you can add or remove a profile for later visit"
-        '404':
-          description: User tries to add a profile for later visit that doesn't exist
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "The profile you try to added for later visit doesn't exist"
-
   /createProfile:
     post:
       summary: ""
@@ -607,4 +477,134 @@ paths:
                   message:
                     type: string
                     example: "Account doesn't exist"
+
+  /searchProfiles:
+    get:
+      summary: ""
+      description: User finds other profiles from search criteria (UC3, UC4 and UC5). Parameters should be passed like a query-string like '/searchProfiles?profession=musician&title=guitarist&...'
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: profession
+          in: query
+          required: true
+          schema:
+            type: string
+            example: musician
+            description: ""
+        - name: title
+          in: query
+          required: true
+          schema:
+            type: string
+            example: guitarist
+            description: ""
+        - name: gender
+          in: query
+          schema:
+            type: string
+            example: male
+            description: ""
+        - name: age
+          in: query
+          schema:
+            type: integer
+            example: 27
+            description: "Derived from birth date"
+        - name: availability
+          in: query
+          schema:
+            type: string
+            example: "?"
+            description: ""
+        - name: yearsOfExperience
+          in: query
+          schema:
+            type: integer
+            example: 7
+            description: ""
+        - name: education
+          in: query
+          schema:
+            type: string
+            example: "?"
+            description: ""
+      responses:
+        '200':
+          description: System displays other profiles on the platform based on search criteria. (This response extract information from Account, PersonInformation, Profile, Keyword, Portfolio and Education) 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfileAccountPersonInfo_Search'                      
+                description: if no profiles match the search criteria the system will just return an empty array
+        '401':
+          description: User hasn't signed in to use search functionality
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You have to sign in before you can search for other profiles"
+
+  # TODO: Consider to change it to PUT
+  /rememberProfile:
+    post:
+      summary: ""
+      description: User saves a profile for later visit (UC6), the profile will be added to a list at the user that keeps track of who is flagged
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                profileId:
+                  type: string
+                  format: guid
+                  example: 9fb538b8-57ca-4497-9911-57f780befce2
+                  description: "id of profile the user wants to save"
+                flag:
+                  type: boolean
+                  example: true
+                  description: ""
+              required:
+                - profileId
+                - flag
+      responses:
+        '200':
+          description: toggles profile that has been added / removed to user's list for later visit 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile has been added for later visit / Profile has been removed for later visit"
+        '401':
+          description: User hasn't signed in before adding a profile for later visit
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to sign in before you can add or remove a profile for later visit"
+        '404':
+          description: User tries to add a profile for later visit that doesn't exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The profile you try to added for later visit doesn't exist"
 

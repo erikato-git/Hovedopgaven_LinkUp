@@ -9,6 +9,6 @@ namespace REST_API.Services
         Task<ResultDTO> CreateAccount(CreateAccountDTO dto);
         Task<ResultDTO> UpdateAccount(UpdateAccountDTO dto);
         Task<ResultDTO> GetAccountById(Guid id);
-        bool CheckPasswordsMatch(string loginDtoPassword, string accountPassword);
+        Task<ResultDTO> DeleteAccountById(Guid id);
     }
 }
