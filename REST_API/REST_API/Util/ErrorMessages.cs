@@ -15,7 +15,7 @@
         public const string AccountSerivce_GetAccountById_CannotRetrieveAnothersAccount = "You do not have permission to retrieve another person's account";
         public const string AccountSerivce_DeleteAccount_DeleteAccountFailed = "Delete account failed";
         public const string AccountSerivce_DeleteAccount_YouCannotDeleteAnotherAccount = "You cannot delete another account";
-        public const string AccountSerivce_DeleteAccountById_CannotDeleteAnotherPersonsAccound = "You cannot delete another person's account";
+        public const string AccountSerivce_DeleteAccountById_CannotDeleteAnotherPersonsAccount = "You cannot delete another person's account";
 
         // ProfileService
 

@@ -23,19 +23,19 @@ namespace REST_API.Services
         {
             try
             {
-                var account = await _accountRepository.GetAccountByEmail(dto.Email);
+                var accountFound = await _accountRepository.GetAccountByEmail(dto.Email);
 
-                if (account != null)
+                if (accountFound != null)
                 {
-                    var checkPasswords = _accountServiceHelper.CheckPasswordsMatch(dto.Password, account.Password);     // TODO: make sure account.Password is hashed
+                    var passwordsMatch = _accountServiceHelper.CheckPasswordsMatch(dto.Password, accountFound.Password);     // TODO: make sure account.Password is hashed
 
-                    if (checkPasswords)
+                    if (passwordsMatch)
                     {
-                        var JWT = _accountServiceHelper.GenerateJWT(account);
+                        var JWT = _accountServiceHelper.GenerateJWT(accountFound);
 
-                        if (JWT != null)
+                        if (!String.IsNullOrEmpty(JWT))
                         {
-                            return ResultDTO.SuccesResult(new LoginResponseDTO { Account = account, JWT = JWT }, "User has succesfully logged in!");
+                            return ResultDTO.SuccesResult(new LoginResponseDTO { Account = accountFound, JWT = JWT }, "User has succesfully logged in!");
                         }
                     }
                     else
@@ -65,13 +65,13 @@ namespace REST_API.Services
 
                 if (!emailTaken)
                 {
-                    var account = await _accountRepository.AddAsync(dto);
+                    var createdAccount = await _accountRepository.AddAsync(dto);
 
-                    if (account != null)
+                    if (createdAccount != null)
                     {
-                        var JWT = _accountServiceHelper.GenerateJWT(account);
+                        var JWT = _accountServiceHelper.GenerateJWT(createdAccount);
 
-                        return ResultDTO.SuccesResult(new LoginResponseDTO { Account = account, JWT = JWT}, "Account has succesfully been created!");
+                        return ResultDTO.SuccesResult(new LoginResponseDTO { Account = createdAccount, JWT = JWT}, "Account has succesfully been created!");
                     }
                     else
                     {
@@ -96,15 +96,15 @@ namespace REST_API.Services
         {
             try
             {
-                var authorization = _accountServiceHelper.CheckAccountIdMatchLoginId(dto.AccountId);
+                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(dto.AccountId);
 
-                if (authorization)
+                if (hasAuthorization)
                 {
-                    var account = await _accountRepository.UpdateAsync(dto);
+                    var updatedAccount = await _accountRepository.UpdateAsync(dto);
                     
-                    if(account != null)
+                    if(updatedAccount != null)
                     {
-                        return ResultDTO.SuccesResult(account, "Account has succesfully been updated");
+                        return ResultDTO.SuccesResult(updatedAccount, "Account has succesfully been updated");
                     }
                     else
                     {
@@ -129,15 +129,15 @@ namespace REST_API.Services
         {
             try
             {
-                var authorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id);
+                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id);
 
-                if(authorization)
+                if(hasAuthorization)
                 {
-                    var account = await _accountRepository.GetByIdAsync(id);
+                    var accountFound = await _accountRepository.GetByIdAsync(id);
 
-                    if(account != null)
+                    if(accountFound != null)
                     {
-                        return ResultDTO.SuccesResult(account, $"Received Account {id}");
+                        return ResultDTO.SuccesResult(accountFound, $"Received Account {id}");
                     }
                     else
                     {
@@ -161,9 +161,9 @@ namespace REST_API.Services
         {
             try
             {
-                var authorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id);
+                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id);
 
-                if (authorization)
+                if (hasAuthorization)
                 {
                     var accountDeleted = await _accountRepository.DeleteAsync(id);
 
@@ -178,7 +178,7 @@ namespace REST_API.Services
                 }
                 else
                 {
-                    return ResultDTO.FailureResult(ErrorMessages.AccountSerivce_DeleteAccountById_CannotDeleteAnotherPersonsAccound);
+                    return ResultDTO.FailureResult(ErrorMessages.AccountSerivce_DeleteAccountById_CannotDeleteAnotherPersonsAccount);
                 }
             }
             catch (Exception ex)

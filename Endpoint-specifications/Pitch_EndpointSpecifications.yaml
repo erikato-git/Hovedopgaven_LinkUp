@@ -178,10 +178,10 @@ paths:
                     type: string
                     example: "You need to create a profile before you can send a pitch to another profile"
 
-  /pitches/{id}:
+  /getIncomingPitches/{id}:
     get:
-      summary: "all incoming and outcoming pitches for user's account"
-      description: User wants to access all incoming and outcoming pitches for his / her profiles to other profiles
+      summary: "Get pitch by ids"
+      description: User wants to get all incoming pitches to user's profiles
       security:
         - BearerAuth: []
       parameters:
@@ -195,7 +195,7 @@ paths:
             example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
       responses:
         "200":
-          description: user has succesfully extracted all incoming and outcoming pitches from his / her profiles to other user's profiles
+          description: user has succesfully extracted all incoming pitches from user's profiles
           content:
             application/json:
               schema:
@@ -214,7 +214,7 @@ paths:
                     type: string
                     example: "You have to sign in before you can access your pitches for your account"
         "403":
-          description: User tries to access pitches for another user's account
+          description: User tries to access incoming pitches for other users' profiles
           content:
             application/json:
               schema:
@@ -223,8 +223,44 @@ paths:
                   message:
                     type: string
                     example: "You don't have permission to access pitches for this account"
-        "404":
-          description: User tries to send a pitch to a profile that doesn't exist longer
+
+  /getOutcomingPitches/{id}:
+    get:
+      summary: "Get pitch by ids"
+      description: User wants to get all outcoming pitches from user's profiles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            description: id of the account for the user 
+            format: guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        "200":
+          description: user has succesfully extracted all outcoming pitches from user's profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfilePitch' 
+                description: array of all the pitches attached to user's account
+        "401":
+          description: User hasn't signed in to access all pitches for user's account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You have to sign in before you can access your pitches for your account"
+        "403":
+          description: User tries to access outcoming pitches for other users' profiles
           content:
             application/json:
               schema:
@@ -233,17 +269,5 @@ paths:
                   message:
                     type: string
                     example: "You don't have permission to access pitches for this account"
-        "409":
-          description: User doesn't have a profile where he / she can send pitches from or receive pitches from other users' profiles
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You need to create a profile before you can send or receive pitches"
-
-
 
 

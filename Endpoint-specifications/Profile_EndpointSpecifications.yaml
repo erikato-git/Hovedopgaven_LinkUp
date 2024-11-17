@@ -311,7 +311,7 @@ paths:
                     type: string
                     example: "You don't have not permission to delete this profile"
 
-  /readProfile/{id}:
+  /getProfile/{id}:
     get:
       summary: ""
       description: User wants to update a certain profile in his / her account (UC8.4)
@@ -366,62 +366,7 @@ paths:
                     type: string
                     example: "You need to create min. one profile before you can access other people's profiles"
 
-  /getAllProfilesForAccount/{id}:
-    get:
-      summary: ""
-      description: User wants to get all profiles for his / her account (no use case attached)
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            description: id of the account 
-            format: guid
-            type: string
-            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
-      responses:
-        '200':
-          description: User gets profiles for his account
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProfileKeywordPortfolio_ReadUpdate' 
-                description: array of all the users own profiles provided with details
-        '401':
-          description: User can't access all his / her profiles before he / she signs in
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You need to sign in before you can access your profiles"
-        '403':
-          description: User provides an account-id that doesn't belongs to the user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Id for account doesn't belongs to this account"
-        '404':
-          description: User provides an account-id that doesn't exist
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Account doesn't exist"
-
+  # Im not sure, if I have to implement this endpoint, User just needs to use AccountId to get Account w. Profiles and filter based on 'Flag == true'
   /getRememberedProfiles/{id}:
     get:
       summary: ""
@@ -550,9 +495,9 @@ paths:
                     type: string
                     example: "You have to sign in before you can search for other profiles"
 
-  # TODO: Consider to change it to PUT
+  # Im not sure, if I have to implement this endpoint either, I could just use updateProfile-endpoint
   /rememberProfile:
-    post:
+    put:
       summary: ""
       description: User saves a profile for later visit (UC6), the profile will be added to a list at the user that keeps track of who is flagged
       security:

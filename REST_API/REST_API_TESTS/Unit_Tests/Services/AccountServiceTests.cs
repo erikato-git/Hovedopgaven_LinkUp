@@ -279,7 +279,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var result = await _sut.DeleteAccountById(id);
 
             // Assert
-            Assert.Equal(ErrorMessages.AccountSerivce_DeleteAccountById_CannotDeleteAnotherPersonsAccound, result.Message);
+            Assert.Equal(ErrorMessages.AccountSerivce_DeleteAccountById_CannotDeleteAnotherPersonsAccount, result.Message);
         }
 
     }
