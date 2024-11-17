@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using REST_API.Controllers;
-using REST_API.DTOs;
+using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Repositories;
 using REST_API.Services;
@@ -41,7 +41,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         {
             // Arrange
             var loginDto = new LoginDTO { Email = "user@mail.com,", Password = "SecurePassword123" };
-            var account = TestHelper.GenerateValidFakeAccount();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
             var JWTDummy = "JWT-dummy-string";
             _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync(account);
             _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password)).Returns(true);
@@ -62,7 +62,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         {
             // Arrange
             var loginDto = new LoginDTO { Email = "user@mail.com,", Password = "SecurePassword123" };
-            var account = TestHelper.GenerateValidFakeAccount();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync(account);
             _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password)).Returns(false);
 
@@ -94,9 +94,9 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task CreateAccount_Should_ReturnAccountWithJWT_When_ValidCreateAccountDetails()
         {
             // Arrange
-            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            var createAccountDto = AccountTestHelper.GenerateFakeInvalidCreateAccountDTO();
             _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(false);
-            var account = TestHelper.GenerateValidFakeAccount();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.AddAsync(createAccountDto)).ReturnsAsync(account);
             var JWTDummy = "JWT-dummy-string";
             _accountServiceHelper.Setup(service => service.GenerateJWT(account)).Returns(JWTDummy);
@@ -115,7 +115,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task CreateAccount_Should_ReturnErrorMessage_When_ValidCreateAccountDetailsButCreateAccountDidntSucceed()
         {
             // Arrange
-            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            var createAccountDto = AccountTestHelper.GenerateFakeInvalidCreateAccountDTO();
             _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(false);
             _accountRepository.Setup(repo => repo.AddAsync(createAccountDto)).ReturnsAsync((Account)null);
 
@@ -130,7 +130,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task CreateAccount_Should_ReturnErrorMessage_When_EmailAlreadyTakenForCreateAccountDetails()
         {
             // Arrange
-            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            var createAccountDto = AccountTestHelper.GenerateFakeInvalidCreateAccountDTO();
             _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(true);
 
             // Act
@@ -146,9 +146,9 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task UpdateAccount_Should_ReturnAccount_When_ValidUpdateAccountDetails()
         {
             // Arrange
-            var updateAccountDTO = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            var updateAccountDTO = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
             _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId)).Returns(true);
-            var account = TestHelper.GenerateValidFakeAccount();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.UpdateAsync(updateAccountDTO)).ReturnsAsync(account);
 
             // Act
@@ -162,7 +162,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task UpdateAccount_Should_ReturnErrorMessage_When_ValidUpdateAccountDetailsButUpdateFailed()
         {
             // Arrange
-            var updateAccountDTO = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            var updateAccountDTO = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
             _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId)).Returns(true);
             _accountRepository.Setup(repo => repo.UpdateAsync(updateAccountDTO)).ReturnsAsync((Account)null);
 
@@ -177,7 +177,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task UpdateAccount_Should_ReturnErrorMessage_When_InvalidUpdateAccountDetails()
         {
             // Arrange
-            var updateAccountDTO = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            var updateAccountDTO = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
             _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId)).Returns(false);
 
             // Act
@@ -196,7 +196,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             // Arrange
             var id = It.IsAny<Guid>();
             _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(true);
-            var account = TestHelper.GenerateValidFakeAccount();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync(account);
 
             // Act

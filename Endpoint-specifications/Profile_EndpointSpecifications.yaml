@@ -499,7 +499,7 @@ paths:
   /rememberProfile:
     put:
       summary: ""
-      description: User saves a profile for later visit (UC6), the profile will be added to a list at the user that keeps track of who is flagged
+      description: User saves a profile for later visit (UC6), the profile will be added to a list
       security:
         - BearerAuth: []
       requestBody:

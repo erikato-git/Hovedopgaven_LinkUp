@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using REST_API.Controllers;
-using REST_API.DTOs;
+using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Services;
 using REST_API.Util;
@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace REST_API_TESTS.Unit_Tests.Controllers
 {
-    public class AccountsControllerTests
+    public class AccountControllerTests
     {
         /*
          * _accountService: mock to support system under test
@@ -36,7 +36,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         private readonly Fixture _fixture;
         private readonly AccountController _sut;
 
-        public AccountsControllerTests()
+        public AccountControllerTests()
         {
             _fixture = new Fixture();
             _accountService = new Mock<IAccountService>();
@@ -52,7 +52,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         {
             // Arrange
             var loginDto = _fixture.Create<LoginDTO>();
-            var account = TestHelper.GenerateValidFakeAccount();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
             var accountJWT = new { account = account, JWT = "JWT-dummy-string" };
             var resultDto = ResultDTO.SuccesResult(accountJWT, "You are succesfully logged in!");
             _accountService.Setup(service => service.Login(loginDto)).ReturnsAsync(resultDto);
@@ -71,7 +71,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         {
             // Arrange
             var loginDto = _fixture.Create<LoginDTO>();
-            var account = TestHelper.GenerateValidFakeAccount();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_Login_InvalidEmailOrPassword);
             _accountService.Setup(service => service.Login(loginDto)).ReturnsAsync(resultDto);
 
@@ -90,8 +90,8 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task CreateAccount_Should_Return201OkWithAccountAndAuthentication_When_ValidCreateAccountDetails()
         {
             // Arrange
-            var account = TestHelper.GenerateValidFakeAccount();
-            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
+            var createAccountDto = AccountTestHelper.GenerateFakeInvalidCreateAccountDTO();
             var accountJWT = new { account = account, JWT = "JWT-dummy-string" };
             var resultDto = ResultDTO.SuccesResult(accountJWT, "Valid new account details");
             _accountService.Setup(service => service.CreateAccount(createAccountDto)).ReturnsAsync(resultDto);
@@ -109,7 +109,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task CreateAccount_Should_Return409WithErrorMessage_When_AccountAlreadyExist()
         {
             // Arrange
-            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            var createAccountDto = AccountTestHelper.GenerateFakeInvalidCreateAccountDTO();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountService_CreateAccount_EmailForAccountAlreadyExist);
             _accountService.Setup(service => service.CreateAccount(createAccountDto)).ReturnsAsync(resultDto);
 
@@ -125,7 +125,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task CreateAccount_Should_Return500WithErrorMessage_When_CreateAccountFailed()
         {
             // Arrange
-            var createAccountDto = TestHelper.GenerateFakeInvalidCreateAccountDTO();
+            var createAccountDto = AccountTestHelper.GenerateFakeInvalidCreateAccountDTO();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_CreateAccount_CreateAccountFailed);
             _accountService.Setup(service => service.CreateAccount(createAccountDto)).ReturnsAsync(resultDto);
 
@@ -145,8 +145,8 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task UpdateAccount_Should_Return200OkWithAccount_When_AccountIsUpdated()
         {
             // Arrange
-            var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
-            var account = TestHelper.GenerateValidFakeAccount();
+            var updateAccountDto = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
             var resultDto = ResultDTO.SuccesResult(account, "Updated account");
             _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
 
@@ -162,7 +162,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task UpdateAccount_Should_Return403ForbiddenWithErrorMessage_When_UserTriesToUpdateAnotherAccount()
         {
             // Arrange
-            var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            var updateAccountDto = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_UpdateAccount_YouCannotUpdateAnotherPersonsAccount);
             _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
 
@@ -179,7 +179,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task UpdateAccount_Should_Return500InternalServerErrorWithErrorMessage_When_UpdateAccountHasFailed()
         {
             // Arrange
-            var updateAccountDto = TestHelper.GenerateFakeValidUpdateAccountDTO();
+            var updateAccountDto = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_UpdateAccount_UpdateAccountFailed);
             _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
 
@@ -198,7 +198,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         {
             // Arrange
             var id = It.IsAny<Guid>();
-            var account = TestHelper.GenerateValidFakeAccount();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
             var resultDto = ResultDTO.SuccesResult(account, "Account found");
             _accountService.Setup(service => service.GetAccountById(id)).ReturnsAsync(resultDto);
 
@@ -215,7 +215,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         {
             // Arrange
             var id = It.IsAny<Guid>();
-            var account = TestHelper.GenerateValidFakeAccount();
+            var account = AccountTestHelper.GenerateValidFakeAccount();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_GetAccountById_AccountNotFound);
             _accountService.Setup(service => service.GetAccountById(id)).ReturnsAsync(resultDto);
 

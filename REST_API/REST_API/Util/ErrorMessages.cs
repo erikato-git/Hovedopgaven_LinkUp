@@ -18,7 +18,15 @@
         public const string AccountSerivce_DeleteAccountById_CannotDeleteAnotherPersonsAccount = "You cannot delete another person's account";
 
         // ProfileService
-
+        public const string ProfileSerivce_CreateProfile_FailedToCreateProfileDueToInternalServerError = "Failed to create profile due to internal server error";
+        public const string ProfileSerivce_CreateProfile_FailedToCreateProfile = "Failed to create profile";
+        public const string ProfileSerivce_UpdateProfile_FailedToUpdateProfileDueToInternalServerError = "Failed to update profile due to internal server error";
+        public const string ProfileSerivce_UpdateProfile_YouCannotUpdateProfileForAnotherAccount = "You cannot update a profile for another user's account";
+        public const string ProfileSerivce_DeleteProfile_FailedToDeleteProfileDueToInternalServerError = "Failed to delete profile due to internal server error";
+        public const string ProfileSerivce_DeleteProfile_YouCannotDeleteProfileForAnotherAccount = "You cannot delete a profile for another user's account";
+        public const string ProfileSerivce_GetProfile_YouDontHaveAProfileInYourAccountWithTheProvidedId = "You don't have a profile in your account with the provided profile-id";
+        public const string ProfileSerivce_GetProfile_SystemCouldntFindSignedInAccount = "System couldn't find signed in account";
+        public const string ProfileSerivce_SearchProfile_FailedToQueryProfilesDueToInternalServerError = "Failed to query profiles due to internal server error";
 
 
 

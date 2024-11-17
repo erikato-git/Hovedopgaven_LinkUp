@@ -1,6 +1,6 @@
 ﻿using Azure.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using REST_API.DTOs;
+using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Repositories;
 using REST_API.Services.Helpers;

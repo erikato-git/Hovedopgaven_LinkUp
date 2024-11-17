@@ -1,4 +1,4 @@
-﻿using REST_API.DTOs;
+﻿using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Util;
 

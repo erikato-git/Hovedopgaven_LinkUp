@@ -1,11 +1,10 @@
 ﻿using REST_API.Models;
-using System.ComponentModel.DataAnnotations;
 
-namespace REST_API.DTOs
+namespace REST_API.DTOs.AccountDomain
 {
     public class LoginResponseDTO
     {
         public Account Account { get; set; }
-        public String JWT { get; set; }    
+        public string JWT { get; set; }
     }
 }

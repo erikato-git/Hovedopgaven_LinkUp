@@ -11,7 +11,6 @@ namespace REST_API.Models
         public String? AlternativeTitle { get; set; }
         public String? ProfilePicture { get; set; }
         public String? ProfileDescription { get; set; }
-        public bool isFlagged { get; set; } = false;
 
         // Navigation properties to Account
         public Guid AccountId { get; set; }

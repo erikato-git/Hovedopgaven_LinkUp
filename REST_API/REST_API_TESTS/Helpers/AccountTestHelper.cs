@@ -1,18 +1,19 @@
 ﻿using REST_API.DTOs;
+using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+/*
+* AutoFixture didn't work to create fakes for complex objects
+*/
 
 namespace REST_API_TESTS.Helpers
 {
-    public static class TestHelper
+    public static class AccountTestHelper
     {
-        /*
-         * AutoFixture didn't work to create fakes for complex objects
-         */
         public static Account GenerateValidFakeAccount()
         {
             var personInfo = new PersonInformation
@@ -77,7 +78,6 @@ namespace REST_API_TESTS.Helpers
             };
         }
 
-
         public static UpdateAccountDTO GenerateFakeValidUpdateAccountDTO()
         {
             return new UpdateAccountDTO
@@ -94,5 +94,8 @@ namespace REST_API_TESTS.Helpers
                 Password = "Secure@1234" // Meets all password criteria
             };
         }
+
+
     }
+
 }
