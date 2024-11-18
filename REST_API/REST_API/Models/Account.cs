@@ -9,6 +9,7 @@ namespace REST_API.Models
         public Guid AccountId { get; set; }
         public String Email { get; set; }
         public String Password { get; set; }
+        public List<Profile>? SavedProfileIds { get; set; }
 
         // Navigation properties to PersonInformation
         public Guid PersonInformationId { get; set; }

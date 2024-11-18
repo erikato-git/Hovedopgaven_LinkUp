@@ -11,6 +11,11 @@ namespace REST_API.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<bool> AddSavedProfileAsync(Account account, Guid profileId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task CreateProfile(Account account, Profile profile)
         {
             throw new NotImplementedException();

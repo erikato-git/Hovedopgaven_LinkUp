@@ -28,6 +28,19 @@
         public const string ProfileSerivce_GetProfile_SystemCouldntFindSignedInAccount = "System couldn't find signed in account";
         public const string ProfileSerivce_SearchProfile_FailedToQueryProfilesDueToInternalServerError = "Failed to query profiles due to internal server error";
 
+        // ProfileService
+        public const string PitchSerivce_SendPitch_FailedToCreatePitchDueToInternalServerError = "Failed to create pitch due to internal server error";
+        public const string PitchService_SendPitch_ReceipientsAccountDoesNotExist = "The account you try to send message to does not exist";
+        public const string PitchService_SendPitch_ProfileInformationDoesNotMatchWithAnyProfilesInYourAccount = "Profile-information does not match with any profiles in your account";
+        public const string PitchService_SendPitch_YouAreNotAllowedToSendAnyPitchesBeforeYouHaveCreatedAtLeastOneProfile = "You are not allowed to send any pitches before you have created at least one profile";
+        public const string PitchService_IncomingPitches_FailedToFetchPitchesDueToInternalServerError = "Failed to fetch incoming pitches due to internal server error";
+        public const string PitchService_IncomingPitches_AccountForSignedInUserWasNotFound = "Account for signed in user was not found";
+        public const string PitchService_OutcomingPitches_FailedToFetchPitchesDueToInternalServerError = "Failed to outcoming fetch pitches due to internal server error";
+        public const string PitchService_OutcomingPitches_AccountForSignedInUserWasNotFound = "Account for signed in user was not found";
+        public const string PitchService_SaveProfile_ProfileFailedToBeAddedToAccountsListForSavedProfilesDueToInternalServerError = "Profile failed to be added to accounts list for saved profiles due to internale server error";
+        public const string PitchService_SaveProfile_AccountForSignedInUserWasNotFound = "Account for signed in user was not found";
+
+
 
 
     }

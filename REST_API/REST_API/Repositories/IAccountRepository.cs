@@ -13,6 +13,7 @@ namespace REST_API.Repositories
         Task<Account?> UpdateAsync(UpdateAccountDTO dto); 
         Task<bool> DeleteAsync(Guid id);
         Task<bool> SaveChangesAsync();
+        Task<bool> AddSavedProfileAsync(Account account, Guid profileId);
 
         // Custom methods
         Task<bool> doesEmailForAccountExist(String email);

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using REST_API.DTOs.AccountDomain;
 using REST_API.DTOs.ProfileDomain;
-using REST_API.Services;
+using REST_API.Services.Interfaces;
 using REST_API.Util;
 
 namespace REST_API.Controllers
@@ -212,6 +212,50 @@ namespace REST_API.Controllers
                     StatusCode = StatusCodes.Status500InternalServerError
                 };
             }
+
+
+            return BadRequest(result.Message);
+        }
+
+
+        [Authorize]
+        [HttpGet("saveProfile/{profileId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SaveProfile([FromQuery] Guid profileId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _profileService.SaveProfile(profileId);
+
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            if (result.isSuccess)
+            {
+                return Ok(result.Data);
+            }
+
+            if (result.Message.Equals(ErrorMessages.PitchService_SaveProfile_ProfileFailedToBeAddedToAccountsListForSavedProfilesDueToInternalServerError))
+            {
+                return new ObjectResult(new { })
+                {
+                    Value = result.Message,
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
+
+            //if (result.Message.Equals(ErrorMessages.ProfileSerivce_GetProfile_YouDontHaveAProfileInYourAccountWithTheProvidedId))
+            //{
+            //    return NotFound(result.Message);
+            //}
 
 
             return BadRequest(result.Message);

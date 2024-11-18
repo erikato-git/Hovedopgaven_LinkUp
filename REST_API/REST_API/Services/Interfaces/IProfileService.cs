@@ -2,7 +2,7 @@
 using REST_API.DTOs.ProfileDomain;
 using REST_API.Util;
 
-namespace REST_API.Services
+namespace REST_API.Services.Interfaces
 {
     public interface IProfileService
     {
@@ -11,5 +11,7 @@ namespace REST_API.Services
         Task<ResultDTO> DeleteProfile(Guid profileId);
         Task<ResultDTO> GetProfileById(Guid profileId);
         Task<ResultDTO> SearchQuery(SearchQueryDTO dto);
+        Task<ResultDTO> SaveProfile(Guid profileId);
+
     }
 }

@@ -6,7 +6,7 @@ using REST_API.Controllers;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Repositories;
-using REST_API.Services;
+using REST_API.Services.Interfaces;
 using REST_API.Util;
 using REST_API_TESTS.Helpers;
 using System;
@@ -32,7 +32,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         }
 
 
-        // CreateProfile
+        // SD6: CreateProfile
 
         [Fact]
         public async Task CreateProfile_Should_Return201CreatedWithProfile_When_CreateProfileDetailsAreValid()
@@ -85,7 +85,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         }
 
 
-        // UpdateProfile
+        // SD7: UpdateProfile
 
         [Fact]
         public async Task UpdateProfile_Should_Return200OkWithProfile_When_UpdateProfileDetailsAreValid()
@@ -122,7 +122,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         }
 
 
-        // DeleteProfile
+        // SD8: DeleteProfile
 
         [Fact]
         public async Task DeleteProfile_Should_Return204NoContent_When_ProfileIdIsValid()
@@ -172,7 +172,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             Assert.Equal(ErrorMessages.ProfileSerivce_DeleteProfile_YouCannotDeleteProfileForAnotherAccount, badResult.Value);
         }
 
-        // GetProfile/{id}
+        // SD9: GetProfile/{id}
 
         [Fact]
         public async Task GetProfile_Should_Return200OkWithProfile_When_ProfileIdIsValid()
@@ -224,7 +224,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         }
 
 
-        // SearchProfile/{query}
+        // SD10: SearchProfile/{query}
 
         [Fact]
         public async Task SearchProfile_Should_Return200OkWithProfiles_When_SearchQueryIsValid()
@@ -262,6 +262,59 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
             Assert.Equal(ErrorMessages.ProfileSerivce_SearchProfile_FailedToQueryProfilesDueToInternalServerError, objectResult.Value);
         }
+
+
+        // SD11: SaveProfile/{profileId}
+
+        [Fact]
+        public async Task SaveProfile_Should_Return200Ok_When_ProfileHasBeenAddedToSavedProfileListForSignedInAccount()
+        {
+            // Arrange
+            var profileId = Guid.NewGuid();
+            var resultDto = ResultDTO.SuccesResult(true, "Profile has been added to account's saved-profile-list!");
+            _profileService.Setup(service => service.SaveProfile(profileId)).ReturnsAsync(resultDto);
+
+            // Act
+            var result = await _sut.SaveProfile(profileId);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(true, okResult.Value);
+        }
+
+        [Fact]
+        public async Task SaveProfile_Should_Return500InternalServerErrorWithErrorMessage_When_ProfileFailedToBeAddedToSavedProfileListForSignedInAccount()
+        {
+            // Arrange
+            var profileId = Guid.NewGuid();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.PitchService_SaveProfile_ProfileFailedToBeAddedToAccountsListForSavedProfilesDueToInternalServerError);
+            _profileService.Setup(service => service.SaveProfile(profileId)).ReturnsAsync(resultDto);
+
+            // Act
+            var result = await _sut.SaveProfile(profileId);
+
+            // Assert
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+            Assert.Equal(ErrorMessages.PitchService_SaveProfile_ProfileFailedToBeAddedToAccountsListForSavedProfilesDueToInternalServerError, objectResult.Value);
+        }
+
+        [Fact]
+        public async Task SaveProfile_Should_Return400BadRequestWithErrorMessage_When_SignedInAccountWasNotFound()
+        {
+            // Arrange
+            var profileId = Guid.NewGuid();
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.PitchService_SaveProfile_AccountForSignedInUserWasNotFound);
+            _profileService.Setup(service => service.SaveProfile(profileId)).ReturnsAsync(resultDto);
+
+            // Act
+            var result = await _sut.SaveProfile(profileId);
+
+            // Assert
+            var badResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal(ErrorMessages.PitchService_SaveProfile_AccountForSignedInUserWasNotFound, badResult.Value);
+        }
+
 
 
 

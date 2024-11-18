@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
-using REST_API.Services;
+using REST_API.Services.Interfaces;
 using REST_API.Util;
 using System.ComponentModel.DataAnnotations;
 

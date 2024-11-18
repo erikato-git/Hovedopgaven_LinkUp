@@ -1,4 +1,5 @@
 ﻿using REST_API.DTOs.ProfileDomain;
+using REST_API.Services.Interfaces;
 using REST_API.Util;
 
 namespace REST_API.Services
@@ -16,6 +17,11 @@ namespace REST_API.Services
         }
 
         public Task<ResultDTO> GetProfileById(Guid profileId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ResultDTO> SaveProfile(Guid profileId)
         {
             throw new NotImplementedException();
         }

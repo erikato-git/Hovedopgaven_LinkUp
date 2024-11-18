@@ -1,7 +1,7 @@
 ﻿using REST_API.DTOs.AccountDomain;
 using REST_API.Util;
 
-namespace REST_API.Services
+namespace REST_API.Services.Interfaces
 {
     public interface IAccountService
     {

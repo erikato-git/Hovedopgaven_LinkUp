@@ -2,6 +2,7 @@ using REST_API.Data;
 using REST_API.Repositories;
 using REST_API.Services;
 using REST_API.Services.Helpers;
+using REST_API.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
