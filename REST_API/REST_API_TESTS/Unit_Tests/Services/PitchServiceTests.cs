@@ -2,7 +2,6 @@
 using Moq;
 using REST_API.Repositories.Interfaces;
 using REST_API.Services.Helpers;
-using REST_API.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +13,7 @@ using REST_API_TESTS.Helpers;
 using REST_API.Services.Interfaces;
 using REST_API.Models;
 using REST_API.Util;
+using REST_API.Services.Domains;
 
 namespace REST_API_TESTS.Unit_Tests.Services
 {

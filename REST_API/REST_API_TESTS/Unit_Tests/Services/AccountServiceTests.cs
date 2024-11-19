@@ -5,7 +5,7 @@ using REST_API.Controllers;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Repositories.Interfaces;
-using REST_API.Services;
+using REST_API.Services.Domains;
 using REST_API.Services.Helpers;
 using REST_API.Util;
 using REST_API_TESTS.Helpers;

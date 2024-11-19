@@ -6,7 +6,7 @@ using REST_API.Services.IHelpers;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
 
-namespace REST_API.Services
+namespace REST_API.Services.Domains
 {
     public class PitchService : IPitchService
     {
@@ -25,24 +25,24 @@ namespace REST_API.Services
             {
                 var loggedInUser = await _picthServiceHelper.GetAccountFromLoginId();
 
-                if(loggedInUser != null)
+                if (loggedInUser != null)
                 {
-                    if(loggedInUser?.Profiles?.Any() == false)
+                    if (loggedInUser?.Profiles?.Any() == false)
                     {
                         return ResultDTO.FailureResult(ErrorMessages.PitchService_SendPitch_YouAreNotAllowedToSendAnyPitchesBeforeYouHaveCreatedAtLeastOneProfile);
                     }
 
                     var receiverExist = await _picthServiceHelper.CheckReceiverExist(dto.RecipientAccountId);
 
-                    if(receiverExist)
+                    if (receiverExist)
                     {
                         var pitch = _picthServiceHelper.SendPitchDTOToPitch(dto);
 
-                        if(pitch != null)
+                        if (pitch != null)
                         {
                             var createdPitch = await _pitchRepository.AddAsync(pitch);
 
-                            if(createdPitch != null)
+                            if (createdPitch != null)
                             {
                                 return ResultDTO.SuccesResult(createdPitch, "Pitch has succesfully been created");
                             }
@@ -76,11 +76,11 @@ namespace REST_API.Services
             {
                 var loggedInAccount = await _picthServiceHelper.GetAccountFromLoginId();
 
-                if(loggedInAccount != null)
+                if (loggedInAccount != null)
                 {
                     var incomingPitches = await _pitchRepository.GetPitchesByRecipientAccountIdAsync(loggedInAccount.AccountId);
 
-                    if(incomingPitches != null)
+                    if (incomingPitches != null)
                     {
                         return ResultDTO.SuccesResult(incomingPitches, "Pitches send to logged in account succesfully retrieved");
                     }

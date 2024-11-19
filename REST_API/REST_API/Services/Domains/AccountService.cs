@@ -7,7 +7,7 @@ using REST_API.Services.Helpers;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
 
-namespace REST_API.Services
+namespace REST_API.Services.Domains
 {
     public class AccountService : IAccountService
     {
@@ -34,7 +34,7 @@ namespace REST_API.Services
                     {
                         var JWT = _accountServiceHelper.GenerateJWT(accountFound);
 
-                        if (!String.IsNullOrEmpty(JWT))
+                        if (!string.IsNullOrEmpty(JWT))
                         {
                             return ResultDTO.SuccesResult(new LoginResponseDTO { Account = accountFound, JWT = JWT }, "User has succesfully logged in!");
                         }
@@ -72,7 +72,7 @@ namespace REST_API.Services
                     {
                         var JWT = _accountServiceHelper.GenerateJWT(createdAccount);
 
-                        return ResultDTO.SuccesResult(new LoginResponseDTO { Account = createdAccount, JWT = JWT}, "Account has succesfully been created!");
+                        return ResultDTO.SuccesResult(new LoginResponseDTO { Account = createdAccount, JWT = JWT }, "Account has succesfully been created!");
                     }
                     else
                     {
@@ -102,8 +102,8 @@ namespace REST_API.Services
                 if (hasAuthorization)
                 {
                     var updatedAccount = await _accountRepository.UpdateAsync(dto);
-                    
-                    if(updatedAccount != null)
+
+                    if (updatedAccount != null)
                     {
                         return ResultDTO.SuccesResult(updatedAccount, "Account has succesfully been updated");
                     }
@@ -132,11 +132,11 @@ namespace REST_API.Services
             {
                 var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id);
 
-                if(hasAuthorization)
+                if (hasAuthorization)
                 {
                     var accountFound = await _accountRepository.GetByIdAsync(id);
 
-                    if(accountFound != null)
+                    if (accountFound != null)
                     {
                         return ResultDTO.SuccesResult(accountFound, $"Received Account {id}");
                     }

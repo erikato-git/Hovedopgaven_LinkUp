@@ -7,7 +7,7 @@ using REST_API.Services.Helpers;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
 
-namespace REST_API.Services
+namespace REST_API.Services.Domains
 {
     public class ProfileService : IProfileService
     {
@@ -31,8 +31,8 @@ namespace REST_API.Services
                 if (loggedInAccount != null)
                 {
                     var generatedProfile = _profileServiceHelper.CreateProfileDTOToProfile(dto);
-                    
-                    if(generatedProfile != null)
+
+                    if (generatedProfile != null)
                     {
                         var createdProfile = await _accountRepository.CreateProfileAsync(loggedInAccount, generatedProfile);
 
@@ -77,7 +77,7 @@ namespace REST_API.Services
                     {
                         var updatedProfiled = await _profileRepository.UpdateAsync(generatedProfile);
 
-                        if(updatedProfiled != null)
+                        if (updatedProfiled != null)
                         {
                             return ResultDTO.SuccesResult(updatedProfiled, "Profile has succesfully been updated");
                         }
@@ -112,11 +112,11 @@ namespace REST_API.Services
             {
                 var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId();
 
-                if(loggedInAccount != null)
+                if (loggedInAccount != null)
                 {
                     var profileDeleted = await _accountRepository.DeleteProfileAsync(loggedInAccount, profileId);
 
-                    if(profileDeleted)
+                    if (profileDeleted)
                     {
                         return ResultDTO.SuccesResult(profileDeleted, "Profile has succesfully been deleted");
                     }
@@ -143,12 +143,12 @@ namespace REST_API.Services
             try
             {
                 var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId();
-                
-                if(loggedInAccount != null)
+
+                if (loggedInAccount != null)
                 {
                     var profileFound = _profileServiceHelper.GetProfileFromAccount(loggedInAccount, profileId);
 
-                    if(profileFound != null )
+                    if (profileFound != null)
                     {
                         return ResultDTO.SuccesResult(profileFound, "Profile was found");
                     }
@@ -156,7 +156,8 @@ namespace REST_API.Services
                     {
                         return ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_GetProfile_YouDontHaveAProfileInYourAccountWithTheProvidedId);
                     }
-                }else
+                }
+                else
                 {
                     return ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_GetProfile_SystemCouldntFindSignedInAccount);
                 }
@@ -176,7 +177,7 @@ namespace REST_API.Services
             {
                 var queriedProfiles = await _profileServiceHelper.SearchProfiles(dto);
 
-                if(queriedProfiles != null)
+                if (queriedProfiles != null)
                 {
                     return ResultDTO.SuccesResult(queriedProfiles, "Profiles succesfully queried");
                 }
@@ -202,7 +203,7 @@ namespace REST_API.Services
 
                 if (loggedInAccount != null)
                 {
-                    var profileSaved = await _accountRepository.AddSavedProfileAsync(loggedInAccount,profileId);
+                    var profileSaved = await _accountRepository.AddSavedProfileAsync(loggedInAccount, profileId);
 
                     if (profileSaved)
                     {
