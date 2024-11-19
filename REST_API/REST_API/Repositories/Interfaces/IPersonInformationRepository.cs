@@ -2,7 +2,7 @@
 using REST_API.Models;
 using REST_API.Util;
 
-namespace REST_API.Repositories
+namespace REST_API.Repositories.Interfaces
 {
     public interface IPersonInformationRepository
     {

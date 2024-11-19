@@ -83,22 +83,6 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
             Assert.Equal(ErrorMessages.PitchService_SendPitch_ReceipientsAccountDoesNotExist, notFoundResult.Value);
         }
 
-        [Fact]
-        public async Task SendPitch_Should_Return403ForbidWithErrorMessage_When_LoggedInUserDoesNotHaveMatchingProfilesWithProfileInSendPitchDto()
-        {
-            // Arrange
-            var sendPitchDto = PitchTestHelper.GenerateValidSendPitchDTO();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.PitchService_SendPitch_ProfileInformationDoesNotMatchWithAnyProfilesInYourAccount);
-            _pitchService.Setup(service => service.SendPitch(sendPitchDto)).ReturnsAsync(resultDto);
-
-            // Act
-            var result = await _sut.SendPitch(sendPitchDto);
-
-            // Assert
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal(StatusCodes.Status403Forbidden, objectResult.StatusCode);
-            Assert.Equal(ErrorMessages.PitchService_SendPitch_ProfileInformationDoesNotMatchWithAnyProfilesInYourAccount, objectResult.Value);
-        }
 
         [Fact]
         public async Task SendPitch_Should_Return409ConflictWithErrorMessage_When_LoggedInUserDoesNotHaveAnyProfiles()

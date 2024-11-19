@@ -14,17 +14,46 @@ namespace REST_API_TESTS.Helpers
         {
             return new SendPitchDTO()
             {
+                SendingDate = DateTime.UtcNow,
+                TextMessage = "I would love to discuss how my skills can contribute to your project.",
+                RecipientProfileId = Guid.NewGuid(),
+                RecipientAccountId = Guid.NewGuid(),
                 ProfileId = Guid.NewGuid(),
-                ProfilePicture = "https://example.com/images/profile.jpg",
-                Name = "Alice Smith",
-                Title = "Guitarist",
-                TextMessage = "Looking forward to collaborating on your next project!",
-                SendingDate = DateTime.UtcNow
+                Profile = new Profile
+                {
+                    ProfileId = Guid.NewGuid(),
+                    Profession = "Graphic Designer",
+                    Title = "Creative Specialist",
+                    AlternativeTitle = "Visual Artist",
+                    ProfilePicture = "https://example.com/images/profile.jpg",
+                    ProfileDescription = "Experienced in branding, digital design, and illustration.",
+                }
             };
         }
 
-
         public static Pitch GenerateValidPitch()
+        {
+            return new Pitch
+            {
+                PitchId = Guid.NewGuid(),
+                SendingDate = DateTime.UtcNow,
+                TextMessage = "I am excited about the opportunity to collaborate with you!",
+                RecipientProfileId = Guid.NewGuid(),
+                RecipientAccountId = Guid.NewGuid(),
+                ProfileId = Guid.NewGuid(),
+                Profile = new Profile
+                {
+                    ProfileId = Guid.NewGuid(),
+                    Profession = "Musician",
+                    Title = "Guitarist",
+                    AlternativeTitle = "Music Teacher",
+                    ProfilePicture = "https://example.com/profile-picture.jpg",
+                    ProfileDescription = "Experienced guitarist with a passion for teaching and performing.",
+                }
+            };
+        }
+
+        public static Pitch GenerateValidPitchWihtoutAnyProfiles()
         {
             return new Pitch
             {

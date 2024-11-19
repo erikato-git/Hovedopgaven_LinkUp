@@ -40,6 +40,7 @@ namespace REST_API_TESTS.Helpers
                 AlternativeTitle = "Backend Engineer",
                 ProfilePicture = "https://example.com/images/profile-picture.jpg",
                 ProfileDescription = "Experienced developer specializing in .NET and cloud technologies.",
+                AccountId = Guid.NewGuid(),
             };
         }
 

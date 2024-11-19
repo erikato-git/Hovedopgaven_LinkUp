@@ -1,12 +1,12 @@
 ﻿using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
-using REST_API.Util;
+using REST_API.Repositories.Interfaces;
 
 namespace REST_API.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
-        public Task<Account> AddAsync(CreateAccountDTO dto)
+        public Task<Account?> AddAsync(CreateAccountDTO dto)
         {
             throw new NotImplementedException();
         }
@@ -16,7 +16,7 @@ namespace REST_API.Repositories
             throw new NotImplementedException();
         }
 
-        public Task CreateProfile(Account account, Profile profile)
+        public Task<Profile?> CreateProfileAsync(Account account, Profile profile)
         {
             throw new NotImplementedException();
         }
@@ -26,27 +26,27 @@ namespace REST_API.Repositories
             throw new NotImplementedException();
         }
 
-        public Task DeleteProfile(Account account, Profile profile)
+        public Task<bool> DeleteProfileAsync(Account account, Guid profileId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> doesEmailForAccountExist(string email)
+        public Task<bool> doesEmailForAccountExistAsync(string email)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Account?> GetAccountByEmail(string email)
+        public Task<Account?> GetAccountByEmailAsync(string email)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Account>> GetAllAsync()
+        public Task<IEnumerable<Account>?> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Account> GetByIdAsync(Guid id)
+        public Task<Account?> GetByIdAsync(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -56,7 +56,7 @@ namespace REST_API.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Account> UpdateAsync(UpdateAccountDTO dto)
+        public Task<Account?> UpdateAsync(UpdateAccountDTO dto)
         {
             throw new NotImplementedException();
         }

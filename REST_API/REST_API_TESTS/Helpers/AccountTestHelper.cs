@@ -40,6 +40,34 @@ namespace REST_API_TESTS.Helpers
             };
         }
 
+        public static Account GenerateValidFakeAccountWithoutAnyProfiles()
+        {
+            var personInfo = new PersonInformation
+            {
+                PersonInformationId = Guid.NewGuid(),
+                FirstName = "John",
+                Surname = "Doe",
+                Phone = "123-456-7890",
+                BirthDate = new DateOnly(1990, 5, 20),
+                Gender = "Male"
+            };
+
+            return new Account
+            {
+                AccountId = Guid.NewGuid(),
+                Email = "johndoe@example.com",
+                Password = "SecurePassword123", // In real applications, passwords should be hashed
+                PersonInformationId = personInfo.PersonInformationId,
+                PersonInformation = personInfo,
+                Profiles = new List<Profile> // Assuming the Profile class exists
+                {
+
+                }
+            };
+        }
+
+
+
         public static LoginDTO GenerateFakeInvalidLoginDTO()
         {
             return new LoginDTO

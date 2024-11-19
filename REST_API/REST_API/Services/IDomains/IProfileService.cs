@@ -1,5 +1,6 @@
 ﻿using REST_API.DTOs.AccountDomain;
 using REST_API.DTOs.ProfileDomain;
+using REST_API.Models;
 using REST_API.Util;
 
 namespace REST_API.Services.Interfaces
@@ -12,6 +13,5 @@ namespace REST_API.Services.Interfaces
         Task<ResultDTO> GetProfileById(Guid profileId);
         Task<ResultDTO> SearchQuery(SearchQueryDTO dto);
         Task<ResultDTO> SaveProfile(Guid profileId);
-
     }
 }

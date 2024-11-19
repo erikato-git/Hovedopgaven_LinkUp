@@ -8,5 +8,8 @@
         public string? AlternativeTitle { get; set; }
         public string? ProfilePicture { get; set; }
         public string? ProfileDescription { get; set; }
+
+        // Navigation properties
+        public Guid AccountId { get; set; }
     }
 }

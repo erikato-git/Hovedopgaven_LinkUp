@@ -1,8 +1,8 @@
 ﻿using REST_API.Models;
 
-namespace REST_API.Repositories
+namespace REST_API.Repositories.Interfaces
 {
-    public interface IKeyword
+    public interface IKeywordRepository
     {
         Task GetByIdAsync(Guid id);
         Task GetAllAsync();

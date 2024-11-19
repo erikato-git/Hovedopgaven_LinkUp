@@ -60,15 +60,6 @@ namespace REST_API.Controllers
                 return NotFound(result.Message);
             }
 
-            if (result.Message.Equals(ErrorMessages.PitchService_SendPitch_ProfileInformationDoesNotMatchWithAnyProfilesInYourAccount))
-            {
-                return new ObjectResult(new { })
-                {
-                    Value = result.Message,
-                    StatusCode = StatusCodes.Status403Forbidden
-                };
-            }
-
             if (result.Message.Equals(ErrorMessages.PitchService_SendPitch_YouAreNotAllowedToSendAnyPitchesBeforeYouHaveCreatedAtLeastOneProfile))
             {
                 return Conflict(result.Message);

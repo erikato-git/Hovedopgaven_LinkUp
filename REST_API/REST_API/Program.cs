@@ -1,5 +1,6 @@
 using REST_API.Data;
 using REST_API.Repositories;
+using REST_API.Repositories.Interfaces;
 using REST_API.Services;
 using REST_API.Services.Helpers;
 using REST_API.Services.Interfaces;
@@ -10,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<IAccountService,AccountService>();
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IProfileServiceHelper>();
 
 
 builder.Services.AddControllers();

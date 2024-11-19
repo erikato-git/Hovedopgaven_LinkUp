@@ -4,7 +4,7 @@ using Moq;
 using REST_API.Controllers;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
-using REST_API.Repositories;
+using REST_API.Repositories.Interfaces;
 using REST_API.Services;
 using REST_API.Services.Helpers;
 using REST_API.Util;
@@ -43,7 +43,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var loginDto = new LoginDTO { Email = "user@mail.com,", Password = "SecurePassword123" };
             var account = AccountTestHelper.GenerateValidFakeAccount();
             var JWTDummy = "JWT-dummy-string";
-            _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync(account);
+            _accountRepository.Setup(repo => repo.GetAccountByEmailAsync(loginDto.Email)).ReturnsAsync(account);
             _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password)).Returns(true);
             _accountServiceHelper.Setup(service => service.GenerateJWT(account)).Returns(JWTDummy);
             var expected = new LoginResponseDTO { Account = account, JWT = JWTDummy };
@@ -63,7 +63,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             // Arrange
             var loginDto = new LoginDTO { Email = "user@mail.com,", Password = "SecurePassword123" };
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync(account);
+            _accountRepository.Setup(repo => repo.GetAccountByEmailAsync(loginDto.Email)).ReturnsAsync(account);
             _accountServiceHelper.Setup(service => service.CheckPasswordsMatch(loginDto.Password, account.Password)).Returns(false);
 
             // Act
@@ -78,7 +78,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         {
             // Arrange
             var loginDto = new LoginDTO { Email = "user@mail.com,", Password = "SecurePassword123" };
-            _accountRepository.Setup(repo => repo.GetAccountByEmail(loginDto.Email)).ReturnsAsync((Account)null);
+            _accountRepository.Setup(repo => repo.GetAccountByEmailAsync(loginDto.Email)).ReturnsAsync((Account)null);
 
             // Act
             var result = await _sut.Login(loginDto);
@@ -95,7 +95,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         {
             // Arrange
             var createAccountDto = AccountTestHelper.GenerateFakeInvalidCreateAccountDTO();
-            _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(false);
+            _accountRepository.Setup(repo => repo.doesEmailForAccountExistAsync(createAccountDto.Email)).ReturnsAsync(false);
             var account = AccountTestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.AddAsync(createAccountDto)).ReturnsAsync(account);
             var JWTDummy = "JWT-dummy-string";
@@ -116,7 +116,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         {
             // Arrange
             var createAccountDto = AccountTestHelper.GenerateFakeInvalidCreateAccountDTO();
-            _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(false);
+            _accountRepository.Setup(repo => repo.doesEmailForAccountExistAsync(createAccountDto.Email)).ReturnsAsync(false);
             _accountRepository.Setup(repo => repo.AddAsync(createAccountDto)).ReturnsAsync((Account)null);
 
             // Act
@@ -131,7 +131,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         {
             // Arrange
             var createAccountDto = AccountTestHelper.GenerateFakeInvalidCreateAccountDTO();
-            _accountRepository.Setup(repo => repo.doesEmailForAccountExist(createAccountDto.Email)).ReturnsAsync(true);
+            _accountRepository.Setup(repo => repo.doesEmailForAccountExistAsync(createAccountDto.Email)).ReturnsAsync(true);
 
             // Act
             var result = await _sut.CreateAccount(createAccountDto);

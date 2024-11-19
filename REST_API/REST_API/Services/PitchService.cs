@@ -1,4 +1,8 @@
 ﻿using REST_API.DTOs;
+using REST_API.Models;
+using REST_API.Repositories.Interfaces;
+using REST_API.Services.Helpers;
+using REST_API.Services.IHelpers;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
 
@@ -6,19 +10,129 @@ namespace REST_API.Services
 {
     public class PitchService : IPitchService
     {
-        public Task<ResultDTO> GetIncomingPitches()
+        private IPitchRepository _pitchRepository;
+        private IPitchServiceHelper _picthServiceHelper;
+
+        public PitchService(IPitchRepository pitchRepository, IPitchServiceHelper picthServiceHelper)
         {
-            throw new NotImplementedException();
+            _pitchRepository = pitchRepository;
+            _picthServiceHelper = picthServiceHelper;
         }
 
-        public Task<ResultDTO> GetOutcomingPitches()
+        public async Task<ResultDTO> SendPitch(SendPitchDTO dto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var loggedInUser = await _picthServiceHelper.GetAccountFromLoginId();
+
+                if(loggedInUser != null)
+                {
+                    if(loggedInUser?.Profiles?.Any() == false)
+                    {
+                        return ResultDTO.FailureResult(ErrorMessages.PitchService_SendPitch_YouAreNotAllowedToSendAnyPitchesBeforeYouHaveCreatedAtLeastOneProfile);
+                    }
+
+                    var receiverExist = await _picthServiceHelper.CheckReceiverExist(dto.RecipientAccountId);
+
+                    if(receiverExist)
+                    {
+                        var pitch = _picthServiceHelper.SendPitchDTOToPitch(dto);
+
+                        if(pitch != null)
+                        {
+                            var createdPitch = await _pitchRepository.AddAsync(pitch);
+
+                            if(createdPitch != null)
+                            {
+                                return ResultDTO.SuccesResult(createdPitch, "Pitch has succesfully been created");
+                            }
+                            else
+                            {
+                                return ResultDTO.FailureResult(ErrorMessages.PitchSerivce_SendPitch_FailedToCreatePitchDueToInternalServerError);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return ResultDTO.FailureResult(ErrorMessages.PitchService_SendPitch_ReceipientsAccountDoesNotExist);
+                    }
+                }
+                else
+                {
+                    return ResultDTO.FailureResult(ErrorMessages.PitchService_SendPitch_AccountForLoggedInUserWasNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: logging(ex)
+            }
+
+            return ResultDTO.FailureResult("Send pitch failed");
         }
 
-        public Task<ResultDTO> SendPitch(SendPitchDTO dto)
+        public async Task<ResultDTO> GetIncomingPitches()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var loggedInAccount = await _picthServiceHelper.GetAccountFromLoginId();
+
+                if(loggedInAccount != null)
+                {
+                    var incomingPitches = await _pitchRepository.GetPitchesByRecipientAccountIdAsync(loggedInAccount.AccountId);
+
+                    if(incomingPitches != null)
+                    {
+                        return ResultDTO.SuccesResult(incomingPitches, "Pitches send to logged in account succesfully retrieved");
+                    }
+                    else
+                    {
+                        return ResultDTO.FailureResult(ErrorMessages.PitchService_IncomingPitches_FailedToFetchPitchesDueToInternalServerError);
+                    }
+                }
+                else
+                {
+                    return ResultDTO.FailureResult(ErrorMessages.PitchService_IncomingPitches_AccountForSignedInUserWasNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: logging(ex)
+            }
+
+            return ResultDTO.FailureResult("Failed to fecth incoming pitches");
         }
+
+        public async Task<ResultDTO> GetOutcomingPitches()
+        {
+            try
+            {
+                var loggedInAccount = await _picthServiceHelper.GetAccountFromLoginId();
+
+                if (loggedInAccount != null)
+                {
+                    var outcomingPitches = await _pitchRepository.GetPitchesByCreatorAsync(loggedInAccount.AccountId);
+
+                    if (outcomingPitches != null)
+                    {
+                        return ResultDTO.SuccesResult(outcomingPitches, "Pitches send from logged in account succesfully retrieved");
+                    }
+                    else
+                    {
+                        return ResultDTO.FailureResult(ErrorMessages.PitchService_OutcomingPitches_FailedToFetchPitchesDueToInternalServerError);
+                    }
+                }
+                else
+                {
+                    return ResultDTO.FailureResult(ErrorMessages.PitchService_OutcomingPitches_AccountForSignedInUserWasNotFound);
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: logging(ex)
+            }
+
+            return ResultDTO.FailureResult("Failed to fecth outcoming pitches");
+        }
+
     }
 }

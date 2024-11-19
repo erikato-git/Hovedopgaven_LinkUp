@@ -161,7 +161,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         {
             // Arrange
             var profileId = It.IsAny<Guid>();
-            var resultDto = ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_DeleteProfile_YouCannotDeleteProfileForAnotherAccount);
+            var resultDto = ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_DeleteProfile_FailedToDeleteProfileDueToLoggedInAccountWasntFound);
             _profileService.Setup(service => service.DeleteProfile(profileId)).ReturnsAsync(resultDto);
 
             // Act
@@ -169,7 +169,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
 
             // Assert
             var badResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal(ErrorMessages.ProfileSerivce_DeleteProfile_YouCannotDeleteProfileForAnotherAccount, badResult.Value);
+            Assert.Equal(ErrorMessages.ProfileSerivce_DeleteProfile_FailedToDeleteProfileDueToLoggedInAccountWasntFound, badResult.Value);
         }
 
         // SD9: GetProfile/{id}

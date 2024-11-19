@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using Moq;
 using REST_API.Repositories;
+using REST_API.Repositories.Interfaces;
 using REST_API.Services;
 using System;
 using System.Collections.Generic;

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
-using REST_API.Repositories;
+using REST_API.Repositories.Interfaces;
 using REST_API.Services.Helpers;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
@@ -24,7 +24,7 @@ namespace REST_API.Services
         {
             try
             {
-                var accountFound = await _accountRepository.GetAccountByEmail(dto.Email);
+                var accountFound = await _accountRepository.GetAccountByEmailAsync(dto.Email);
 
                 if (accountFound != null)
                 {
@@ -62,7 +62,7 @@ namespace REST_API.Services
         {
             try
             {
-                var emailTaken = await _accountRepository.doesEmailForAccountExist(dto.Email);
+                var emailTaken = await _accountRepository.doesEmailForAccountExistAsync(dto.Email);
 
                 if (!emailTaken)
                 {

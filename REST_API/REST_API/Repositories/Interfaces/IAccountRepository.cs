@@ -2,7 +2,7 @@
 using REST_API.Models;
 using REST_API.Util;
 
-namespace REST_API.Repositories
+namespace REST_API.Repositories.Interfaces
 {
     public interface IAccountRepository
     {
@@ -10,17 +10,17 @@ namespace REST_API.Repositories
         Task<Account?> GetByIdAsync(Guid id);
         Task<IEnumerable<Account>?> GetAllAsync();
         Task<Account?> AddAsync(CreateAccountDTO dto);
-        Task<Account?> UpdateAsync(UpdateAccountDTO dto); 
+        Task<Account?> UpdateAsync(UpdateAccountDTO dto);
         Task<bool> DeleteAsync(Guid id);
         Task<bool> SaveChangesAsync();
         Task<bool> AddSavedProfileAsync(Account account, Guid profileId);
 
         // Custom methods
-        Task<bool> doesEmailForAccountExist(String email);
-        Task<Account?> GetAccountByEmail(String email);
+        Task<bool> doesEmailForAccountExistAsync(string email);
+        Task<Account?> GetAccountByEmailAsync(string email);
 
         // Composition
-        Task CreateProfile(Account account, Profile profile);
-        Task DeleteProfile(Account account, Profile profile);
+        Task<Profile?> CreateProfileAsync(Account account, Profile profile);
+        Task<bool> DeleteProfileAsync(Account account, Guid profileId);
     }
 }
