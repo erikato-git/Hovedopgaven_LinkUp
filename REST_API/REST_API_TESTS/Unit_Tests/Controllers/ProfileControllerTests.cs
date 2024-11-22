@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using REST_API.Controllers;
+using REST_API.Controllers.Helpers;
+using REST_API.Controllers.IHelpers;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Repositories;
@@ -12,6 +14,7 @@ using REST_API_TESTS.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +23,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
     public class ProfileControllerTests
     {
         private readonly Mock<IProfileService> _profileService;
+        private readonly Mock<IProfileControllerHelper> _profileControllerHelper;
         private readonly Fixture _fixture;
         private readonly ProfileController _sut;
 
@@ -27,8 +31,9 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         {
             _fixture = new Fixture();
             _profileService = new Mock<IProfileService>();
+            _profileControllerHelper = new Mock<IProfileControllerHelper>();
 
-            _sut = new ProfileController(_profileService.Object);
+            _sut = new ProfileController(_profileService.Object, _profileControllerHelper.Object);
         }
 
 
@@ -38,10 +43,13 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task CreateProfile_Should_Return201CreatedWithProfile_When_CreateProfileDetailsAreValid()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var createProfileDto = ProfileTestHelper.GenerateValidCreateProfileDTO();
             var profile = ProfileTestHelper.GenerateValidProfile();
             var resultDto = ResultDTO.SuccesResult(profile, "You have succesfully created a profile!");
-            _profileService.Setup(service => service.CreateProfile(createProfileDto)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.CreateProfile(createProfileDto, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.CreateProfile(createProfileDto);
@@ -55,9 +63,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task CreateProfile_Should_Return500InternalServerErrorWithErrorMessage_When_CreateProfileFailed()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var createProfileDto = ProfileTestHelper.GenerateValidCreateProfileDTO();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_CreateProfile_FailedToCreateProfileDueToInternalServerError);
-            _profileService.Setup(service => service.CreateProfile(createProfileDto)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.CreateProfile(createProfileDto, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.CreateProfile(createProfileDto);
@@ -72,9 +83,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task CreateProfile_Should_Return400BadRequestWithErrorMessage_When_UserIsNotSignedIn()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var createProfileDto = ProfileTestHelper.GenerateValidCreateProfileDTO();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_CreateProfile_FailedToCreateProfile);
-            _profileService.Setup(service => service.CreateProfile(createProfileDto)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.CreateProfile(createProfileDto, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.CreateProfile(createProfileDto);
@@ -91,10 +105,13 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task UpdateProfile_Should_Return200OkWithProfile_When_UpdateProfileDetailsAreValid()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var updateProfileDto = ProfileTestHelper.GenerateValidUpdateProfileDTO();
             var profile = ProfileTestHelper.GenerateValidProfile();
             var resultDto = ResultDTO.SuccesResult(profile, "Profile has succesfully been updated");
-            _profileService.Setup(service => service.UpdateProfile(updateProfileDto)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.UpdateProfile(updateProfileDto, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.UpdateProfile(updateProfileDto);
@@ -108,9 +125,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task UpdateProfile_Should_Return403ForbidWithErrorMessage_When_UpdateProfileDetailsAreInvalid()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var updateProfileDto = ProfileTestHelper.GenerateValidUpdateProfileDTO();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_UpdateProfile_YouCannotUpdateProfileForAnotherAccount);
-            _profileService.Setup(service => service.UpdateProfile(updateProfileDto)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.UpdateProfile(updateProfileDto, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.UpdateProfile(updateProfileDto);
@@ -128,9 +148,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task DeleteProfile_Should_Return204NoContent_When_ProfileIdIsValid()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = It.IsAny<Guid>();
             var resultDto = ResultDTO.SuccesResult(true, "Profile was succesfully deleted");
-            _profileService.Setup(service => service.DeleteProfile(profileId)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.DeleteProfile(profileId, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.DeleteProfile(profileId);
@@ -143,9 +166,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task DeleteProfile_Should_Return500InternalServerErrorWithErrorMessage_When_DeleteProfileFailed()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = It.IsAny<Guid>();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_DeleteProfile_FailedToDeleteProfileDueToInternalServerError);
-            _profileService.Setup(service => service.DeleteProfile(profileId)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.DeleteProfile(profileId, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.DeleteProfile(profileId);
@@ -160,9 +186,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task DeleteProfile_Should_Return400BadRequestWithErrorMessage_When_ProfileIdIsInvalid()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = It.IsAny<Guid>();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_DeleteProfile_FailedToDeleteProfileDueToLoggedInAccountWasntFound);
-            _profileService.Setup(service => service.DeleteProfile(profileId)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.DeleteProfile(profileId, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.DeleteProfile(profileId);
@@ -178,10 +207,13 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task GetProfile_Should_Return200OkWithProfile_When_ProfileIdIsValid()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = It.IsAny<Guid>();
             var profile = ProfileTestHelper.GenerateValidProfile();
             var resultDto = ResultDTO.SuccesResult(profile, "Profile was succesfully fetched");
-            _profileService.Setup(service => service.GetProfileById(profileId)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.GetProfileById(profileId, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.GetProfileById(profileId);
@@ -195,9 +227,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task GetProfile_Should_Return404BadRequestWithErrorMessage_When_ProfileIdIsInvalid()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = It.IsAny<Guid>();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_GetProfile_YouDontHaveAProfileInYourAccountWithTheProvidedId);
-            _profileService.Setup(service => service.GetProfileById(profileId)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.GetProfileById(profileId, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.GetProfileById(profileId);
@@ -211,9 +246,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task GetProfile_Should_Return400BadRequestWithErrorMessage_When_LoggedInUsersAccountWasNotFound()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = It.IsAny<Guid>();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_GetAccountById_AccountNotFound);
-            _profileService.Setup(service => service.GetProfileById(profileId)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.GetProfileById(profileId, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.GetProfileById(profileId);
@@ -270,9 +308,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task SaveProfile_Should_Return200Ok_When_ProfileHasBeenAddedToSavedProfileListForSignedInAccount()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var resultDto = ResultDTO.SuccesResult(true, "Profile has been added to account's saved-profile-list!");
-            _profileService.Setup(service => service.SaveProfile(profileId)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.SaveProfile(profileId, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.SaveProfile(profileId);
@@ -286,9 +327,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task SaveProfile_Should_Return500InternalServerErrorWithErrorMessage_When_ProfileFailedToBeAddedToSavedProfileListForSignedInAccount()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.PitchService_SaveProfile_ProfileFailedToBeAddedToAccountsListForSavedProfilesDueToInternalServerError);
-            _profileService.Setup(service => service.SaveProfile(profileId)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.SaveProfile(profileId, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.SaveProfile(profileId);
@@ -303,9 +347,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task SaveProfile_Should_Return400BadRequestWithErrorMessage_When_SignedInAccountWasNotFound()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.PitchService_SaveProfile_AccountForSignedInUserWasNotFound);
-            _profileService.Setup(service => service.SaveProfile(profileId)).ReturnsAsync(resultDto);
+            _profileControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _profileService.Setup(service => service.SaveProfile(profileId, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.SaveProfile(profileId);

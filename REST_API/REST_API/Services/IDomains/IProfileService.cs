@@ -7,11 +7,11 @@ namespace REST_API.Services.Interfaces
 {
     public interface IProfileService
     {
-        Task<ResultDTO> CreateProfile(CreateProfileDTO dto);
-        Task<ResultDTO> UpdateProfile(UpdateProfileDTO dto);
-        Task<ResultDTO> DeleteProfile(Guid profileId);
-        Task<ResultDTO> GetProfileById(Guid profileId);
+        Task<ResultDTO> CreateProfile(CreateProfileDTO dto, String userAccount);
+        Task<ResultDTO> UpdateProfile(UpdateProfileDTO dto, String userAccountId);
+        Task<ResultDTO> DeleteProfile(Guid profileId, String userAccountId);
+        Task<ResultDTO> GetProfileById(Guid profileId, String userAccountId);
         Task<ResultDTO> SearchQuery(SearchQueryDTO dto);
-        Task<ResultDTO> SaveProfile(Guid profileId);
+        Task<ResultDTO> SaveProfile(Guid profileId, String userAccountId);
     }
 }

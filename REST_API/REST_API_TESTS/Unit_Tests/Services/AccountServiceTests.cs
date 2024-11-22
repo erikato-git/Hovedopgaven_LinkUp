@@ -146,13 +146,14 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task UpdateAccount_Should_ReturnAccount_When_ValidUpdateAccountDetails()
         {
             // Arrange
+            var userAccountId = Guid.NewGuid().ToString();
             var updateAccountDTO = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId)).Returns(true);
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId, userAccountId)).Returns(true);
             var account = AccountTestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.UpdateAsync(updateAccountDTO)).ReturnsAsync(account);
 
             // Act
-            var result = await _sut.UpdateAccount(updateAccountDTO);
+            var result = await _sut.UpdateAccount(updateAccountDTO, userAccountId);
 
             // Assert
             Assert.Equal(account, result.Data);
@@ -162,12 +163,13 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task UpdateAccount_Should_ReturnErrorMessage_When_ValidUpdateAccountDetailsButUpdateFailed()
         {
             // Arrange
+            var userAccountId = Guid.NewGuid().ToString();
             var updateAccountDTO = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId)).Returns(true);
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId, userAccountId)).Returns(true);
             _accountRepository.Setup(repo => repo.UpdateAsync(updateAccountDTO)).ReturnsAsync((Account)null);
 
             // Act
-            var result = await _sut.UpdateAccount(updateAccountDTO);
+            var result = await _sut.UpdateAccount(updateAccountDTO, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.AccountSerivce_UpdateAccount_UpdateAccountFailed, result.Message);
@@ -177,11 +179,12 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task UpdateAccount_Should_ReturnErrorMessage_When_InvalidUpdateAccountDetails()
         {
             // Arrange
+            var userAccountId = Guid.NewGuid().ToString();
             var updateAccountDTO = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId)).Returns(false);
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId, userAccountId)).Returns(false);
 
             // Act
-            var result = await _sut.UpdateAccount(updateAccountDTO);
+            var result = await _sut.UpdateAccount(updateAccountDTO, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.AccountSerivce_UpdateAccount_YouCannotUpdateAnotherPersonsAccount, result.Message);
@@ -194,13 +197,14 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task GetAccountById_Should_ReturnAccount_When_IdIsValid()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(true);
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id,userAccountId)).Returns(true);
             var account = AccountTestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync(account);
 
             // Act
-            var result = await _sut.GetAccountById(id);
+            var result = await _sut.GetAccountById(id,userAccountId);
 
             // Assert
             Assert.Equal(account, result.Data);
@@ -210,12 +214,13 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task GetAccountById_Should_ReturnErrorMessage_When_IdIsValidButRetrieveAccountFailed()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(true);
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(true);
             _accountRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync((Account)null);
 
             // Act
-            var result = await _sut.GetAccountById(id);
+            var result = await _sut.GetAccountById(id, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.AccountSerivce_GetAccountById_FailedToRetrieveAccountInternalServerError, result.Message);
@@ -225,11 +230,12 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task GetAccountById_Should_ReturnErrorMessage_When_IdIsInvalid()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(false);
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(false);
 
             // Act
-            var result = await _sut.GetAccountById(id);
+            var result = await _sut.GetAccountById(id, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.AccountSerivce_GetAccountById_CannotRetrieveAnothersAccount, result.Message);
@@ -242,12 +248,13 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task DeleteAccount_Should_ReturnTrue_When_IdIsValid()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(true);
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(true);
             _accountRepository.Setup(repo => repo.DeleteAsync(id)).ReturnsAsync(true);
 
             // Act
-            var result = await _sut.DeleteAccountById(id);
+            var result = await _sut.DeleteAccountById(id, userAccountId);
 
             // Assert
             Assert.Equal(true, result.Data);
@@ -257,12 +264,13 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task DeleteAccount_Should_ReturnErrorMessage_When_IdIsValidButDeleteAccountFailed()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(true);
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(true);
             _accountRepository.Setup(repo => repo.DeleteAsync(id)).ReturnsAsync(false);
 
             // Act
-            var result = await _sut.DeleteAccountById(id);
+            var result = await _sut.DeleteAccountById(id, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.AccountSerivce_DeleteAccount_DeleteAccountFailed, result.Message);
@@ -272,11 +280,12 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task DeleteAccount_Should_ReturnErrorMessage_When_IdIsInvalid()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id)).Returns(false);
+            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(false);
 
             // Act
-            var result = await _sut.DeleteAccountById(id);
+            var result = await _sut.DeleteAccountById(id, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.AccountSerivce_DeleteAccountById_CannotDeleteAnotherPersonsAccount, result.Message);

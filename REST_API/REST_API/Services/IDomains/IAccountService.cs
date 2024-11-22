@@ -7,8 +7,8 @@ namespace REST_API.Services.Interfaces
     {
         Task<ResultDTO> Login(LoginDTO dto);
         Task<ResultDTO> CreateAccount(CreateAccountDTO dto);
-        Task<ResultDTO> UpdateAccount(UpdateAccountDTO dto);
-        Task<ResultDTO> GetAccountById(Guid id);
-        Task<ResultDTO> DeleteAccountById(Guid id);
+        Task<ResultDTO> UpdateAccount(UpdateAccountDTO dto, String userAccountId);
+        Task<ResultDTO> GetAccountById(Guid id, String userAccountId);
+        Task<ResultDTO> DeleteAccountById(Guid id, String userAccountId);
     }
 }

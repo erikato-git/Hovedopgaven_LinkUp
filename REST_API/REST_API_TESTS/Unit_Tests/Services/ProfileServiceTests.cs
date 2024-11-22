@@ -15,6 +15,7 @@ using REST_API.Models;
 using REST_API.Util;
 using REST_API.DTOs.ProfileDomain;
 using REST_API.Services.Domains;
+using System.Security.Claims;
 
 namespace REST_API_TESTS.Unit_Tests.Services
 {
@@ -42,15 +43,17 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task CreateProfile_Should_ReturnProfile_When_AccountExistAndProfileWasCreated()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var createProfileDto = ProfileTestHelper.GenerateValidCreateProfileDTO();
             var account = AccountTestHelper.GenerateValidFakeAccount();
             var profile = ProfileTestHelper.GenerateValidProfile();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync(account);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
             _profileServiceHelper.Setup(service => service.CreateProfileDTOToProfile(createProfileDto)).Returns(profile);
             _accountRepository.Setup(repo => repo.CreateProfileAsync(account, profile)).ReturnsAsync(profile);
 
             // Act
-            var result = await _sut.CreateProfile(createProfileDto);
+            var result = await _sut.CreateProfile(createProfileDto,userAccountId);
 
             // Assert
             Assert.Equal(profile, result.Data);
@@ -60,15 +63,17 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task CreateProfile_Should_ReturnErrorMessage_When_AccountExistButSystemFailedToCreateProfile()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var createProfileDto = ProfileTestHelper.GenerateValidCreateProfileDTO();
             var account = AccountTestHelper.GenerateValidFakeAccount();
             var profile = ProfileTestHelper.GenerateValidProfile();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync(account);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
             _profileServiceHelper.Setup(service => service.CreateProfileDTOToProfile(createProfileDto)).Returns(profile);
             _accountRepository.Setup(repo => repo.CreateProfileAsync(account, profile)).ReturnsAsync((Profile)null);
 
             // Act
-            var result = await _sut.CreateProfile(createProfileDto);
+            var result = await _sut.CreateProfile(createProfileDto, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.ProfileSerivce_CreateProfile_FailedToCreateProfileDueToInternalServerError, result.Message);
@@ -78,11 +83,13 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task CreateProfile_Should_ReturnErrorMessage_When_AccountForLoggedInUserWasNotFound()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var createProfileDto = ProfileTestHelper.GenerateValidCreateProfileDTO();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync((Account)null);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
 
             // Act
-            var result = await _sut.CreateProfile(createProfileDto);
+            var result = await _sut.CreateProfile(createProfileDto, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.ProfileSerivce_CreateProfile_CouldNotFindAccountForLoggedInUser, result.Message);
@@ -95,14 +102,15 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task UpdateProfile_Should_ReturnProfile_When_AccountIdInUpdateProfileDTOMatchWithLoggedInAccountId()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var updateProfileDto = ProfileTestHelper.GenerateValidUpdateProfileDTO();
-            _profileServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateProfileDto.AccountId)).Returns(true);
+            _profileServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateProfileDto.AccountId,userAccountId)).Returns(true);
             var profile = ProfileTestHelper.GenerateValidProfile();
             _profileServiceHelper.Setup(service => service.UpdateProfileDTOToProfile(updateProfileDto)).Returns(profile);
             _profileRepository.Setup(repo => repo.UpdateAsync(profile)).ReturnsAsync(profile);
 
             // Act
-            var result = await _sut.UpdateProfile(updateProfileDto);
+            var result = await _sut.UpdateProfile(updateProfileDto, userAccountId);
 
             // Assert
             Assert.Equal(profile, result.Data);
@@ -112,14 +120,15 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task UpdateProfile_Should_ReturnErrorMessage_When_AccountIdAndLoggedInIdMatchButSystemFailedToUpdateProfile()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var updateProfileDto = ProfileTestHelper.GenerateValidUpdateProfileDTO();
-            _profileServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateProfileDto.AccountId)).Returns(true);
+            _profileServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateProfileDto.AccountId, userAccountId)).Returns(true);
             var profile = ProfileTestHelper.GenerateValidProfile();
             _profileServiceHelper.Setup(service => service.UpdateProfileDTOToProfile(updateProfileDto)).Returns(profile);
             _profileRepository.Setup(repo => repo.UpdateAsync(profile)).ReturnsAsync((Profile)null);
 
             // Act
-            var result = await _sut.UpdateProfile(updateProfileDto);
+            var result = await _sut.UpdateProfile(updateProfileDto, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.ProfileSerivce_UpdateProfile_FailedToUpdateProfileDueToInternalServerError, result.Message);
@@ -129,11 +138,12 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task UpdateProfile_Should_ReturnErrorMessage_When_AccountIdAndLoggedInIdDontMatch()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var updateProfileDto = ProfileTestHelper.GenerateValidUpdateProfileDTO();
-            _profileServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateProfileDto.AccountId)).Returns(false);
+            _profileServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateProfileDto.AccountId, userAccountId)).Returns(false);
 
             // Act
-            var result = await _sut.UpdateProfile(updateProfileDto);
+            var result = await _sut.UpdateProfile(updateProfileDto, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.ProfileSerivce_UpdateProfile_YouCannotUpdateProfileForAnotherAccount, result.Message);
@@ -146,13 +156,14 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task DeleteProfile_Should_ReturnTrue_When_ProfileHasBeenSuccesfullyDeletedFromLoggedInAccount()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync(account);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
             _accountRepository.Setup(repo => repo.DeleteProfileAsync(account,profileId)).ReturnsAsync(true);
 
             // Act
-            var result = await _sut.DeleteProfile(profileId);
+            var result = await _sut.DeleteProfile(profileId,userAccountId);
 
             // Assert
             Assert.Equal(true, result.Data);
@@ -162,13 +173,14 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task DeleteProfile_Should_ReturnErrorMessage_When_ProfileFailedToBeDeletedFromLoggedInAccount()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync(account);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
             _accountRepository.Setup(repo => repo.DeleteProfileAsync(account, profileId)).ReturnsAsync(false);
 
             // Act
-            var result = await _sut.DeleteProfile(profileId);
+            var result = await _sut.DeleteProfile(profileId, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.ProfileSerivce_DeleteProfile_FailedToDeleteProfileDueToInternalServerError, result.Message);
@@ -178,11 +190,12 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task DeleteProfile_Should_ReturnErrorMessage_When_LoggedInAccountWasNotFound()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync((Account)null);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
 
             // Act
-            var result = await _sut.DeleteProfile(profileId);
+            var result = await _sut.DeleteProfile(profileId, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.ProfileSerivce_DeleteProfile_FailedToDeleteProfileDueToLoggedInAccountWasntFound, result.Message);
@@ -195,14 +208,15 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task GetProfile_Should_ReturnProfile_When_ProfileWasFoundInLoggedInAccount()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var profile = ProfileTestHelper.GenerateValidProfile();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync(account);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
             _profileServiceHelper.Setup(service => service.GetProfileFromAccount(account, profileId)).Returns(profile);
 
             // Act
-            var result = await _sut.GetProfileById(profileId);
+            var result = await _sut.GetProfileById(profileId, userAccountId);
 
             // Assert
             Assert.Equal(profile, result.Data);
@@ -212,13 +226,14 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task GetProfile_Should_ReturnErrorMessage_When_ProfileWasNotFoundInLoggedInAccount()
         {
             // Arrange
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync(account);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
             _profileServiceHelper.Setup(service => service.GetProfileFromAccount(account, profileId)).Returns((Profile)null);
 
             // Act
-            var result = await _sut.GetProfileById(profileId);
+            var result = await _sut.GetProfileById(profileId, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.ProfileSerivce_GetProfile_YouDontHaveAProfileInYourAccountWithTheProvidedId, result.Message);
@@ -228,12 +243,14 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task GetProfile_Should_ReturnErrorMessage_When_LoggedInAccountWasNotFound()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync((Account)null);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
 
             // Act
-            var result = await _sut.GetProfileById(profileId);
+            var result = await _sut.GetProfileById(profileId,userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.ProfileSerivce_GetProfile_SystemCouldntFindSignedInAccount, result.Message);
@@ -282,13 +299,15 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task SaveProfile_Should_ReturnTrue_When_ProfileWasSavedSuccesfully()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync(account);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
             _accountRepository.Setup(repo => repo.AddSavedProfileAsync(account,profileId)).ReturnsAsync(true);
 
             // Act
-            var result = await _sut.SaveProfile(profileId);
+            var result = await _sut.SaveProfile(profileId, userAccountId);
 
             // Assert
             Assert.Equal(true, result.Data);
@@ -298,13 +317,15 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task SaveProfile_Should_ReturnErrorMessage_When_ProfileFailedToBeSaved()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync(account);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
             _accountRepository.Setup(repo => repo.AddSavedProfileAsync(account, profileId)).ReturnsAsync(false);
 
             // Act
-            var result = await _sut.SaveProfile(profileId);
+            var result = await _sut.SaveProfile(profileId, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.ProfileSerivce_SearchProfile_FailedToQueryProfilesDueToInternalServerError, result.Message);
@@ -314,11 +335,13 @@ namespace REST_API_TESTS.Unit_Tests.Services
         public async Task SaveProfile_Should_ReturnErrorMessage_When_AccountForLoggedInUserWasNotFound()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
-            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId()).ReturnsAsync((Account)null);
+            _profileServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
 
             // Act
-            var result = await _sut.SaveProfile(profileId);
+            var result = await _sut.SaveProfile(profileId, userAccountId);
 
             // Assert
             Assert.Equal(ErrorMessages.ProfileSerivce_SearchProfile_SystemCouldntFindSignedInAccount, result.Message);

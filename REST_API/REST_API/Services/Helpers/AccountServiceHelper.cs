@@ -1,10 +1,18 @@
 ﻿using REST_API.Models;
+using REST_API.Repositories.Interfaces;
 
 namespace REST_API.Services.Helpers
 {
     public class AccountServiceHelper : IAccountServiceHelper
     {
-        public bool CheckAccountIdMatchLoginId(Guid accountId)
+        private IAccountRepository _accountRepository;
+
+        public AccountServiceHelper(IAccountRepository accountRepository)
+        {
+            _accountRepository = accountRepository;
+        }
+
+        public bool CheckAccountIdMatchLoginId(Guid loginId, string UserAccountId)
         {
             throw new NotImplementedException();
         }
@@ -19,7 +27,7 @@ namespace REST_API.Services.Helpers
             throw new NotImplementedException();
         }
 
-        public Task<Account?> GetAccountFromLoginId()
+        public Task<Account?> GetAccountFromLoginId(string userAccountId)
         {
             throw new NotImplementedException();
         }

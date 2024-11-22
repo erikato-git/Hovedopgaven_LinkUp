@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using REST_API.Controllers.IHelpers;
 using REST_API.DTOs.AccountDomain;
 using REST_API.DTOs.ProfileDomain;
 using REST_API.Services.Interfaces;
@@ -14,10 +15,12 @@ namespace REST_API.Controllers
     public class ProfileController : ControllerBase
     {
         private IProfileService _profileService;
+        private IProfileControllerHelper _profileControllerHelper;
 
-        public ProfileController(IProfileService profileService)
+        public ProfileController(IProfileService profileService, IProfileControllerHelper profileControllerHelper)
         {
             _profileService = profileService;
+            _profileControllerHelper = profileControllerHelper;
         }
 
         [Authorize]
@@ -33,7 +36,9 @@ namespace REST_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _profileService.CreateProfile(dto);
+            var userAccountId = _profileControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _profileService.CreateProfile(dto, userAccountId);
 
             if (result == null)
             {
@@ -72,7 +77,9 @@ namespace REST_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _profileService.UpdateProfile(dto);
+            var userAccountId = _profileControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _profileService.UpdateProfile(dto, userAccountId);
 
             if (result == null)
             {
@@ -119,7 +126,9 @@ namespace REST_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _profileService.DeleteProfile(profileId); 
+            var userAccountId = _profileControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _profileService.DeleteProfile(profileId, userAccountId); 
 
             if (result == null)
             {
@@ -157,7 +166,9 @@ namespace REST_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _profileService.GetProfileById(profileId);
+            var userAccountId = _profileControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _profileService.GetProfileById(profileId, userAccountId);
 
             if (result == null)
             {
@@ -231,7 +242,9 @@ namespace REST_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _profileService.SaveProfile(profileId);
+            var userAccountId = _profileControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _profileService.SaveProfile(profileId, userAccountId);
 
             if (result == null)
             {

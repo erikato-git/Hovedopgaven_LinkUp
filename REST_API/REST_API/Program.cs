@@ -1,3 +1,4 @@
+using REST_API.Controllers.IHelpers;
 using REST_API.Data;
 using REST_API.Repositories;
 using REST_API.Repositories.Interfaces;
@@ -11,8 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<IAccountService,AccountService>();
+builder.Services.AddScoped<IAccountServiceHelper,AccountServiceHelper>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
-builder.Services.AddScoped<IProfileServiceHelper>();
 
 
 builder.Services.AddControllers();
@@ -21,7 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Manage which database-settings I wanna apply for the system
-builder.Services.AddDbContext<MssqlContext>();
+builder.Services.AddDbContext<MssqlDbContext>();
 
 
 
@@ -43,3 +44,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+public partial class Program { }    // make it public for WebApplicationFactory in REST_API_TESTS

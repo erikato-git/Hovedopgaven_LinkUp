@@ -93,11 +93,11 @@ namespace REST_API.Services.Domains
             return ResultDTO.FailureResult("Create account failed");
         }
 
-        public async Task<ResultDTO> UpdateAccount(UpdateAccountDTO dto)
+        public async Task<ResultDTO> UpdateAccount(UpdateAccountDTO dto, String userAccountId)
         {
             try
             {
-                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(dto.AccountId);
+                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(dto.AccountId, userAccountId);
 
                 if (hasAuthorization)
                 {
@@ -126,11 +126,11 @@ namespace REST_API.Services.Domains
             return ResultDTO.FailureResult("Update account failed");
         }
 
-        public async Task<ResultDTO> GetAccountById(Guid id)
+        public async Task<ResultDTO> GetAccountById(Guid id, String userAccountId)
         {
             try
             {
-                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id);
+                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id, userAccountId);
 
                 if (hasAuthorization)
                 {
@@ -158,11 +158,11 @@ namespace REST_API.Services.Domains
             return ResultDTO.FailureResult("Couldn't get account");
         }
 
-        public async Task<ResultDTO> DeleteAccountById(Guid id)
+        public async Task<ResultDTO> DeleteAccountById(Guid id, String userAccountId)
         {
             try
             {
-                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id);
+                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id, userAccountId);
 
                 if (hasAuthorization)
                 {

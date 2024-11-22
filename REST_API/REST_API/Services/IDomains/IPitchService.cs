@@ -6,9 +6,9 @@ namespace REST_API.Services.Interfaces
 {
     public interface IPitchService
     {
-        Task<ResultDTO> SendPitch(SendPitchDTO dto);
-        Task<ResultDTO> GetIncomingPitches();
-        Task<ResultDTO> GetOutcomingPitches();
+        Task<ResultDTO> SendPitch(SendPitchDTO dto, String userAccountId);
+        Task<ResultDTO> GetIncomingPitches(String userAccountId);
+        Task<ResultDTO> GetOutcomingPitches(String userAccountId);
 
     }
 }

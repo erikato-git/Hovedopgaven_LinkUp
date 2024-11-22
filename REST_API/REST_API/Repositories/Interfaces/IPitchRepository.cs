@@ -10,7 +10,7 @@ namespace REST_API.Repositories.Interfaces
 
         Task GetByIdAsync(Guid id);
         Task GetAllAsync();
-        Task<Pitch> AddAsync(Pitch pitch);
+        Task<Pitch?> AddAsync(Pitch pitch);
         Task UpdateAsync(Pitch pitch);
         Task DeleteAsync(Guid id);
         Task SaveChangesAsync();

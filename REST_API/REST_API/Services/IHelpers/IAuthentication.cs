@@ -4,7 +4,7 @@ namespace REST_API.Services.IHelpers
 {
     public interface IAuthentication
     {
-        bool CheckAccountIdMatchLoginId(Guid accountId);
-        Task<Account?> GetAccountFromLoginId();
+        bool CheckAccountIdMatchLoginId(Guid loginId, String UserAccountId);
+        Task<Account?> GetAccountFromLoginId(String userAccountId);
     }
 }

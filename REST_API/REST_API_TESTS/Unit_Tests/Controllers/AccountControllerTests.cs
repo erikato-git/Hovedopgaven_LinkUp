@@ -3,14 +3,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using REST_API.Controllers;
+using REST_API.Controllers.IHelpers;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
 using REST_API_TESTS.Helpers;
+using REST_API_TESTS.TestHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,6 +36,7 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
          * _sut: system under test
          */
         private readonly Mock<IAccountService> _accountService;
+        private readonly Mock<IAccountControllerHelper> _accountControllerHelper;
         private readonly Fixture _fixture;
         private readonly AccountController _sut;
 
@@ -40,8 +44,10 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         {
             _fixture = new Fixture();
             _accountService = new Mock<IAccountService>();
+            _accountControllerHelper = new Mock<IAccountControllerHelper>();
 
-            _sut = new AccountController(_accountService.Object);
+            _sut = new AccountController(_accountService.Object, _accountControllerHelper.Object);
+
         }
 
 
@@ -145,10 +151,13 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task UpdateAccount_Should_Return200OkWithAccount_When_AccountIsUpdated()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = Guid.NewGuid().ToString();
             var updateAccountDto = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
             var account = AccountTestHelper.GenerateValidFakeAccount();
             var resultDto = ResultDTO.SuccesResult(account, "Updated account");
-            _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
+            _accountControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _accountService.Setup(service => service.UpdateAccount(updateAccountDto, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.UpdateAccount(updateAccountDto);
@@ -162,9 +171,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task UpdateAccount_Should_Return403ForbiddenWithErrorMessage_When_UserTriesToUpdateAnotherAccount()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = Guid.NewGuid().ToString();
             var updateAccountDto = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_UpdateAccount_YouCannotUpdateAnotherPersonsAccount);
-            _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
+            _accountControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _accountService.Setup(service => service.UpdateAccount(updateAccountDto, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.UpdateAccount(updateAccountDto);
@@ -179,9 +191,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task UpdateAccount_Should_Return500InternalServerErrorWithErrorMessage_When_UpdateAccountHasFailed()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = Guid.NewGuid().ToString();
             var updateAccountDto = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_UpdateAccount_UpdateAccountFailed);
-            _accountService.Setup(service => service.UpdateAccount(updateAccountDto)).ReturnsAsync(resultDto);
+            _accountControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _accountService.Setup(service => service.UpdateAccount(updateAccountDto, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.UpdateAccount(updateAccountDto);
@@ -197,10 +212,13 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task GetAccount_Should_Return200OkWithAccount_When_ValidId()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
             var account = AccountTestHelper.GenerateValidFakeAccount();
             var resultDto = ResultDTO.SuccesResult(account, "Account found");
-            _accountService.Setup(service => service.GetAccountById(id)).ReturnsAsync(resultDto);
+            _accountControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _accountService.Setup(service => service.GetAccountById(id, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.GetAccountById(id);
@@ -214,10 +232,13 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task GetAccount_Should_Return404NotFound_When_InvalidId()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
             var account = AccountTestHelper.GenerateValidFakeAccount();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_GetAccountById_AccountNotFound);
-            _accountService.Setup(service => service.GetAccountById(id)).ReturnsAsync(resultDto);
+            _accountControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _accountService.Setup(service => service.GetAccountById(id, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.GetAccountById(id);
@@ -231,9 +252,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task GetAccount_Should_Return403ForbidWithErrorMessage_When_InvalidId()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_GetAccountById_YouCannotAccessAnotherAccount);
-            _accountService.Setup(service => service.GetAccountById(id)).ReturnsAsync(resultDto);
+            _accountControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _accountService.Setup(service => service.GetAccountById(id, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.GetAccountById(id);
@@ -249,9 +273,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task DeleteAccount_Should_Return204NoContent_When_ValidId()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
             var resultDto = ResultDTO.SuccesResult(true, "Account is deleted");
-            _accountService.Setup(service => service.DeleteAccountById(id)).ReturnsAsync(resultDto);
+            _accountControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _accountService.Setup(service => service.DeleteAccountById(id, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.DeleteAccountById(id);
@@ -264,9 +291,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task DeleteAccount_Should_Return500InternalServerErrorWithErrorMessage_When_DeleteAccountFailed()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_DeleteAccount_DeleteAccountFailed);
-            _accountService.Setup(service => service.DeleteAccountById(id)).ReturnsAsync(resultDto);
+            _accountControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _accountService.Setup(service => service.DeleteAccountById(id, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.DeleteAccountById(id);
@@ -281,9 +311,12 @@ namespace REST_API_TESTS.Unit_Tests.Controllers
         public async Task DeleteAccount_Should_Return400BadRequestWithErrorMessage_When_InvalidId()
         {
             // Arrange
+            var User = It.IsAny<ClaimsPrincipal>();
+            var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
             var resultDto = ResultDTO.FailureResult(ErrorMessages.AccountSerivce_DeleteAccount_YouCannotDeleteAnotherAccount);
-            _accountService.Setup(service => service.DeleteAccountById(id)).ReturnsAsync(resultDto);
+            _accountControllerHelper.Setup(service => service.ExtractUserAccountId(User)).Returns(userAccountId);
+            _accountService.Setup(service => service.DeleteAccountById(id, userAccountId)).ReturnsAsync(resultDto);
 
             // Act
             var result = await _sut.DeleteAccountById(id);

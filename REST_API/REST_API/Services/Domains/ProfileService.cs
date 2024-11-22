@@ -22,11 +22,11 @@ namespace REST_API.Services.Domains
             _profileServiceHelper = profileServiceHelper;
         }
 
-        public async Task<ResultDTO> CreateProfile(CreateProfileDTO dto)
+        public async Task<ResultDTO> CreateProfile(CreateProfileDTO dto, String userAccountId)
         {
             try
             {
-                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId();
+                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInAccount != null)
                 {
@@ -63,11 +63,11 @@ namespace REST_API.Services.Domains
             return ResultDTO.FailureResult("Create profile failed");
         }
 
-        public async Task<ResultDTO> UpdateProfile(UpdateProfileDTO dto)
+        public async Task<ResultDTO> UpdateProfile(UpdateProfileDTO dto, String userAccountId)
         {
             try
             {
-                var hasAuthorization = _profileServiceHelper.CheckAccountIdMatchLoginId(dto.AccountId);
+                var hasAuthorization = _profileServiceHelper.CheckAccountIdMatchLoginId(dto.AccountId, userAccountId);
 
                 if (hasAuthorization)
                 {
@@ -106,11 +106,11 @@ namespace REST_API.Services.Domains
         }
 
 
-        public async Task<ResultDTO> DeleteProfile(Guid profileId)
+        public async Task<ResultDTO> DeleteProfile(Guid profileId, String userAccountId)
         {
             try
             {
-                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId();
+                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInAccount != null)
                 {
@@ -138,11 +138,11 @@ namespace REST_API.Services.Domains
             return ResultDTO.FailureResult("Delete profile failed");
         }
 
-        public async Task<ResultDTO> GetProfileById(Guid profileId)
+        public async Task<ResultDTO> GetProfileById(Guid profileId, String userAccountId)
         {
             try
             {
-                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId();
+                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInAccount != null)
                 {
@@ -195,11 +195,11 @@ namespace REST_API.Services.Domains
         }
 
 
-        public async Task<ResultDTO> SaveProfile(Guid profileId)
+        public async Task<ResultDTO> SaveProfile(Guid profileId, String userAccountId)
         {
             try
             {
-                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId();
+                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInAccount != null)
                 {

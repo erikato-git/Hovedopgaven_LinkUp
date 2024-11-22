@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using REST_API.Controllers.IHelpers;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Services.Interfaces;
@@ -15,10 +16,12 @@ namespace REST_API.Controllers
     public class AccountController : ControllerBase
     {
         private IAccountService _accountService;
+        private IAccountControllerHelper _accountControllerHelper;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IAccountControllerHelper accountControllerHelper)
         {
             _accountService = accountService;
+            _accountControllerHelper = accountControllerHelper;
         }
 
         [AllowAnonymous]
@@ -104,7 +107,9 @@ namespace REST_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _accountService.UpdateAccount(dto);
+            var userAccountId = _accountControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _accountService.UpdateAccount(dto, userAccountId);
 
             if (result == null)
             {
@@ -158,7 +163,9 @@ namespace REST_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _accountService.GetAccountById(id);
+            var userAccountId = _accountControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _accountService.GetAccountById(id, userAccountId);
 
             if (result == null)
             {
@@ -202,7 +209,9 @@ namespace REST_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _accountService.DeleteAccountById(id);
+            var userAccountId = _accountControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _accountService.DeleteAccountById(id, userAccountId);
 
             if (result == null)
             {

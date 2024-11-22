@@ -7,12 +7,12 @@ namespace REST_API.Data
      * TODO: Do I need to call it MssqlContext, isn't Mssql secondary and the DbContext-class sets options for EntityFramework and can be applied to all kind of databases just by changing the connection-string?
      * Trade-off: high-cohesion vs reusability / DRY
      */
-    public class MssqlContext : DbContext
+    public class MssqlDbContext : DbContext
     {
         /*
          * DbContextOptions<T> enables me to configure settings for DataContext outside the class in Program.cs
          */
-        public MssqlContext(DbContextOptions<MssqlContext> options): base(options) 
+        public MssqlDbContext(DbContextOptions<MssqlDbContext> options): base(options) 
         { 
         }
 

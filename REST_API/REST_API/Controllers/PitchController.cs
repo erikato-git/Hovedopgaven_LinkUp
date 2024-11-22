@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using REST_API.Controllers.IHelpers;
 using REST_API.DTOs;
 using REST_API.DTOs.ProfileDomain;
 using REST_API.Services.Interfaces;
@@ -13,10 +14,12 @@ namespace REST_API.Controllers
     public class PitchController : ControllerBase
     {
         private IPitchService _pitchService;
+        private IPitchControllerHelper _pitchControllerHelper;
 
-        public PitchController(IPitchService pitchService)
+        public PitchController(IPitchService pitchService, IPitchControllerHelper pitchControllerHelper)
         {
             _pitchService = pitchService;
+            _pitchControllerHelper = pitchControllerHelper;
         }
 
         [Authorize]
@@ -34,7 +37,9 @@ namespace REST_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _pitchService.SendPitch(dto);
+            var userAccountId = _pitchControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _pitchService.SendPitch(dto, userAccountId);
 
             if (result == null)
             {
@@ -78,7 +83,9 @@ namespace REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetIncomingPitches()
         {
-            var result = await _pitchService.GetIncomingPitches();
+            var userAccountId = _pitchControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _pitchService.GetIncomingPitches(userAccountId);
 
             if (result == null)
             {
@@ -111,7 +118,9 @@ namespace REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetOutcomingPitches()
         {
-            var result = await _pitchService.GetOutcomingPitches();
+            var userAccountId = _pitchControllerHelper.ExtractUserAccountId(User);
+
+            var result = await _pitchService.GetOutcomingPitches(userAccountId);
 
             if (result == null)
             {

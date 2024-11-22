@@ -19,11 +19,11 @@ namespace REST_API.Services.Domains
             _picthServiceHelper = picthServiceHelper;
         }
 
-        public async Task<ResultDTO> SendPitch(SendPitchDTO dto)
+        public async Task<ResultDTO> SendPitch(SendPitchDTO dto, String userAccountId)
         {
             try
             {
-                var loggedInUser = await _picthServiceHelper.GetAccountFromLoginId();
+                var loggedInUser = await _picthServiceHelper.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInUser != null)
                 {
@@ -70,11 +70,11 @@ namespace REST_API.Services.Domains
             return ResultDTO.FailureResult("Send pitch failed");
         }
 
-        public async Task<ResultDTO> GetIncomingPitches()
+        public async Task<ResultDTO> GetIncomingPitches(String userAccountId)
         {
             try
             {
-                var loggedInAccount = await _picthServiceHelper.GetAccountFromLoginId();
+                var loggedInAccount = await _picthServiceHelper.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInAccount != null)
                 {
@@ -102,11 +102,11 @@ namespace REST_API.Services.Domains
             return ResultDTO.FailureResult("Failed to fecth incoming pitches");
         }
 
-        public async Task<ResultDTO> GetOutcomingPitches()
+        public async Task<ResultDTO> GetOutcomingPitches(String userAccountId)
         {
             try
             {
-                var loggedInAccount = await _picthServiceHelper.GetAccountFromLoginId();
+                var loggedInAccount = await _picthServiceHelper.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInAccount != null)
                 {

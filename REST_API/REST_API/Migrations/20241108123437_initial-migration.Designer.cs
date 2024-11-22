@@ -11,7 +11,7 @@ using REST_API.Data;
 
 namespace REST_API.Migrations
 {
-    [DbContext(typeof(MssqlContext))]
+    [DbContext(typeof(MssqlDbContext))]
     [Migration("20241108123437_initial-migration")]
     partial class initialmigration
     {

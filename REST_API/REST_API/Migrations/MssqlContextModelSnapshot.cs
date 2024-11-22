@@ -10,7 +10,7 @@ using REST_API.Data;
 
 namespace REST_API.Migrations
 {
-    [DbContext(typeof(MssqlContext))]
+    [DbContext(typeof(MssqlDbContext))]
     partial class MssqlContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
