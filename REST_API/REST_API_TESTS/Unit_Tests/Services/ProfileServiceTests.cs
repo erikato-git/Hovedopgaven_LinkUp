@@ -75,7 +75,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var createProfileDto = ProfileTestHelper.GenerateValidCreateProfileDTO();
             var account = AccountTestHelper.GenerateValidFakeAccount();
             var profile = ProfileTestHelper.GenerateValidProfile();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _accountRepository.Setup(repo => repo.CreateProfileAsync(account, profile)).ReturnsAsync((Profile)null);
 
             // Act
@@ -92,7 +92,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var User = It.IsAny<ClaimsPrincipal>();
             var userAccountId = It.IsAny<Guid>().ToString();
             var createProfileDto = ProfileTestHelper.GenerateValidCreateProfileDTO();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync((Account)null);
 
             // Act
             var result = await _sut.CreateProfile(createProfileDto, userAccountId);
@@ -112,7 +112,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var updateProfileDto = ProfileTestHelper.GenerateValidUpdateProfileDTO();
             _authentication.Setup(service => service.CheckAccountIdMatchLoginId(updateProfileDto.AccountId, userAccountId)).Returns(true);
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _accountRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(account);
+            _accountRepository.Setup(repo => repo.GetAccountByIdAsync(It.IsAny<Guid>())).ReturnsAsync(account);
             var existingProfile = ProfileTestHelper.GenerateValidProfile();
             var profile = ProfileTestHelper.GenerateValidProfile();
             _profileServiceHelper.Setup(service => service.GetProfileFromAccount(account, updateProfileDto.AccountId)).Returns(profile);
@@ -134,7 +134,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var updateProfileDto = ProfileTestHelper.GenerateValidUpdateProfileDTO();
             _authentication.Setup(service => service.CheckAccountIdMatchLoginId(updateProfileDto.AccountId, userAccountId)).Returns(true);
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _accountRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(account);
+            _accountRepository.Setup(repo => repo.GetAccountByIdAsync(It.IsAny<Guid>())).ReturnsAsync(account);
             var existingProfile = ProfileTestHelper.GenerateValidProfile();
             var profile = ProfileTestHelper.GenerateValidProfile();
             _profileServiceHelper.Setup(service => service.GetProfileFromAccount(account, updateProfileDto.AccountId)).Returns(profile);
@@ -172,7 +172,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _accountRepository.Setup(repo => repo.DeleteProfileAsync(account,profileId)).ReturnsAsync(true);
 
             // Act
@@ -189,7 +189,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _accountRepository.Setup(repo => repo.DeleteProfileAsync(account, profileId)).ReturnsAsync(false);
 
             // Act
@@ -205,7 +205,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             // Arrange
             var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync((Account)null);
 
             // Act
             var result = await _sut.DeleteProfile(profileId, userAccountId);
@@ -225,7 +225,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var profileId = Guid.NewGuid();
             var profile = ProfileTestHelper.GenerateValidProfile();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _profileServiceHelper.Setup(service => service.GetProfileFromAccount(account, profileId)).Returns(profile);
 
             // Act
@@ -242,7 +242,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _profileServiceHelper.Setup(service => service.GetProfileFromAccount(account, profileId)).Returns((Profile)null);
 
             // Act
@@ -260,7 +260,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync((Account)null);
 
             // Act
             var result = await _sut.GetProfileById(profileId,userAccountId);
@@ -316,7 +316,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _accountRepository.Setup(repo => repo.AddSavedProfileAsync(account,profileId)).ReturnsAsync(true);
 
             // Act
@@ -334,7 +334,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _accountRepository.Setup(repo => repo.AddSavedProfileAsync(account, profileId)).ReturnsAsync(false);
 
             // Act
@@ -351,7 +351,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var User = It.IsAny<ClaimsPrincipal>();
             var userAccountId = It.IsAny<Guid>().ToString();
             var profileId = Guid.NewGuid();
-            _authentication.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync((Account)null);
 
             // Act
             var result = await _sut.SaveProfile(profileId, userAccountId);

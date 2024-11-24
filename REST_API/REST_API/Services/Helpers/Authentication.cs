@@ -23,7 +23,7 @@ namespace REST_API.Services.Helpers
             return UserAccountId.Equals(loginId.ToString());
         }
 
-        public Task<Account?> GetAccountFromLoginId(string userAccountId)
+        public Task<Account?> GetByIdAsync(string userAccountId)
         {
             throw new NotImplementedException();
         }

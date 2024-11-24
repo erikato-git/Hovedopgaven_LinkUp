@@ -108,7 +108,7 @@ namespace REST_API.Services.Domains
                 if (hasAuthorization)
                 {
                     var parsedGuid = Guid.Parse(userAccountId);
-                    var existingAccount = await _accountRepository.GetByIdAsync(parsedGuid);
+                    var existingAccount = await _accountRepository.GetAccountByIdAsync(parsedGuid);
 
                     if(existingAccount == null)
                     {
@@ -150,7 +150,7 @@ namespace REST_API.Services.Domains
 
                 if (hasAuthorization)
                 {
-                    var accountFound = await _accountRepository.GetByIdAsync(id);
+                    var accountFound = await _accountRepository.GetAccountByIdAsync(id);
 
                     if (accountFound != null)
                     {

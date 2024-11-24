@@ -23,6 +23,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
         private readonly Mock<IPitchRepository> _pitchRepository;
         private readonly Mock<IPitchServiceHelper> _pitchServiceHelper;
         private readonly Mock<IPitchService> _pitchService;
+        private readonly Mock<IAccountRepository> _accountRepository;
         private readonly Fixture _fixture;
         private readonly PitchService _sut;
 
@@ -32,8 +33,9 @@ namespace REST_API_TESTS.Unit_Tests.Services
             _pitchRepository = new Mock<IPitchRepository>();
             _pitchServiceHelper = new Mock<IPitchServiceHelper>();
             _pitchService = new Mock<IPitchService>();
+            _accountRepository = new Mock<IAccountRepository>();
 
-            _sut = new PitchService(_pitchRepository.Object, _pitchServiceHelper.Object);
+            _sut = new PitchService(_pitchRepository.Object, _pitchServiceHelper.Object, _accountRepository.Object);
         }
 
 
@@ -48,7 +50,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var sendPitchDto = PitchTestHelper.GenerateValidSendPitchDTO();
             var pitch = PitchTestHelper.GenerateValidPitch();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _pitchServiceHelper.Setup(service => service.CheckReceiverExist(sendPitchDto.RecipientAccountId)).ReturnsAsync(true);
             _pitchServiceHelper.Setup(service => service.SendPitchDTOToPitch(sendPitchDto)).Returns(pitch);
             _pitchRepository.Setup(repo => repo.AddAsync(pitch)).ReturnsAsync(pitch);
@@ -69,7 +71,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var sendPitchDto = PitchTestHelper.GenerateValidSendPitchDTO();
             var pitch = PitchTestHelper.GenerateValidPitch();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _pitchServiceHelper.Setup(service => service.CheckReceiverExist(sendPitchDto.RecipientAccountId)).ReturnsAsync(true);
             _pitchServiceHelper.Setup(service => service.SendPitchDTOToPitch(sendPitchDto)).Returns(pitch);
             _pitchRepository.Setup(repo => repo.AddAsync(pitch)).ReturnsAsync((Pitch)null);
@@ -90,7 +92,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var sendPitchDto = PitchTestHelper.GenerateValidSendPitchDTO();
             var pitch = PitchTestHelper.GenerateValidPitch();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _pitchServiceHelper.Setup(service => service.CheckReceiverExist(sendPitchDto.RecipientAccountId)).ReturnsAsync(false);
 
             // Act
@@ -109,7 +111,6 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var sendPitchDto = PitchTestHelper.GenerateValidSendPitchDTO();
             var pitch = PitchTestHelper.GenerateValidPitch();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
 
             // Act
             var result = await _sut.SendPitch(sendPitchDto, userAccountId);
@@ -126,7 +127,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var userAccountId = Guid.NewGuid().ToString();
             var sendPitchDto = PitchTestHelper.GenerateValidSendPitchDTO();
             var account = AccountTestHelper.GenerateValidFakeAccountWithoutAnyProfiles();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
 
             // Act
             var result = await _sut.SendPitch(sendPitchDto, userAccountId);
@@ -145,7 +146,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var User = It.IsAny<ClaimsPrincipal>();
             var userAccountId = Guid.NewGuid().ToString();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             var pitch1 = PitchTestHelper.GenerateValidPitch();
             var pitch2 = PitchTestHelper.GenerateValidPitch();
             IEnumerable<Pitch> pitchList = new List<Pitch> { pitch1, pitch2 };
@@ -165,7 +166,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var User = It.IsAny<ClaimsPrincipal>();
             var userAccountId = Guid.NewGuid().ToString();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             var pitch1 = PitchTestHelper.GenerateValidPitch();
             var pitch2 = PitchTestHelper.GenerateValidPitch();
             _pitchRepository.Setup(repo => repo.GetPitchesByRecipientAccountIdAsync(account.AccountId)).ReturnsAsync((IEnumerable<Pitch>)null);
@@ -184,7 +185,6 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var User = It.IsAny<ClaimsPrincipal>();
             var userAccountId = Guid.NewGuid().ToString();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
 
             // Act
             var result = await _sut.GetIncomingPitches(userAccountId);
@@ -203,7 +203,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var User = It.IsAny<ClaimsPrincipal>();
             var userAccountId = Guid.NewGuid().ToString();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             var pitch1 = PitchTestHelper.GenerateValidPitch();
             var pitch2 = PitchTestHelper.GenerateValidPitch();
             IEnumerable<Pitch> pitchList = new List<Pitch> { pitch1, pitch2 };
@@ -223,7 +223,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var User = It.IsAny<ClaimsPrincipal>();
             var userAccountId = Guid.NewGuid().ToString();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync(account);
+            _accountRepository.Setup(service => service.GetAccountByIdAsync(Guid.Parse(userAccountId))).ReturnsAsync(account);
             _pitchRepository.Setup(repo => repo.GetPitchesByCreatorAsync(account.AccountId)).ReturnsAsync((IEnumerable<Pitch>)null);
 
             // Act
@@ -240,7 +240,6 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var User = It.IsAny<ClaimsPrincipal>();
             var userAccountId = Guid.NewGuid().ToString();
             var account = AccountTestHelper.GenerateValidFakeAccount();
-            _pitchServiceHelper.Setup(service => service.GetAccountFromLoginId(userAccountId)).ReturnsAsync((Account)null);
 
             // Act
             var result = await _sut.GetOutcomingPitches(userAccountId);

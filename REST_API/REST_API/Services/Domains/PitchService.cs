@@ -12,18 +12,20 @@ namespace REST_API.Services.Domains
     {
         private IPitchRepository _pitchRepository;
         private IPitchServiceHelper _picthServiceHelper;
+        private IAccountRepository _accountRepository;
 
-        public PitchService(IPitchRepository pitchRepository, IPitchServiceHelper picthServiceHelper)
+        public PitchService(IPitchRepository pitchRepository, IPitchServiceHelper picthServiceHelper, IAccountRepository accountRepository)
         {
             _pitchRepository = pitchRepository;
             _picthServiceHelper = picthServiceHelper;
+            _accountRepository = accountRepository;
         }
 
         public async Task<ResultDTO> SendPitch(SendPitchDTO dto, String userAccountId)
         {
             try
             {
-                var loggedInUser = await _picthServiceHelper.GetAccountFromLoginId(userAccountId);
+                var loggedInUser = await _accountRepository.GetAccountByIdAsync(Guid.Parse(userAccountId));
 
                 if (loggedInUser != null)
                 {
@@ -74,7 +76,7 @@ namespace REST_API.Services.Domains
         {
             try
             {
-                var loggedInAccount = await _picthServiceHelper.GetAccountFromLoginId(userAccountId);
+                var loggedInAccount = await _accountRepository.GetAccountByIdAsync(Guid.Parse(userAccountId));
 
                 if (loggedInAccount != null)
                 {
@@ -106,7 +108,7 @@ namespace REST_API.Services.Domains
         {
             try
             {
-                var loggedInAccount = await _picthServiceHelper.GetAccountFromLoginId(userAccountId);
+                var loggedInAccount = await _accountRepository.GetAccountByIdAsync(Guid.Parse(userAccountId));
 
                 if (loggedInAccount != null)
                 {

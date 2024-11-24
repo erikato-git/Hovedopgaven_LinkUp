@@ -167,7 +167,7 @@ namespace REST_API_TESTS.Integration_Tests.Repositories
             var account = await _dbContext.Accounts.FirstAsync();
 
             // Act
-            var result = await _sut.GetByIdAsync(account.AccountId);
+            var result = await _sut.GetAccountByIdAsync(account.AccountId);
 
             // Assert
             Assert.Equal(account, result);
@@ -179,7 +179,7 @@ namespace REST_API_TESTS.Integration_Tests.Repositories
             // Arrange
 
             // Act
-            var result = await _sut.GetByIdAsync(Guid.NewGuid());
+            var result = await _sut.GetAccountByIdAsync(Guid.NewGuid());
 
             // Assert
             Assert.Null((Account)result);

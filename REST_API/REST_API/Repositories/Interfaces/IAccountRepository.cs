@@ -7,7 +7,7 @@ namespace REST_API.Repositories.Interfaces
     public interface IAccountRepository
     {
         // Common repository methods
-        Task<Account?> GetByIdAsync(Guid id);
+        Task<Account?> GetAccountByIdAsync(Guid id);
         Task<IEnumerable<Account>?> GetAllAsync();
         Task<Account?> AddAsync(Account dto);
         Task<Account?> UpdateAsync(Account dto);
