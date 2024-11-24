@@ -1,4 +1,5 @@
-﻿using REST_API.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using REST_API.Data;
 using REST_API.Models;
 using System;
 using System.Collections.Generic;
@@ -16,19 +17,20 @@ namespace REST_API_TESTS.Util
     {
         public static void InitDbForTests(MssqlDbContext dbContext)
         {
-            dbContext.Accounts.AddRange(GetAccountsForTest());
-            dbContext.Profiles.AddRange(GetProfilesForTest());      // saves into in-memory
+            dbContext.Accounts.AddRange(GetAccountsForTest());      // saves into in-memory
+            dbContext.Profiles.AddRange(GetProfilesForTest());
+            dbContext.Pitches.AddRange(GetPitchesForTest());
             dbContext.SaveChanges();                                // saves into test-container database
         }
 
         public static void ReinitDbForTests(MssqlDbContext dbContext)
         {
             dbContext.Accounts.RemoveRange(dbContext.Accounts);
-            dbContext.Profiles.RemoveRange(dbContext.Profiles);     // removes all items for the table
-            dbContext.SaveChanges();    
+            dbContext.Profiles.RemoveRange(dbContext.Profiles);
+            dbContext.Pitches.RemoveRange(dbContext.Pitches);
+            dbContext.SaveChanges();
             InitDbForTests(dbContext);                              // re-init new items
         }
-
 
 
         private static List<Profile> GetProfilesForTest()
@@ -37,7 +39,7 @@ namespace REST_API_TESTS.Util
             {
                 new Profile
                 {
-                    ProfileId = Guid.NewGuid(),
+                    ProfileId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
                     Profession = "Software Engineer",
                     Title = "Full Stack Developer",
                     AlternativeTitle = "Tech Enthusiast",
@@ -51,7 +53,7 @@ namespace REST_API_TESTS.Util
                 },
                 new Profile
                 {
-                    ProfileId = Guid.NewGuid(),
+                    ProfileId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
                     Profession = "Graphic Designer",
                     Title = "Creative Specialist",
                     ProfilePicture = "profile2.jpg",
@@ -85,8 +87,8 @@ namespace REST_API_TESTS.Util
                         BirthDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-30)),
                         Gender = "Female"
                     },
-                    Profiles = new List<Profile>(), // Populated after Profiles are added
-                    SavedProfileIds = null
+                    Profiles = new List<Profile>(), 
+                    SavedProfileIds = new List<Guid>()
                 },
                 new Account
                 {
@@ -103,12 +105,39 @@ namespace REST_API_TESTS.Util
                         BirthDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-25)),
                         Gender = "Male"
                     },
-                    Profiles = null, // Populated after Profiles are added
-                    SavedProfileIds = new List<Profile>() // Referencing saved profiles
+                    Profiles = new List<Profile>(),
+                    SavedProfileIds = new List<Guid>()
                 }
             };
         }
 
+
+        private static List<Pitch> GetPitchesForTest()
+        {
+            return new List<Pitch>
+            {
+                new Pitch
+                {
+                    PitchId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
+                    SendingDate = DateTime.UtcNow,
+                    TextMessage = "This is a test pitch for profile 1",
+                    RecipientProfileId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Links to Profile 1
+                    RecipientAccountId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    ProfileId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    Profile = null
+                },
+                new Pitch
+                {
+                    PitchId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                    SendingDate = DateTime.UtcNow.AddMinutes(-30),
+                    TextMessage = "This is a test pitch for profile 2",
+                    RecipientProfileId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), // Links to Profile 2
+                    RecipientAccountId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                    ProfileId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                    Profile = null
+                }
+            };
+        }
 
 
 

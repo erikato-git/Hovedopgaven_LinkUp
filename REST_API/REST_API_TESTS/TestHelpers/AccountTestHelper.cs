@@ -1,6 +1,7 @@
 ﻿using REST_API.DTOs;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
+using REST_API.Services.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,17 +27,25 @@ namespace REST_API_TESTS.Helpers
                 Gender = "Male"
             };
 
+            var accountId1 = Guid.NewGuid();
+
             return new Account
             {
-                AccountId = Guid.NewGuid(),
+                AccountId = accountId1,
                 Email = "johndoe@example.com",
-                Password = "SecurePassword123", // In real applications, passwords should be hashed
+                Password = AccountServiceHelper.HashingPasswordWithSaltUsingSHA256("Secure password", accountId1),
                 PersonInformationId = personInfo.PersonInformationId,
-                PersonInformation = personInfo,
-                Profiles = new List<Profile> // Assuming the Profile class exists
+                PersonInformation = new PersonInformation
                 {
-                    new Profile { }
-                }
+                    PersonInformationId = Guid.NewGuid(),
+                    FirstName = "John",
+                    Surname = "Doe",
+                    Phone = "123-456-7890",
+                    BirthDate = new DateOnly(1990, 5, 20),
+                    Gender = "Male"
+                },
+                SavedProfileIds = null,
+                Profiles = null
             };
         }
 

@@ -7,7 +7,7 @@ namespace REST_API.Repositories.Interfaces
         Task GetByIdAsync(Guid id);
         Task GetAllAsync();
         Task<Profile?> UpdateAsync(Profile profile);
-        Task SaveChangesAsync();
+        Task<bool> SaveChangesAsync();
 
         // Composition
         Task CreateKeywordAsync(Profile profile, Keyword keyword);

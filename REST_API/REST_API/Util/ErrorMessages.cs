@@ -9,6 +9,7 @@
         public const string AccountSerivce_UpdateAccount_YouCannotUpdateAnotherPersonsAccount = "You cannot update another person's account";
         public const string AccountSerivce_UpdateAccount_YouMustBeSignedInBeforeYouCanUpdateYourAccount = "You must be signed in before you can update your account";
         public const string AccountSerivce_UpdateAccount_UpdateAccountFailed = "Update account failed due to internal server failure";
+        public const string AccountSerivce_UpdateAccount_LoggedInAccountDoesNotExist = "Logged in account does not exist";
         public const string AccountSerivce_GetAccountById_AccountNotFound = "Account not found";
         public const string AccountSerivce_GetAccountById_YouCannotAccessAnotherAccount = "You cannot access another account";
         public const string AccountSerivce_GetAccountById_FailedToRetrieveAccountInternalServerError = "Failed to retrieve account due to internal server failure";

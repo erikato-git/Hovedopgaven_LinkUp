@@ -14,6 +14,7 @@ builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<IAccountService,AccountService>();
 builder.Services.AddScoped<IAccountServiceHelper,AccountServiceHelper>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IPitchRepository, PitchRepository>();
 
 
 builder.Services.AddControllers();

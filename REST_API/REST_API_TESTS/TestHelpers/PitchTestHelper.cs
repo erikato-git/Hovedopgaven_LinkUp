@@ -53,27 +53,7 @@ namespace REST_API_TESTS.Helpers
             };
         }
 
-        public static Pitch GenerateValidPitchWihtoutAnyProfiles()
-        {
-            return new Pitch
-            {
-                PitchId = Guid.NewGuid(),
-                SendingDate = DateTime.UtcNow,
-                TextMessage = "I am excited about the opportunity to collaborate with you!",
-                RecipientProfileId = Guid.NewGuid(),
-                RecipientAccountId = Guid.NewGuid(),
-                ProfileId = Guid.NewGuid(),
-                Profile = new Profile
-                {
-                    ProfileId = Guid.NewGuid(),
-                    Profession = "Musician",
-                    Title = "Guitarist",
-                    AlternativeTitle = "Music Teacher",
-                    ProfilePicture = "https://example.com/profile-picture.jpg",
-                    ProfileDescription = "Experienced guitarist with a passion for teaching and performing.",
-                }
-            };
-        }
+
 
     }
 }

@@ -6,6 +6,7 @@ using REST_API.Repositories.Interfaces;
 using REST_API.Services.Helpers;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
+using REST_API.Util.Mapper;
 
 namespace REST_API.Services.Domains
 {
@@ -28,7 +29,7 @@ namespace REST_API.Services.Domains
 
                 if (accountFound != null)
                 {
-                    var passwordsMatch = _accountServiceHelper.CheckPasswordsMatch(dto.Password, accountFound.Password);     // TODO: make sure account.Password is hashed
+                    var passwordsMatch = _accountServiceHelper.CheckPasswordsMatch(dto.Password, accountFound);
 
                     if (passwordsMatch)
                     {
@@ -66,7 +67,9 @@ namespace REST_API.Services.Domains
 
                 if (!emailTaken)
                 {
-                    var createdAccount = await _accountRepository.AddAsync(dto);
+                    var newAccount = AccountMapper.MapToAccount(dto);
+
+                    var createdAccount = await _accountRepository.AddAsync(newAccount);
 
                     if (createdAccount != null)
                     {
@@ -101,11 +104,21 @@ namespace REST_API.Services.Domains
 
                 if (hasAuthorization)
                 {
-                    var updatedAccount = await _accountRepository.UpdateAsync(dto);
+                    var parsedGuid = Guid.Parse(userAccountId);
+                    var existingAccount = await _accountRepository.GetByIdAsync(parsedGuid);
 
-                    if (updatedAccount != null)
+                    if(existingAccount == null)
                     {
-                        return ResultDTO.SuccesResult(updatedAccount, "Account has succesfully been updated");
+                        return ResultDTO.FailureResult(ErrorMessages.AccountSerivce_UpdateAccount_LoggedInAccountDoesNotExist);
+                    }
+
+                    var updatedAccount = AccountMapper.MapToAccount(dto, existingAccount);
+
+                    var savedUpdatedAccount = await _accountRepository.UpdateAsync(updatedAccount);
+
+                    if (savedUpdatedAccount != null)
+                    {
+                        return ResultDTO.SuccesResult(savedUpdatedAccount, "Account has succesfully been updated");
                     }
                     else
                     {

@@ -1,9 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop.Infrastructure;
 using REST_API.Data;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Migrations;
 using REST_API.Models;
 using REST_API.Repositories.Interfaces;
+using System.Security.Principal;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using String = System.String;
 
 namespace REST_API.Repositories
 {
@@ -16,41 +20,191 @@ namespace REST_API.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<Account?> GetAccountByEmailAsync(string email)
+        public async Task<Account?> GetAccountByEmailAsync(String email)
         {
-            var account = await _dbContext.Accounts.FirstAsync();
+            if(String.IsNullOrWhiteSpace(email))
+            {  
+                return null;
+            }
 
+            var account = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == email);
             return account;
         }
 
-        public Task<Account?> AddAsync(CreateAccountDTO dto)
+        public async Task<bool> doesEmailForAccountExistAsync(String email)
         {
-            throw new NotImplementedException();
+            if (String.IsNullOrWhiteSpace(email))
+            {
+                return false;
+            }
+
+            var found = await _dbContext.Accounts.FirstOrDefaultAsync(x =>x.Email == email);
+            return found != null;
         }
 
-        public Task<bool> AddSavedProfileAsync(Account account, Guid profileId)
+        public async Task<Account?> AddAsync(Account account)
         {
-            throw new NotImplementedException();
+            if (account != null)
+            {
+                var newAccount = await _dbContext.Accounts.AddAsync(account);
+
+                var saved = await SaveChangesAsync();
+
+                if (saved)
+                {
+                    return newAccount.Entity;
+                }
+            }
+
+            return null;
         }
 
-        public Task<Profile?> CreateProfileAsync(Account account, Profile profile)
+        public async Task<Account?> UpdateAsync(Account account)
         {
-            throw new NotImplementedException();
+            if (account != null)
+            {
+                var found = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == account.AccountId);
+
+                if (found != null)
+                {
+                    var newAccount = _dbContext.Accounts.Update(account);
+
+                    var saved = await SaveChangesAsync();
+
+                    if (saved)
+                    {
+                        return newAccount.Entity;
+                    }
+                }
+            }
+
+            return null;
         }
 
-        public Task<bool> DeleteAsync(Guid id)
+        public async Task<Account?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var found = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == id);
+
+            return found;
         }
 
-        public Task<bool> DeleteProfileAsync(Account account, Guid profileId)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var found = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == id);
+
+            if(found != null)
+            {
+                var deleted = _dbContext.Accounts.Remove(found);
+
+                var saved = await SaveChangesAsync();
+
+                if (saved)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        public Task<bool> doesEmailForAccountExistAsync(string email)
+        public async Task<Profile?> CreateProfileAsync(Account account, Profile profile)
         {
-            throw new NotImplementedException();
+            if(account == null || profile == null)
+            {
+                return null;
+            }
+
+            var targetAccount = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == account.AccountId);
+
+            if (targetAccount != null)
+            {
+                profile.AccountId = targetAccount.AccountId;        // adding profile to targetAccount
+                profile.Account = targetAccount;
+
+                if(targetAccount.Profiles != null)
+                {
+                    _dbContext.Profiles.Add(profile);
+
+                    var saved = await SaveChangesAsync();
+
+                    if (saved)
+                    {
+                        return profile;
+                    }
+                }
+            }
+
+            return null;
+
+        }
+
+        public async Task<bool> DeleteProfileAsync(Account account, Guid profileId)
+        {
+            if(account == null || String.IsNullOrEmpty(profileId.ToString()))
+            {
+                return false;       // TODO: research if it's more proper to throw an exception
+            }
+
+            var accountFound = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == account.AccountId);
+
+            if (accountFound != null)
+            {
+                var profileFound = await _dbContext.Profiles.FirstOrDefaultAsync(x => x.ProfileId == profileId);
+
+                if (profileFound != null)
+                {
+                    var matchAccountId = profileFound.AccountId.Equals(accountFound.AccountId);
+
+                    if (matchAccountId)
+                    {
+                        _dbContext.Profiles.Remove(profileFound);
+
+                        var saved = await SaveChangesAsync();
+
+                        if (saved)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+
+        public async Task<bool> AddSavedProfileAsync(Account account, Guid profileId)
+        {
+            if (account == null || String.IsNullOrEmpty(profileId.ToString()))
+            {
+                return false;       // TODO: research if it's more proper to throw an exception
+            }
+
+            var accountFound = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == account.AccountId);
+
+            if (accountFound != null)
+            {
+                var profileFound = await _dbContext.Profiles.FirstOrDefaultAsync(x => x.ProfileId == profileId);
+
+                if (profileFound != null)
+                {
+                    var belongsToOwnAccount = accountFound.Profiles?.FirstOrDefault(x => x.ProfileId == profileId);
+
+                    if(belongsToOwnAccount == null)
+                    {
+                        accountFound.SavedProfileIds?.Add(profileId);
+
+                        var saved = await SaveChangesAsync();
+
+                        if (saved)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         public Task<IEnumerable<Account>?> GetAllAsync()
@@ -58,19 +212,17 @@ namespace REST_API.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Account?> GetByIdAsync(Guid id)
+        public async Task<bool> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _dbContext.SaveChangesAsync() > 0;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<bool> SaveChangesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Account?> UpdateAsync(UpdateAccountDTO dto)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

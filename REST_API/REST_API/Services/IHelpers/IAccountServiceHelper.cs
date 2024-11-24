@@ -7,6 +7,7 @@ namespace REST_API.Services.Helpers
     public interface IAccountServiceHelper : IAuthentication 
     {
         String GenerateJWT(Account account);
-        bool CheckPasswordsMatch(string password1, string password2);
+        bool CheckPasswordsMatch(string password1, Account account);
+
     }
 }

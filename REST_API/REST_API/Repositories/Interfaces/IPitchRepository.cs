@@ -13,6 +13,6 @@ namespace REST_API.Repositories.Interfaces
         Task<Pitch?> AddAsync(Pitch pitch);
         Task UpdateAsync(Pitch pitch);
         Task DeleteAsync(Guid id);
-        Task SaveChangesAsync();
+        Task<bool> SaveChangesAsync();
     }
 }

@@ -9,8 +9,8 @@ namespace REST_API.Repositories.Interfaces
         // Common repository methods
         Task<Account?> GetByIdAsync(Guid id);
         Task<IEnumerable<Account>?> GetAllAsync();
-        Task<Account?> AddAsync(CreateAccountDTO dto);
-        Task<Account?> UpdateAsync(UpdateAccountDTO dto);
+        Task<Account?> AddAsync(Account dto);
+        Task<Account?> UpdateAsync(Account dto);
         Task<bool> DeleteAsync(Guid id);
         Task<bool> SaveChangesAsync();
         Task<bool> AddSavedProfileAsync(Account account, Guid profileId);

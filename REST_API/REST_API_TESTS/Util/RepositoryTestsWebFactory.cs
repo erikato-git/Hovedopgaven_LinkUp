@@ -1,26 +1,17 @@
 ﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using REST_API.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Testcontainers.MsSql;
 
 namespace REST_API_TESTS.Util
 {
     /*
      * Reference: Cummings, Neil: "Build a Microservice app with .NET and NextJS from scratch", lecture: 192, Udemy
-     * Reference: CodeMaze, Test-containers .NET ...
+     * Reference: CodeMaze, https://code-maze.com/csharp-testing-using-testcontainers-for-net-and-docker/
      */
 
     public class RepositoryTestsWebFactory : WebApplicationFactory<Program>, IAsyncLifetime
@@ -30,10 +21,8 @@ namespace REST_API_TESTS.Util
         private const string Password = "yourStrong(!)Password";
         private const ushort MsSqlPort = 1433;
 
-
-
         private readonly IContainer _mssqlContainer = new ContainerBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")        // docker-image
             .WithPortBinding(MsSqlPort)
             .WithEnvironment("ACCEPT_EULA", "Y")
             .WithEnvironment("SQLCMDUSER", Username)
@@ -80,7 +69,6 @@ namespace REST_API_TESTS.Util
 
                 db.Database.EnsureDeleted();
                 db.Database.EnsureCreated();
-                //db.Database.Migrate();
                 DbInitializerForTests.InitDbForTests(db);
             });
 
@@ -94,16 +82,6 @@ namespace REST_API_TESTS.Util
 
         // Dispose test-container when tests end.
         Task IAsyncLifetime.DisposeAsync() => _mssqlContainer.DisposeAsync().AsTask();
-
-        //public async Task InitializeAsync()
-        //{
-        //    await _mssqlContainer.StartAsync();
-        //}
-
-        //public new async Task DisposeAsync()
-        //{
-        //    await _mssqlContainer.DisposeAsync();
-        //}
 
     }
 }
