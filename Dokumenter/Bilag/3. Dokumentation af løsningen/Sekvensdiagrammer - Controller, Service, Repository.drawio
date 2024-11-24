@@ -1,17 +1,11 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="24.8.9">
   <diagram name="Page-1" id="2YBvvXClWsGukQMizWep">
-    <mxGraphModel dx="891" dy="1546" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="602" dy="1402" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="EReOAxYo3nzBM2rBoT4Z-26" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="1473" y="1410" width="254" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="EReOAxYo3nzBM2rBoT4Z-4" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="1490" y="300" width="174" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="tZ4PV7h2v3UnS7loqFRw-194" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="3720.5" y="-801.45" width="212" height="49.12" as="geometry" />
         </mxCell>
         <mxCell id="tZ4PV7h2v3UnS7loqFRw-438" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="5680.75" y="300" width="279.25" height="70" as="geometry" />
@@ -195,7 +189,7 @@
         <mxCell id="UrCkISKYRLRXjf0qk5b_-178" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;[User tries to update another user&#39;s account]&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;container=0;" parent="1" vertex="1">
           <mxGeometry x="3254.6346153846152" y="-444.12" width="164.64653846153846" height="30.23" as="geometry" />
         </mxCell>
-        <mxCell id="UrCkISKYRLRXjf0qk5b_-153" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;UpdateAsync(UpdateAccountDto)&lt;/font&gt;" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endFill=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" edge="1">
+        <mxCell id="UrCkISKYRLRXjf0qk5b_-153" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;UpdateAsync(Account)&lt;/font&gt;" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endFill=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" edge="1">
           <mxGeometry x="0.3538" relative="1" as="geometry">
             <mxPoint x="3911.368461538462" y="-712.89" as="sourcePoint" />
             <Array as="points">
@@ -875,7 +869,7 @@
         <mxCell id="2d4SwDu-dwT29E0HZBbO-124" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};" parent="2d4SwDu-dwT29E0HZBbO-123" vertex="1">
           <mxGeometry width="10" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="2d4SwDu-dwT29E0HZBbO-125" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;font-size: 8px; text-wrap-mode: wrap; background-color: rgb(251, 251, 251);&quot;&gt;GenerateJWT(account)*: String&lt;/span&gt;&lt;/div&gt;" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" parent="2d4SwDu-dwT29E0HZBbO-123" source="2d4SwDu-dwT29E0HZBbO-124" target="2d4SwDu-dwT29E0HZBbO-124" edge="1">
+        <mxCell id="2d4SwDu-dwT29E0HZBbO-125" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;font-size: 8px; text-wrap-mode: wrap; background-color: rgb(251, 251, 251);&quot;&gt;GenerateJWT(account): String?&lt;/span&gt;&lt;/div&gt;" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" parent="2d4SwDu-dwT29E0HZBbO-123" source="2d4SwDu-dwT29E0HZBbO-124" target="2d4SwDu-dwT29E0HZBbO-124" edge="1">
           <mxGeometry x="0.3333" y="-25" width="80" relative="1" as="geometry">
             <mxPoint x="-5" y="90" as="sourcePoint" />
             <mxPoint x="75" y="90" as="targetPoint" />
@@ -1357,9 +1351,6 @@
             <mxPoint x="1292.5" y="772.09" as="sourcePoint" />
             <mxPoint x="1059.5" y="772.09" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="tZ4PV7h2v3UnS7loqFRw-193" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="1418" y="-805.01" width="212" height="49.12" as="geometry" />
         </mxCell>
         <mxCell id="tZ4PV7h2v3UnS7loqFRw-195" value="SD9: GetProfile/{id}" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=130;height=40;" parent="1" vertex="1">
           <mxGeometry x="5010.25" y="90" width="1050" height="1020" as="geometry" />

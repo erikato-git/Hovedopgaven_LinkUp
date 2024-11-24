@@ -4,8 +4,10 @@ using REST_API.Models;
 using REST_API.Repositories;
 using REST_API.Repositories.Interfaces;
 using REST_API.Services.Helpers;
+using REST_API.Services.IHelpers;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
+using REST_API.Util.Mapper;
 
 namespace REST_API.Services.Domains
 {
@@ -14,23 +16,25 @@ namespace REST_API.Services.Domains
         private IAccountRepository _accountRepository;
         private IProfileRepository _profileRepository;
         private IProfileServiceHelper _profileServiceHelper;
+        private IAuthentication _authentication;
 
-        public ProfileService(IAccountRepository accountRepository, IProfileRepository profileRepository, IProfileServiceHelper profileServiceHelper)
+        public ProfileService(IAccountRepository accountRepository, IProfileRepository profileRepository, IProfileServiceHelper profileServiceHelper, IAuthentication authentication)
         {
             _accountRepository = accountRepository;
             _profileRepository = profileRepository;
             _profileServiceHelper = profileServiceHelper;
+            _authentication = authentication;
         }
 
         public async Task<ResultDTO> CreateProfile(CreateProfileDTO dto, String userAccountId)
         {
             try
             {
-                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId(userAccountId);
+                var loggedInAccount = await _authentication.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInAccount != null)
                 {
-                    var generatedProfile = _profileServiceHelper.CreateProfileDTOToProfile(dto);
+                    var generatedProfile = ProfileMapper.MapCreateProfileDTOToProfile(dto);
 
                     if (generatedProfile != null)
                     {
@@ -67,28 +71,43 @@ namespace REST_API.Services.Domains
         {
             try
             {
-                var hasAuthorization = _profileServiceHelper.CheckAccountIdMatchLoginId(dto.AccountId, userAccountId);
+                var hasAuthorization = _authentication.CheckAccountIdMatchLoginId(dto.AccountId, userAccountId);
+
+                // Check account exist with profile with ProfiledId from dto exist
 
                 if (hasAuthorization)
                 {
-                    var generatedProfile = _profileServiceHelper.UpdateProfileDTOToProfile(dto);
+                    var parsedGuid = Guid.Parse(userAccountId);
+                    var existingAccount = await _accountRepository.GetByIdAsync(parsedGuid);
 
-                    if (generatedProfile != null)
+                    if (existingAccount == null)
                     {
-                        var updatedProfiled = await _profileRepository.UpdateAsync(generatedProfile);
+                        return ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_UpdateAccount_LoggedInAccountDoesNotExist);
+                    }
 
-                        if (updatedProfiled != null)
+                    var existingProfile = _profileServiceHelper.GetProfileFromAccount(existingAccount, dto.AccountId);
+
+                    if(existingProfile != null)
+                    {
+                        var generatedProfile = ProfileMapper.MapUpdateProfileDTOToProfile(dto,existingProfile);
+
+                        if (generatedProfile != null)
                         {
-                            return ResultDTO.SuccesResult(updatedProfiled, "Profile has succesfully been updated");
+                            var updatedProfiled = await _profileRepository.UpdateAsync(generatedProfile);
+
+                            if (updatedProfiled != null)
+                            {
+                                return ResultDTO.SuccesResult(updatedProfiled, "Profile has succesfully been updated");
+                            }
+                            else
+                            {
+                                return ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_UpdateProfile_FailedToUpdateProfileDueToInternalServerError);
+                            }
                         }
                         else
                         {
-                            return ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_UpdateProfile_FailedToUpdateProfileDueToInternalServerError);
+                            return ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_UpdateProfile_CouldNotGenerateProfileFromDto);
                         }
-                    }
-                    else
-                    {
-                        return ResultDTO.FailureResult(ErrorMessages.ProfileSerivce_UpdateProfile_CouldNotGenerateProfileFromDto);
                     }
                 }
                 else
@@ -110,7 +129,7 @@ namespace REST_API.Services.Domains
         {
             try
             {
-                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId(userAccountId);
+                var loggedInAccount = await _authentication.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInAccount != null)
                 {
@@ -142,7 +161,7 @@ namespace REST_API.Services.Domains
         {
             try
             {
-                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId(userAccountId);
+                var loggedInAccount = await _authentication.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInAccount != null)
                 {
@@ -199,7 +218,7 @@ namespace REST_API.Services.Domains
         {
             try
             {
-                var loggedInAccount = await _profileServiceHelper.GetAccountFromLoginId(userAccountId);
+                var loggedInAccount = await _authentication.GetAccountFromLoginId(userAccountId);
 
                 if (loggedInAccount != null)
                 {

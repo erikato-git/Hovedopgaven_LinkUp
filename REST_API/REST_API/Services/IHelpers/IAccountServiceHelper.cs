@@ -4,7 +4,7 @@ using REST_API.Services.IHelpers;
 
 namespace REST_API.Services.Helpers
 {
-    public interface IAccountServiceHelper : IAuthentication 
+    public interface IAccountServiceHelper
     {
         String GenerateJWT(Account account);
         bool CheckPasswordsMatch(string password1, Account account);

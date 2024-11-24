@@ -7,6 +7,7 @@ using REST_API.Models;
 using REST_API.Repositories.Interfaces;
 using REST_API.Services.Domains;
 using REST_API.Services.Helpers;
+using REST_API.Services.IHelpers;
 using REST_API.Util;
 using REST_API_TESTS.Helpers;
 using System;
@@ -21,6 +22,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
     {
         private readonly Mock<IAccountRepository> _accountRepository;
         private readonly Mock<IAccountServiceHelper> _accountServiceHelper;
+        private readonly Mock<IAuthentication> _authentication;
         private readonly Fixture _fixture;
         private readonly AccountService _sut;
 
@@ -29,8 +31,9 @@ namespace REST_API_TESTS.Unit_Tests.Services
             _fixture = new Fixture();
             _accountRepository = new Mock<IAccountRepository>();
             _accountServiceHelper = new Mock<IAccountServiceHelper>();
+            _authentication = new Mock<IAuthentication>();
 
-            _sut = new AccountService(_accountRepository.Object, _accountServiceHelper.Object);
+            _sut = new AccountService(_accountRepository.Object, _accountServiceHelper.Object, _authentication.Object);
         }
 
 
@@ -150,7 +153,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var userAccountId = Guid.NewGuid().ToString();
             var updateAccountDTO = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
             var existingAccount = AccountTestHelper.GenerateValidFakeAccount();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId, userAccountId)).Returns(true);
+            _authentication.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId, userAccountId)).Returns(true);
             _accountRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(existingAccount);
             var account = AccountTestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.UpdateAsync(It.IsAny<Account>())).ReturnsAsync(account);
@@ -169,7 +172,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             var userAccountId = Guid.NewGuid().ToString();
             var updateAccountDTO = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
             var existingAccount = AccountTestHelper.GenerateValidFakeAccount();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId, userAccountId)).Returns(true);
+            _authentication.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId, userAccountId)).Returns(true);
             _accountRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(existingAccount);
             var account = AccountTestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.UpdateAsync(It.IsAny<Account>())).ReturnsAsync((Account)null);
@@ -187,7 +190,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             // Arrange
             var userAccountId = Guid.NewGuid().ToString();
             var updateAccountDTO = AccountTestHelper.GenerateFakeValidUpdateAccountDTO();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId, userAccountId)).Returns(false);
+            _authentication.Setup(service => service.CheckAccountIdMatchLoginId(updateAccountDTO.AccountId, userAccountId)).Returns(false);
 
             // Act
             var result = await _sut.UpdateAccount(updateAccountDTO, userAccountId);
@@ -205,7 +208,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             // Arrange
             var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id,userAccountId)).Returns(true);
+            _authentication.Setup(service => service.CheckAccountIdMatchLoginId(id,userAccountId)).Returns(true);
             var account = AccountTestHelper.GenerateValidFakeAccount();
             _accountRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync(account);
 
@@ -222,7 +225,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             // Arrange
             var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(true);
+            _authentication.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(true);
             _accountRepository.Setup(repo => repo.GetByIdAsync(id)).ReturnsAsync((Account)null);
 
             // Act
@@ -238,7 +241,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             // Arrange
             var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(false);
+            _authentication.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(false);
 
             // Act
             var result = await _sut.GetAccountById(id, userAccountId);
@@ -256,7 +259,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             // Arrange
             var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(true);
+            _authentication.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(true);
             _accountRepository.Setup(repo => repo.DeleteAsync(id)).ReturnsAsync(true);
 
             // Act
@@ -272,7 +275,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             // Arrange
             var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(true);
+            _authentication.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(true);
             _accountRepository.Setup(repo => repo.DeleteAsync(id)).ReturnsAsync(false);
 
             // Act
@@ -288,7 +291,7 @@ namespace REST_API_TESTS.Unit_Tests.Services
             // Arrange
             var userAccountId = It.IsAny<Guid>().ToString();
             var id = It.IsAny<Guid>();
-            _accountServiceHelper.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(false);
+            _authentication.Setup(service => service.CheckAccountIdMatchLoginId(id, userAccountId)).Returns(false);
 
             // Act
             var result = await _sut.DeleteAccountById(id, userAccountId);

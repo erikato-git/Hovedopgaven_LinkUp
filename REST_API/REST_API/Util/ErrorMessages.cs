@@ -24,6 +24,7 @@
         public const string ProfileSerivce_CreateProfile_CouldNotGenerateProfileFromDto = "Could not generate profile from provided profile details";
         public const string ProfileSerivce_CreateProfile_CouldNotFindAccountForLoggedInUser = "Could not find account for signed in user";
         public const string ProfileSerivce_UpdateProfile_FailedToUpdateProfileDueToInternalServerError = "Failed to update profile due to internal server error";
+        public const string ProfileSerivce_UpdateAccount_LoggedInAccountDoesNotExist = "Logged ind account does not exist";
         public const string ProfileSerivce_UpdateProfile_YouCannotUpdateProfileForAnotherAccount = "You cannot update a profile for another user's account";
         public const string ProfileSerivce_UpdateProfile_CouldNotGenerateProfileFromDto = "Could not generate profile from provided profile details";
         public const string ProfileSerivce_DeleteProfile_FailedToDeleteProfileDueToInternalServerError = "Failed to delete profile due to internal server error";

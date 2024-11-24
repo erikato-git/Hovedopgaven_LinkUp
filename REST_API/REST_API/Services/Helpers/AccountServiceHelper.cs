@@ -1,5 +1,9 @@
-﻿using REST_API.Models;
+﻿using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
+using REST_API.Models;
 using REST_API.Repositories.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,10 +12,12 @@ namespace REST_API.Services.Helpers
     public class AccountServiceHelper : IAccountServiceHelper
     {
         private IAccountRepository _accountRepository;
+        private IConfiguration _configuration;
 
-        public AccountServiceHelper(IAccountRepository accountRepository)
+        public AccountServiceHelper(IAccountRepository accountRepository, IConfiguration configuration)
         {
             _accountRepository = accountRepository;
+            _configuration = configuration;
         }
 
         public bool CheckPasswordsMatch(string loginPassword, Account account)
@@ -43,21 +49,43 @@ namespace REST_API.Services.Helpers
             return Convert.ToBase64String(hashed);
         }
 
-
-        public bool CheckAccountIdMatchLoginId(Guid loginId, string UserAccountId)
+        /*
+         * Consider to move this method to a class e.g. called TokenProvider to add more cohesion to AccountServiceHelper
+         * Needs to be tested at integration level
+         * Reference: https://www.youtube.com/watch?v=6DWJIyipxzw
+         */
+        public string? GenerateJWT(Account account)
         {
-            throw new NotImplementedException();
+            String secretKey = _configuration["JWT:Secret"];
+
+            if(String.IsNullOrEmpty(secretKey) || account == null)
+            {
+                return null;
+            }
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(
+                [
+                    new Claim("AccountId",account.AccountId.ToString())
+                    // add more claims if needed
+                ]),
+                Expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JWT:ExpirationTimeInMinutes"])),
+                SigningCredentials = credentials,
+                Issuer = _configuration["JWT:Issuer"],
+                Audience = _configuration["JWT:Audience"]
+            };
+
+            var handler = new JsonWebTokenHandler();
+
+            string token = handler.CreateToken(tokenDescriptor);
+
+            return token;
         }
 
-
-        public string GenerateJWT(Account account)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Account?> GetAccountFromLoginId(string userAccountId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

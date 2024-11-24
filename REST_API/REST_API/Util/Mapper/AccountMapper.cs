@@ -26,7 +26,7 @@ namespace REST_API.Util.Mapper
         }
 
         // UpdateAccountDTO -> Account
-        public static Account MapToAccount(UpdateAccountDTO updateAccountDto, Account existingAccount)
+        public static Account MapUpdateAccountDTOToAccount(UpdateAccountDTO updateAccountDto, Account existingAccount)
         {
             if (existingAccount == null || updateAccountDto == null)
             {

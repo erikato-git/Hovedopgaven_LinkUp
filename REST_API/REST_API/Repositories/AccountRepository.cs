@@ -83,7 +83,7 @@ namespace REST_API.Repositories
 
         public async Task<Account?> GetByIdAsync(Guid id)
         {
-            var found = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == id);
+            var found = await _dbContext.Accounts.Include(x => x.Profiles).FirstOrDefaultAsync(x => x.AccountId == id);
 
             return found;
         }

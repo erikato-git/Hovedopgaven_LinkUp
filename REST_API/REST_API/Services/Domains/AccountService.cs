@@ -4,6 +4,7 @@ using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Repositories.Interfaces;
 using REST_API.Services.Helpers;
+using REST_API.Services.IHelpers;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
 using REST_API.Util.Mapper;
@@ -14,11 +15,13 @@ namespace REST_API.Services.Domains
     {
         private IAccountRepository _accountRepository;
         private IAccountServiceHelper _accountServiceHelper;
+        private IAuthentication _authentication;
 
-        public AccountService(IAccountRepository accountRepository, IAccountServiceHelper accountServiceHelper)
+        public AccountService(IAccountRepository accountRepository, IAccountServiceHelper accountServiceHelper, IAuthentication authentication)
         {
             _accountRepository = accountRepository;
             _accountServiceHelper = accountServiceHelper;
+            _authentication = authentication;
         }
 
         public async Task<ResultDTO> Login(LoginDTO dto)
@@ -100,7 +103,7 @@ namespace REST_API.Services.Domains
         {
             try
             {
-                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(dto.AccountId, userAccountId);
+                var hasAuthorization = _authentication.CheckAccountIdMatchLoginId(dto.AccountId, userAccountId);
 
                 if (hasAuthorization)
                 {
@@ -112,7 +115,7 @@ namespace REST_API.Services.Domains
                         return ResultDTO.FailureResult(ErrorMessages.AccountSerivce_UpdateAccount_LoggedInAccountDoesNotExist);
                     }
 
-                    var updatedAccount = AccountMapper.MapToAccount(dto, existingAccount);
+                    var updatedAccount = AccountMapper.MapUpdateAccountDTOToAccount(dto, existingAccount);
 
                     var savedUpdatedAccount = await _accountRepository.UpdateAsync(updatedAccount);
 
@@ -143,7 +146,7 @@ namespace REST_API.Services.Domains
         {
             try
             {
-                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id, userAccountId);
+                var hasAuthorization = _authentication.CheckAccountIdMatchLoginId(id, userAccountId);
 
                 if (hasAuthorization)
                 {
@@ -175,7 +178,7 @@ namespace REST_API.Services.Domains
         {
             try
             {
-                var hasAuthorization = _accountServiceHelper.CheckAccountIdMatchLoginId(id, userAccountId);
+                var hasAuthorization = _authentication.CheckAccountIdMatchLoginId(id, userAccountId);
 
                 if (hasAuthorization)
                 {
