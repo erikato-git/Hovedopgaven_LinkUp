@@ -1,0 +1,190 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\integrationtests\\pending\\mediatests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\integrationtests\\pending\\mediatests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\integrationtests\\pending\\portfoliotests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\integrationtests\\pending\\portfoliotests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\integrationtests\\pending\\keywordtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\integrationtests\\pending\\keywordtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\integrationtests\\pending\\ecuationtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\integrationtests\\pending\\ecuationtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\integrationtests\\pending\\audiencespecificationtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\integrationtests\\pending\\audiencespecificationtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\integrationtests\\pending\\personinformationtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\integrationtests\\pending\\personinformationtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\integrationtests\\pitchtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\integrationtests\\pitchtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\integrationtests\\profiletests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\integrationtests\\profiletests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\integrationtests\\accounttests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\integrationtests\\accounttests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\util\\applicationfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\util\\applicationfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MediaTests.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\MediaTests.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\MediaTests.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\MediaTests.cs",
+              "RelativeToolTip": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\MediaTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T00:40:43.639Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PortfolioTests.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\PortfolioTests.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\PortfolioTests.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\PortfolioTests.cs",
+              "RelativeToolTip": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\PortfolioTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T00:40:35.429Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "KeywordTests.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\KeywordTests.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\KeywordTests.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\KeywordTests.cs",
+              "RelativeToolTip": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\KeywordTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T00:40:27.341Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "EcuationTests.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\EcuationTests.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\EcuationTests.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\EcuationTests.cs",
+              "RelativeToolTip": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\EcuationTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T00:40:19.146Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AudienceSpecificationTests.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\AudienceSpecificationTests.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\AudienceSpecificationTests.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\AudienceSpecificationTests.cs",
+              "RelativeToolTip": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\AudienceSpecificationTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T00:39:53.718Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PersonInformationTests.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\PersonInformationTests.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\PersonInformationTests.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\PersonInformationTests.cs",
+              "RelativeToolTip": "LinkUp_REST_API_TESTS\\IntegrationTests\\Pending\\PersonInformationTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T00:39:35.64Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PitchTests.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\PitchTests.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\IntegrationTests\\PitchTests.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\PitchTests.cs",
+              "RelativeToolTip": "LinkUp_REST_API_TESTS\\IntegrationTests\\PitchTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T00:39:14.72Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ProfileTests.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\ProfileTests.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\IntegrationTests\\ProfileTests.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\ProfileTests.cs",
+              "RelativeToolTip": "LinkUp_REST_API_TESTS\\IntegrationTests\\ProfileTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T00:38:23.668Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AccountTests.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\AccountTests.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\IntegrationTests\\AccountTests.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\AccountTests.cs",
+              "RelativeToolTip": "LinkUp_REST_API_TESTS\\IntegrationTests\\AccountTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T00:38:15.042Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ApplicationFactory.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\Util\\ApplicationFactory.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\Util\\ApplicationFactory.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\Util\\ApplicationFactory.cs",
+              "RelativeToolTip": "LinkUp_REST_API_TESTS\\Util\\ApplicationFactory.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAxwBwAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-01T00:36:13.407Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
