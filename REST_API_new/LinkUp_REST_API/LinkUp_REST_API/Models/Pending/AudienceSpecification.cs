@@ -2,5 +2,6 @@
 {
     public class AudienceSpecification
     {
+        public Guid AudienceSpecificationId { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using CloudinaryDotNet;
+using LinkUp_REST_API.Core;
 using LinkUp_REST_API.Data.DbContextConnections;
 using LinkUp_REST_API.Models;
+using LinkUp_REST_API_TESTS.TestHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,24 +105,24 @@ namespace LinkUp_REST_API_TESTS.Util
         {
             return new List<Account>
             {
-                //new Account
-                //{
-                //    AccountId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                //    Email = "user1@example.com",
-                //    Password = "password123", // Normally hashed in production
-                //    PersonInformationId = Guid.NewGuid(),
-                //    PersonInformation = new PersonInformation
-                //    {
-                //        PersonInformationId = Guid.NewGuid(),
-                //        FirstName = "Alice",
-                //        Surname = "Johnson",
-                //        Phone = "1234567890",
-                //        BirthDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-30)),
-                //        Gender = "Female"
-                //    },
-                //    Profiles = new List<Profile>(),
-                //    SavedProfileIds = new List<Guid>()
-                //},
+                new Account
+                {
+                    AccountId = AuthenticationTestHelper.GetValidAccountId(),
+                    Email = AccountTestHelper.GetValidEmail(),
+                    Password = Authentication.HashingPasswordWithSaltUsingSHA256(AccountTestHelper.GetValidPassword(), AuthenticationTestHelper.GetValidAccountId()), // Normally hashed in production
+                    PersonInformationId = Guid.NewGuid(),
+                    PersonInformation = new PersonInformation
+                    {
+                        PersonInformationId = Guid.NewGuid(),
+                        FirstName = "Alice",
+                        Surname = "Johnson",
+                        Phone = "1234567890",
+                        BirthDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-30)),
+                        Gender = "Female"
+                    },
+                    Profiles = new List<Profile>(),
+                    SavedProfileIds = new List<Guid>()
+                },
                 //new Account
                 //{
                 //    AccountId = Guid.Parse("22222222-2222-2222-2222-222222222222"),

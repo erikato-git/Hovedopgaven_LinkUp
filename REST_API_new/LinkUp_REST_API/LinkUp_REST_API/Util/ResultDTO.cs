@@ -4,16 +4,17 @@
     {
         public bool isSucces { get; set; }
         public object? Data { get; set; }   // specify data during runtime
-        public string? Message { get; set; }
+        public string Message { get; set; }
         public int StatusCode { get; set; }
 
-        public static ResultDTO Succes(object data, int statuscode)
+        public static ResultDTO Succes(object data, int statuscode, string message)
         {
             return new ResultDTO
             {
                 isSucces = true,
                 Data = data,
-                StatusCode = statuscode
+                StatusCode = statuscode,
+                Message = message
             };
         }
 

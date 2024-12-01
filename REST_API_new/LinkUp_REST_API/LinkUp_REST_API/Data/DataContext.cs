@@ -11,10 +11,14 @@ namespace LinkUp_REST_API.Data.DbContextConnections
     public class DataContext : DbContext
     {
         /*
-         * DbContextOptions<T> enables me to configure connection-string for DataContext outside the class in Program.cs
+         * Constructor required by test-container, I cannot configure connection-string from DI, it doesn't work with test-containers in xUnit > WebApplicationFactory
          */
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
+        public DataContext(DbContextOptions<DataContext> options): base(options)
         {
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hovedopgave;Integrated Security=SSPI;Trust Server Certificate=True");
         }
 
         public DbSet<Account> Accounts { get; set; }
@@ -55,7 +59,7 @@ namespace LinkUp_REST_API.Data.DbContextConnections
                 .HasMany(p => p.Pitches)
                 .WithOne(pi => pi.Profile)
                 .HasForeignKey(pi => pi.ProfileId)
-                .OnDelete(DeleteBehavior.SetNull);  // Pitches not destroyed when the profile is destroyed
+                .OnDelete(DeleteBehavior.Cascade); 
 
             // Profile to AudienceSpecification (One-to-one relationship) - TODO
             //modelBuilder.Entity<Profile>()

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebMotions.Fake.Authentication.JwtBearer;
 using Xunit;
 
 namespace LinkUp_REST_API_TESTS.Util
@@ -45,11 +46,24 @@ namespace LinkUp_REST_API_TESTS.Util
 
                 var host = _mssqlContainer.Hostname;
                 var port = _mssqlContainer.GetMappedPublicPort(MsSqlPort);
+
                 services.AddDbContext<DataContext>(options =>
                 {
                     options.UseSqlServer(
                         $"Server={host},{port};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True");
                 });
+
+
+                /*
+                 * Neil, Microservices, Lecture: 196
+                 * Will be used when testing with 'httpClient'
+                 */
+                services.AddAuthentication(FakeJwtBearerDefaults.AuthenticationScheme)
+                .AddFakeJwtBearer(opt =>
+                {
+                    opt.BearerValueType = FakeJwtBearerBearerValueType.Jwt;
+                });
+
 
                 // EnsureCreated()
                 var sp = services.BuildServiceProvider();
@@ -69,14 +83,12 @@ namespace LinkUp_REST_API_TESTS.Util
 
 
 
-        public Task InitializeAsync()
+        public async Task InitializeAsync()
         {
-            throw new NotImplementedException();
+            await _mssqlContainer.StartAsync();
         }
 
-        Task IAsyncLifetime.DisposeAsync()
-        {
-            throw new NotImplementedException();
-        }
+        Task IAsyncLifetime.DisposeAsync() => _mssqlContainer.DisposeAsync().AsTask();
+
     }
 }

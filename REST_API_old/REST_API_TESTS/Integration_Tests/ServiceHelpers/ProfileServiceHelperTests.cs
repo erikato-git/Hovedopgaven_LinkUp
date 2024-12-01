@@ -1,6 +1,8 @@
 ﻿using AutoFixture;
+using Castle.Core.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
 using REST_API.Controllers;
 using REST_API.Controllers.Helpers;
@@ -13,6 +15,7 @@ using REST_API.Repositories.Interfaces;
 using REST_API.Services.Helpers;
 using REST_API.Services.IHelpers;
 using REST_API.Services.Interfaces;
+using REST_API.Util;
 using REST_API_TESTS.Helpers;
 using REST_API_TESTS.Util;
 using System;
@@ -31,6 +34,7 @@ namespace REST_API_TESTS.Integration_Tests.ServiceHelpers
         private readonly RepositoryTestsWebFactory _factory;
         private IServiceScope _scope;
         private MssqlDbContext _dbContext;         // DbContext can easily be changed
+        private IPhotoAccessor _photoAccessor;
 
         public ProfileServiceHelperTests(RepositoryTestsWebFactory factory)
         {
@@ -39,7 +43,7 @@ namespace REST_API_TESTS.Integration_Tests.ServiceHelpers
 
             _scope = _factory.Services.CreateScope();
             _dbContext = _scope.ServiceProvider.GetRequiredService<MssqlDbContext>();
-            _sut = new ProfileServiceHelper(_dbContext);
+            //_sut = new ProfileServiceHelper(_dbContext);
 
         }
 

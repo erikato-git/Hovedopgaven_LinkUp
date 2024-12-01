@@ -2,5 +2,6 @@
 {
     public class Portfolio
     {
+        public Guid PortfolioId { get; set; }
     }
 }
