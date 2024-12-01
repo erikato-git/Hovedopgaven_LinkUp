@@ -17,6 +17,28 @@ namespace LinkUp_REST_API.Repositories
             _dbContext = dataContext;
         }
 
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            var user = await _dbContext.Accounts.FindAsync(id);
+            
+            if (user == null)
+            {
+                return false;
+            }
+
+            _dbContext.Accounts.Remove(user);
+
+            var saved = await SaveChangesAsync();
+
+            if(saved)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task<Account?> GetByIdAsync(Guid id)
         {
             if(string.IsNullOrEmpty(id.ToString()))
@@ -136,11 +158,6 @@ namespace LinkUp_REST_API.Repositories
         }
 
         public Task<Profile?> CreateProfileAsync(Account account, Profile profile)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteAsync(Guid id)
         {
             throw new NotImplementedException();
         }

@@ -4,8 +4,8 @@ using LinkUp_REST_API.Data.DbContextConnections;
 using LinkUp_REST_API.Extensions;
 using LinkUp_REST_API.Repositories;
 using LinkUp_REST_API.Repositories.Interfaces;
-using LinkUp_REST_API.Services;
-using LinkUp_REST_API.Services.Interfaces;
+using LinkUp_REST_API.Services.Completed;
+using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +23,8 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 
+builder.Services.AddDbContext<DataContext>();
+
 /*
  * Need to use Options-pattern, otherwise if I use Configuration it will affect all strings in the application in .NET 9
  */
@@ -33,7 +35,7 @@ builder.Services.AddScoped<JwtAuthenticationService>();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGenWithJWTAuth();
+builder.Services.AddSwaggerGenWithJWTAuth();        // TODO: Find out why authentication is not working when I inject JWT-string
 
 
 var app = builder.Build();

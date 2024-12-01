@@ -107,9 +107,9 @@ namespace LinkUp_REST_API_TESTS.Util
             {
                 new Account
                 {
-                    AccountId = AuthenticationTestHelper.GetValidAccountId(),
+                    AccountId = AuthenticationTestHelper.GetValidAccountId1(),
                     Email = AccountTestHelper.GetValidEmail(),
-                    Password = Authentication.HashingPasswordWithSaltUsingSHA256(AccountTestHelper.GetValidPassword(), AuthenticationTestHelper.GetValidAccountId()), // Normally hashed in production
+                    Password = Authentication.HashingPasswordWithSaltUsingSHA256(AccountTestHelper.GetValidPassword(), AuthenticationTestHelper.GetValidAccountId1()), // Normally hashed in production
                     PersonInformationId = Guid.NewGuid(),
                     PersonInformation = new PersonInformation
                     {
@@ -123,24 +123,24 @@ namespace LinkUp_REST_API_TESTS.Util
                     Profiles = new List<Profile>(),
                     SavedProfileIds = new List<Guid>()
                 },
-                //new Account
-                //{
-                //    AccountId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                //    Email = "user2@example.com",
-                //    Password = "password456",
-                //    PersonInformationId = Guid.NewGuid(),
-                //    PersonInformation = new PersonInformation
-                //    {
-                //        PersonInformationId = Guid.NewGuid(),
-                //        FirstName = "Bob",
-                //        Surname = "Smith",
-                //        Phone = "0987654321",
-                //        BirthDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-25)),
-                //        Gender = "Male"
-                //    },
-                //    Profiles = new List<Profile>(),
-                //    SavedProfileIds = new List<Guid>()
-                //},
+                new Account
+                {
+                    AccountId = AuthenticationTestHelper.GetValidAccountId2(),
+                    Email = "user2@example.com",
+                    Password = "password456",
+                    PersonInformationId = Guid.NewGuid(),
+                    PersonInformation = new PersonInformation
+                    {
+                        PersonInformationId = Guid.NewGuid(),
+                        FirstName = "Bob",
+                        Surname = "Smith",
+                        Phone = "0987654321",
+                        BirthDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-25)),
+                        Gender = "Male"
+                    },
+                    Profiles = new List<Profile>(),
+                    SavedProfileIds = new List<Guid>()
+                },
                 //new Account
                 //{
                 //    AccountId = Guid.Parse("33333333-3333-3333-3333-333333333333"),

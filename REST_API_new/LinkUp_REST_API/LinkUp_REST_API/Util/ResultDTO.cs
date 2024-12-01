@@ -4,7 +4,7 @@
     {
         public bool isSucces { get; set; }
         public object? Data { get; set; }   // specify data during runtime
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
         public int StatusCode { get; set; }
 
         public static ResultDTO Succes(object data, int statuscode, string message)

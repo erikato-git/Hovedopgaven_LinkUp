@@ -16,9 +16,11 @@ namespace LinkUp_REST_API.DTOs.Requests
         public required Guid PersonInformationId { get; set; }
 
         [RegularExpression(@"^[A-Za-z]+(?: [A-Za-z]+)*$", ErrorMessage = "First name should only contain letters and spaces.")]
+        [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
         public string? FirstName { get; set; }
 
         [RegularExpression(@"^[A-Za-z]+(?: [A-Za-z]+)*$", ErrorMessage = "Surname should only contain letters and spaces.")]
+        [StringLength(50, ErrorMessage = "Surname cannot be longer than 50 characters.")]
         public string? Surname { get; set; }
 
         [Phone]

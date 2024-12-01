@@ -7,8 +7,8 @@ namespace LinkUp_REST_API.Models
     {
         [Key]
         public Guid ProfileId { get; set; }
-        public string Profession { get; set; }
-        public string Title { get; set; }
+        public required string Profession { get; set; }
+        public required string Title { get; set; }
         public string? AlternativeTitle { get; set; }
         public string? ProfilePicture { get; set; }
         public string? ProfileDescription { get; set; }
@@ -16,7 +16,7 @@ namespace LinkUp_REST_API.Models
 
         // Navigation properties to Account
         public Guid AccountId { get; set; }
-        public Account Account { get; set; }
+        public Account? Account { get; set; }
 
         // Navigation properties to Keyword
         public Guid? KeywordId { get; set; }

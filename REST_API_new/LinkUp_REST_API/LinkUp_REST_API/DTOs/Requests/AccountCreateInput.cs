@@ -12,7 +12,7 @@ namespace LinkUp_REST_API.DTOs.Requests
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]       // TODO: should be more complex
         public required string Password { get; set; }
 
-        public required PersonInformationCreateDTO PersonInformation { get; set; }
+        public required PersonInformationCreateInput PersonInformation { get; set; }
     }
 
 }

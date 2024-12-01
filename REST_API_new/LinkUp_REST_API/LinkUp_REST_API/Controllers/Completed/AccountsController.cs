@@ -1,12 +1,12 @@
 ﻿using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.DTOs.Requests;
-using LinkUp_REST_API.Services.Interfaces;
+using LinkUp_REST_API.Services.Interfaces.Completed;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
-namespace LinkUp_REST_API.Controllers
+namespace LinkUp_REST_API.Controllers.Completed
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -41,7 +41,7 @@ namespace LinkUp_REST_API.Controllers
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
 
-                if(!string.IsNullOrEmpty(isUserLoggedIn))
+                if (!string.IsNullOrEmpty(isUserLoggedIn))
                 {
                     return BadRequest("Your are already logged in");
                 }
@@ -145,9 +145,140 @@ namespace LinkUp_REST_API.Controllers
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 // TODO: log-info: AccountId (loggedInUser), UTC.Now, ex.stack-trace 
-                return BadRequest("Create account failed");
+                return BadRequest("Updated account failed");
             }
         }
+
+
+        [Authorize]
+        [HttpGet("getExternalAccountById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetExternalAccountById([FromQuery] Guid accountId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var loggedInAccount = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(loggedInAccount))
+                {
+                    return Unauthorized("You must to be logged in before you can access this account");
+                }
+
+                var result = await _accountService.GetExternalAccountById(accountId, loggedInAccount);
+
+                if (result.isSucces)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+                return BadRequest("Get external account failed");
+            }
+        }
+
+
+        [Authorize]
+        [HttpGet("getOwnAccount")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetOwnAccount()
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var loggedInAccount = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(loggedInAccount))
+                {
+                    return Unauthorized("You must to be logged in before you can access your own account");
+                }
+
+                var result = await _accountService.GetOwnAccount(loggedInAccount);
+
+                if (result.isSucces)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+                return BadRequest("Get own account failed");
+            }
+        }
+
+
+        /*
+         * Consider Admin-role-priviledges to remove any account
+         */
+
+        [Authorize]
+        [HttpDelete("deleteOwnAccount")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteOwnAccount()
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var loggedInAccount = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(loggedInAccount))
+                {
+                    return Unauthorized("You must to be logged in before you can delete your own account");
+                }
+
+                var result = await _accountService.DeleteOwnAccount(loggedInAccount);
+
+                if (result.isSucces)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+                return BadRequest("Get own account failed");
+            }
+        }
+
+
+        // Logout for JWT authentication is handled on the Client-side
+
 
 
     }

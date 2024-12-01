@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using LinkUp_REST_API.Controllers;
+using LinkUp_REST_API.Controllers.Completed;
 using LinkUp_REST_API.Core;
 using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.Data.DbContextConnections;
@@ -7,7 +7,8 @@ using LinkUp_REST_API.Models;
 using LinkUp_REST_API.Repositories;
 using LinkUp_REST_API.Repositories.Interfaces;
 using LinkUp_REST_API.Services;
-using LinkUp_REST_API.Services.Interfaces;
+using LinkUp_REST_API.Services.Completed;
+using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
 using LinkUp_REST_API_TESTS.TestHelpers;
 using LinkUp_REST_API_TESTS.Util;
@@ -77,7 +78,6 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Template
 
             _accountRepository = new AccountRepository(_dbContext);
             _authentication = new Authentication(httpContextAccessor, _jwtSettings);
-            //_accountService = new AccountService(_accountRepository, _authentication);
 
 
             // Config reals / mocks
@@ -94,21 +94,16 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Template
 
         }
 
-        // UpdateAccount
+        // DeleteOwnAccount
 
-        //[Fact]
-        //public async void UpdateAccount_Should_Return200_When_UpdateAccountInputIsValid()
-        //{
-        //    var updateAccountDto = AccountTestHelper.GenerateValidAccountUpdateInput();
-        //    updateAccountDto.AccountId = AuthenticationTestHelper.GetValidAccountId();
-        //    updateAccountDto.Email = "";
+        [Fact]
+        public async Task DeleteOwnAccount_Should_Return200_When_LoggedInUserDeletesOwnAccount()
+        {
+            var result = await _sut.DeleteOwnAccount();
 
-        //    var result = await _sut.UpdateAccount(updateAccountDto);
-
-        //    var okResult = Assert.IsType<OkObjectResult>(result);
-        //    Assert.Equal(StatusCodes.Status200OK,okResult.StatusCode);
-        //}
-
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        }
 
 
 

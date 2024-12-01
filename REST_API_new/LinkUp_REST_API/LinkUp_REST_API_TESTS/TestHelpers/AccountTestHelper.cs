@@ -46,7 +46,7 @@ namespace LinkUp_REST_API_TESTS.TestHelpers
         {
             var personInformation = new PersonInformation
             {
-                PersonInformationId = AuthenticationTestHelper.GetValidAccountId(),
+                PersonInformationId = AuthenticationTestHelper.GetValidAccountId1(),
                 FirstName = "John",
                 Surname = "Doe",
                 Phone = "1234567890",
@@ -93,7 +93,7 @@ namespace LinkUp_REST_API_TESTS.TestHelpers
                 Password = "Password123!",
 
                 // A valid PersonInformationCreateDTO object
-                PersonInformation = new PersonInformationCreateDTO
+                PersonInformation = new PersonInformationCreateInput
                 {
                     // Valid first name and surname with only letters and spaces
                     FirstName = "John",
@@ -115,7 +115,7 @@ namespace LinkUp_REST_API_TESTS.TestHelpers
         {
             return new AccountUpdateInput
             {
-                AccountId = AuthenticationTestHelper.GetValidAccountId(),
+                AccountId = AuthenticationTestHelper.GetValidAccountId1(),
                 Email = "valid.email@example.com",
                 Password = "StrongPassword123!",
                 PersonInformationId = Guid.NewGuid(),

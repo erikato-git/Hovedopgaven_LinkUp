@@ -6,6 +6,6 @@ namespace LinkUp_REST_API.Models
     {
         [Key]
         public Guid MediaId { get; set; }
-        public string URL { get; set; }
+        public required string URL { get; set; }
     }
 }

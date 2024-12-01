@@ -110,6 +110,29 @@ namespace LinkUp_REST_API.Util.Mapper
         }
 
 
+        public static AccountExternalDetailsOutput ToExternalDetailsOutput(Account account)
+        {
+            if (account == null)
+            {
+                throw new ArgumentNullException(nameof(account));
+            }
+
+            return new AccountExternalDetailsOutput
+            {
+                AccountId = account.AccountId,
+                Email = account.Email,
+                FirstName = account.PersonInformation.FirstName,
+                Surname = account.PersonInformation.Surname,
+                Phone = account.PersonInformation.Phone,
+                BirthDate = account.PersonInformation.BirthDate,
+                Gender = account.PersonInformation.Gender
+            };
+        }
+
+
+
+
+        //
 
     }
 }

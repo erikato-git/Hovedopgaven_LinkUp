@@ -1,12 +1,13 @@
 ﻿using AutoFixture;
-using LinkUp_REST_API.Controllers;
+using LinkUp_REST_API.Controllers.Completed;
 using LinkUp_REST_API.Core;
 using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.Data.DbContextConnections;
 using LinkUp_REST_API.Repositories;
 using LinkUp_REST_API.Repositories.Interfaces;
 using LinkUp_REST_API.Services;
-using LinkUp_REST_API.Services.Interfaces;
+using LinkUp_REST_API.Services.Completed;
+using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
 using LinkUp_REST_API_TESTS.TestHelpers;
 using LinkUp_REST_API_TESTS.Util;
@@ -24,10 +25,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace LinkUp_REST_API_TESTS.IntegrationTests
+namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
 {
     [Collection("Shared collection")]
-    public class AccountTests  : IAsyncLifetime
+    public class AccountTests : IAsyncLifetime
     {
         private ApplicationFactory _factory;
         private Fixture _fixture;
@@ -41,7 +42,6 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
         private IAuthentication _authentication;
         private IAccountRepository _accountRepository;
         private DataContext _dbContext;
-        private IConfiguration _config;
         private IOptions<JwtSettings> _jwtSettings;
 
         public AccountTests(ApplicationFactory factory)
@@ -128,7 +128,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
         // CreateAccount
 
         [Fact]
-        public async void CreateAccount_Should_Return201_When_CreateAccountInputIsValid()
+        public async Task CreateAccount_Should_Return201_When_CreateAccountInputIsValid()
         {
             var createAccountDto = AccountTestHelper.GenerateValidAccountCreateInput();
             AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
@@ -141,7 +141,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
 
 
         [Fact]
-        public async void CreateAccount_Should_Return400_When_UserIsLoggedInAndTriesToCreateNewAccount()
+        public async Task CreateAccount_Should_Return400_When_UserIsLoggedInAndTriesToCreateNewAccount()
         {
             var createAccountDto = AccountTestHelper.GenerateValidAccountCreateInput();
 
@@ -153,7 +153,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
 
 
         [Fact]
-        public async void CreateAccount_Should_Return409_When_UserIsUnder13YearsOld()
+        public async Task CreateAccount_Should_Return409_When_UserIsUnder13YearsOld()
         {
             var createAccountDto = AccountTestHelper.GenerateValidAccountCreateInput();
             createAccountDto.PersonInformation.BirthDate = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-12));
@@ -169,10 +169,10 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
         // UpdateAccount
 
         [Fact]
-        public async void UpdateAccount_Should_Return200_When_UpdateAccountInputIsValid()
+        public async Task UpdateAccount_Should_Return200_When_UpdateAccountInputIsValid()
         {
             var updateAccountDto = AccountTestHelper.GenerateValidAccountUpdateInput();
-            updateAccountDto.AccountId = AuthenticationTestHelper.GetValidAccountId();
+            updateAccountDto.AccountId = AuthenticationTestHelper.GetValidAccountId1();
             updateAccountDto.Email = "";
 
             var result = await _sut.UpdateAccount(updateAccountDto);
@@ -182,7 +182,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
         }
 
         [Fact]
-        public async void UpdateAccount_Should_Return401_When_UserIsNotLoggedIn()
+        public async Task UpdateAccount_Should_Return401_When_UserIsNotLoggedIn()
         {
             var updateAccountDto = AccountTestHelper.GenerateValidAccountUpdateInput();
             AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
@@ -195,7 +195,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
 
 
         [Fact]
-        public async void UpdateAccount_Should_Return403_When_LoggedInUserTriesToUpdateAnotherAccount()
+        public async Task UpdateAccount_Should_Return403_When_LoggedInUserTriesToUpdateAnotherAccount()
         {
             var updateAccountDto = AccountTestHelper.GenerateValidAccountUpdateInput();
             updateAccountDto.AccountId = Guid.NewGuid();
@@ -208,7 +208,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
 
 
         [Fact]
-        public async void UpdateAccount_Should_Return409_When_LoggedInUserTriesToChangeEmailToAnExistingEmail()
+        public async Task UpdateAccount_Should_Return409_When_LoggedInUserTriesToChangeEmailToAnExistingEmail()
         {
             var updateAccountDto = AccountTestHelper.GenerateValidAccountUpdateInput();
             updateAccountDto.Email = AccountTestHelper.GetValidEmail();     // existing mail
@@ -221,7 +221,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
 
 
         [Fact]
-        public async void UpdateAccount_Should_Return404_When_TargetAccountDoesNotExist()
+        public async Task UpdateAccount_Should_Return404_When_TargetAccountDoesNotExist()
         {
             var updateAccountDto = AccountTestHelper.GenerateValidAccountUpdateInput();
             var newId = Guid.NewGuid();     // not existing account
@@ -233,6 +233,123 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
             var notFoundResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
         }
+
+
+        // GetExternalAccountById
+
+        [Fact]
+        public async Task GetExternalAccountById_Should_Return200_When_UpdateAccountInputIsValid()
+        {
+            var validId = AuthenticationTestHelper.GetValidAccountId2();        // AccountId exist but different from AccountId for logged-in-user
+
+            var result = await _sut.GetExternalAccountById(validId);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        }
+
+
+        [Fact]
+        public async Task GetExternalAccountById_Should_Return401_When_UserIsNotLoggedIn()
+        {
+            var validId = AuthenticationTestHelper.GetValidAccountId2();        // AccountId exist but different from AccountId for logged-in-user
+            AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
+
+            var result = await _sut.GetExternalAccountById(validId);
+
+            var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(StatusCodes.Status401Unauthorized, unauthResult.StatusCode);
+        }
+
+
+        [Fact]
+        public async Task GetExternalAccountById_Should_Return403_When_LoggedInUserTriesToAccesOwnAccount()
+        {
+            var validAccountId = AuthenticationTestHelper.GetValidAccountId1();
+
+            var result = await _sut.GetExternalAccountById(validAccountId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status403Forbidden, objectResult.StatusCode);
+        }
+
+
+        [Fact]
+        public async Task GetExternalAccountById_Should_Return404_When_UserTriesToAccesAccountThatDoesntExist()
+        {
+            var result = await _sut.GetExternalAccountById(Guid.NewGuid());
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status404NotFound, objectResult.StatusCode);
+        }
+
+
+        // GetOwnAccount
+
+        [Fact]
+        public async Task GetOwnAccount_Should_Return200_When_LoggedInUserGetsOwnAccount()
+        {
+            var result = await _sut.GetOwnAccount();
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetOwnAccount_Should_Return401_When_UserIsNotLoggedIn()
+        {
+            AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
+            var result = await _sut.GetOwnAccount();
+
+            var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(StatusCodes.Status401Unauthorized, unauthResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetOwnAccount_Should_Return404_When_LoggedInUserWasNotFound()
+        {
+            AuthenticationTestHelper.SetAccountIdClaimInHttpContext(_sut.ControllerContext, Guid.NewGuid());
+
+            var result = await _sut.GetOwnAccount();
+
+            var notFoundResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
+        }
+
+
+        // DeleteOwnAccount
+
+        [Fact]
+        public async Task DeleteOwnAccount_Should_Return200_When_LoggedInUserDeletesOwnAccount()
+        {
+            var result = await _sut.DeleteOwnAccount();
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteOwnAccount_Should_Return401_When_UserIsNotLoggedIn()
+        {
+            AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
+
+            var result = await _sut.DeleteOwnAccount();
+
+            var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(StatusCodes.Status401Unauthorized, unauthResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteOwnAccount_Should_Return500_When_FailedToDeleteLoggedInAccount()
+        {
+            AuthenticationTestHelper.SetAccountIdClaimInHttpContext(_sut.ControllerContext, Guid.NewGuid());
+
+            var result = await _sut.DeleteOwnAccount();
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+        }
+
 
 
 

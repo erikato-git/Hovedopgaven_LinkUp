@@ -13,7 +13,7 @@ namespace LinkUp_REST_API_TESTS.TestHelpers
     {
         public static ClaimsPrincipal GetClaimsPrincipal()
         {
-            var claims = new List<Claim> { new Claim("AccountId", GetValidAccountId().ToString() ) };
+            var claims = new List<Claim> { new Claim("AccountId", GetValidAccountId1().ToString() ) };
             var identity = new ClaimsIdentity(claims, "testing");
             return new ClaimsPrincipal(identity);
         }
@@ -39,9 +39,14 @@ namespace LinkUp_REST_API_TESTS.TestHelpers
             };
         }
 
-        public static Guid GetValidAccountId()
+        public static Guid GetValidAccountId1()
         {
             return Guid.Parse("617122cf-c317-42c8-9c59-24830c640e6c");
+        }
+
+        public static Guid GetValidAccountId2()
+        {
+            return Guid.Parse("22222222-2222-2222-2222-222222222222");
         }
 
     }

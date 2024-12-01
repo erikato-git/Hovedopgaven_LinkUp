@@ -1,12 +1,12 @@
 ﻿using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.DTOs.Requests;
 using LinkUp_REST_API.Repositories.Interfaces;
-using LinkUp_REST_API.Services.Interfaces;
+using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
 using LinkUp_REST_API.Util.Mapper;
 using Microsoft.IdentityModel.Tokens;
 
-namespace LinkUp_REST_API.Services
+namespace LinkUp_REST_API.Services.Completed
 {
     public class AccountService : IAccountService
     {
@@ -19,6 +19,72 @@ namespace LinkUp_REST_API.Services
             _authentication = authentication;
         }
 
+
+        public async Task<ResultDTO> DeleteOwnAccount(string userAccountId)
+        {
+            if (string.IsNullOrEmpty(userAccountId))
+            {
+                return ResultDTO.Failure(400, "Input is invalid");
+            }
+
+            var accountDeleted = await _accountRepository.DeleteAsync(Guid.Parse(userAccountId));
+
+            if (!accountDeleted)
+            {
+                return ResultDTO.Failure(500, $"Remove account {userAccountId} failed due to internal server error");
+            }
+
+            return ResultDTO.Succes(accountDeleted, 200, $"Account {userAccountId} deleted");
+        }
+
+
+        public async Task<ResultDTO> GetOwnAccount(string userAccountId)
+        {
+            if (string.IsNullOrEmpty(userAccountId))
+            {
+                return ResultDTO.Failure(400, "Input is invalid");
+            }
+
+            // Get Account
+            var ownAccount = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if (ownAccount == null)
+            {
+                return ResultDTO.Failure(404, $"Account {userAccountId} was not found");
+            }
+
+            return ResultDTO.Succes(ownAccount, 200, "Own account fetched");
+        }
+
+        public async Task<ResultDTO> GetExternalAccountById(Guid accountId, string userAccountId)
+        {
+            if (string.IsNullOrEmpty(accountId.ToString()) || string.IsNullOrEmpty(userAccountId))
+            {
+                return ResultDTO.Failure(400, "Inputs are invalid");
+            }
+
+            // Check if accountId match userAccountId
+            var idsMatch = accountId.ToString().Equals(userAccountId);
+
+            if (idsMatch)
+            {
+                return ResultDTO.Failure(403, "You cannot access your own account from this endpoint");
+            }
+
+            // Get Account
+            var getAccount = await _accountRepository.GetByIdAsync(accountId);
+
+            if (getAccount == null)
+            {
+                return ResultDTO.Failure(404, $"Account {accountId} does not exist");
+            }
+
+            // Map to AccountExternalGetOutput
+            var externalAccount = AccountMapper.ToExternalDetailsOutput(getAccount);
+
+
+            return ResultDTO.Succes(externalAccount, 200, $"Account {accountId} has been fetched");
+        }
 
         public async Task<ResultDTO> Login(LoginInput dto)
         {
@@ -38,20 +104,20 @@ namespace LinkUp_REST_API.Services
             // check hashed passwords match
             var passwordsMatch = _authentication.CheckPasswordsMatch(dto.Password, accountExist);
 
-            if(!passwordsMatch)
+            if (!passwordsMatch)
             {
                 return ResultDTO.Failure(400, "email or password is invalid");
             }
 
             // generate JWT token
             var JWT = _authentication.GenerateJWT(accountExist);
-            if(string.IsNullOrEmpty(JWT))
+            if (string.IsNullOrEmpty(JWT))
             {
                 return ResultDTO.Failure(500, "Could not generate JWT token");
             }
 
             // map JWT and accountExist to 'loginOutput'
-            var loginOutput = AccountMapper.MapToLoginOutput(accountExist,JWT);
+            var loginOutput = AccountMapper.MapToLoginOutput(accountExist, JWT);
 
             return ResultDTO.Succes(loginOutput, 200, "You're now logged in");
         }
@@ -68,7 +134,7 @@ namespace LinkUp_REST_API.Services
             // Check new user is min. 13 (GDPR)
             var minAge = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-13));
 
-            if(dto.PersonInformation.BirthDate.Year >= minAge.Year)
+            if (dto.PersonInformation.BirthDate.Year >= minAge.Year)
             {
                 return ResultDTO.Failure(409, "User must be min. 13 years old");
             }
@@ -107,13 +173,13 @@ namespace LinkUp_REST_API.Services
 
         public async Task<ResultDTO> UpdateAccount(AccountUpdateInput dto, string userAccountId)
         {
-            if(dto == null || string.IsNullOrEmpty(userAccountId))
+            if (dto == null || string.IsNullOrEmpty(userAccountId))
             {
                 return ResultDTO.Failure(400, "Update account info or logged in account is null");
             }
 
             // Check AccountId in dto match userAccountId
-            if(!dto.AccountId.ToString().Equals(userAccountId))
+            if (!dto.AccountId.ToString().Equals(userAccountId))
             {
                 return ResultDTO.Failure(403, "You don't have authorization to update this account");
             }
@@ -130,7 +196,7 @@ namespace LinkUp_REST_API.Services
             }
 
             // if birthdate is changed: check it's not under 13
-            if(dto.BirthDate != null)
+            if (dto.BirthDate != null)
             {
                 // Check new user is min. 13 (GDPR)
                 var minAge = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-13));
@@ -149,8 +215,6 @@ namespace LinkUp_REST_API.Services
             }
 
             // Update account
-            //var account = AccountMapper.MapToUpdateAccount(dto, existingAccount);
-            
             var updatedAccount = await _accountRepository.UpdateAsync(dto);
 
             if (updatedAccount == null)
@@ -162,16 +226,6 @@ namespace LinkUp_REST_API.Services
         }
 
 
-
-        public Task<ResultDTO> DeleteAccountById(Guid id, string userAccountId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ResultDTO> GetAccountById(Guid id, string userAccountId)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<ResultDTO> Logout()
         {
