@@ -26,6 +26,65 @@ namespace LinkUp_REST_API.Services
         }
 
 
+        public async Task<ResultDTO> DeletePitchById(Guid pitchId, string userAccountId)
+        {
+            // null checks
+            if( string.IsNullOrEmpty(userAccountId) || string.IsNullOrEmpty(pitchId.ToString()) )
+            {
+                return ResultDTO.Failure(400, "Invalid inputs");
+            }
+            
+            // get logged in user
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if (loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Logged in user was not found");
+            }
+
+            if (loggedInUser.Profiles == null || loggedInUser.Profiles.Count == 0)
+            {
+                return ResultDTO.Failure(409, "User has no profiles at current moment and is unable to retrieve any associated pitches send from this account");
+            }
+
+            // check pitch exist
+            var pitchFound = await _pitchRepository.GetByIdAsync(pitchId);
+
+            if(pitchFound == null )
+            {
+                return ResultDTO.Failure(404, "Pitch was not found");
+            }
+
+            // check if logged in user it the sendingProfile (has authorization)
+            var profileIds = loggedInUser.Profiles.Select(p => p.ProfileId).ToList();
+
+            var isSendingProfile = false;
+
+            foreach (var profileId in profileIds)
+            {
+                if (profileId == pitchFound.ProfileId)
+                {
+                    isSendingProfile = true;
+                    break;
+                }
+            }
+
+            if (!isSendingProfile)
+            {
+                return ResultDTO.Failure(403, "None of your profiles have send this pitch");
+            }
+
+            // delete pitch
+            var pitchDeleted = await _profileRepository.DeletePitchAsync(pitchFound.ProfileId, pitchFound);
+
+            if(!pitchDeleted)
+            {
+                return ResultDTO.Failure(500, "Pitch wasn't deleted due to internal server error");
+            }
+
+            return ResultDTO.Succes(pitchDeleted, 204, $"Pitch {pitchId} has been deleted");
+        }
+
         public async Task<ResultDTO> GetPitchById(Guid pitchId, string userAccountId)
         {
             // null-checks
@@ -63,6 +122,7 @@ namespace LinkUp_REST_API.Services
                 if (profileId == pitchFound.ProfileId || profileId == pitchFound.RecipientProfileId)
                 {
                     isAssociated = true;
+                    break;
                 }
             }
 
@@ -167,10 +227,6 @@ namespace LinkUp_REST_API.Services
             return ResultDTO.Succes(pitchCreated, 201, "Pitch was created");
         }
 
-        public Task<ResultDTO> DeletePitchById(Guid id, string userAccountId)
-        {
-            throw new NotImplementedException();
-        }
 
 
     }

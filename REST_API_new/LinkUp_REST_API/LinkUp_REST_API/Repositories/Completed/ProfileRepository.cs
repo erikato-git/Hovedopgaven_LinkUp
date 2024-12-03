@@ -48,9 +48,48 @@ namespace LinkUp_REST_API.Repositories.Completed
             return createdPitch.Entity;
         }
 
-        public Task<bool> DeletePitchAsync(Guid profileId, Pitch pitch)
+        public async Task<bool> DeletePitchAsync(Guid profileId, Pitch pitch)
         {
-            throw new NotImplementedException();
+            // null checks
+            if( string.IsNullOrEmpty(profileId.ToString()) || pitch == null)
+            {
+                throw new ArgumentNullException("Invalid arguments");
+            }
+
+            // check profile exist
+            var profileFound = await _dbContext.Profiles.FirstOrDefaultAsync(x => x.ProfileId == profileId);  
+
+            if( profileFound == null)
+            {
+                return false;
+            }
+
+            // check profile is sending-profile
+            if(profileFound.ProfileId != pitch.ProfileId)
+            {
+                return false;
+            }
+
+            // check pitch exist
+            var pitchFound = await _dbContext.Pitches.FirstOrDefaultAsync(x => x.ProfileId == profileId);
+
+            if( pitchFound == null)
+            {
+                return false;
+            }
+
+            // delete pitch
+            _dbContext.Pitches.Remove(pitchFound);
+
+            // save changes
+            var saved = await SaveChangesAsync();
+
+            if(!saved)
+            {
+                return false;
+            }
+
+            return true;
         }
 
 

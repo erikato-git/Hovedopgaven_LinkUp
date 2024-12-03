@@ -179,8 +179,74 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
             Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
         }
 
+        [Fact]
+        public async Task GetPitchById_Should_Return401_When_UserIsNotLoggedIn()
+        {
+            var validPitchId = PitchTestHelper.GetValidPitchId1();  
+            AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
+
+            var result = await _sut.GetPitchById(validPitchId);
+
+            var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(StatusCodes.Status401Unauthorized, unauthResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetPitchById_Should_Return404_When_PitchIsNotFound()
+        {
+            var result = await _sut.GetPitchById(Guid.NewGuid());
+
+            var notFoundResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetPitchById_Should_Return403_When_LoggedInUserIsNotAssociatedWithPitchId()
+        {
+            var notAssociatedId = PitchTestHelper.GetPitchIdWithNoAssociated();
+
+            var result = await _sut.GetPitchById(notAssociatedId);
+
+            var notFoundResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
+        }
 
 
+        // DeletePitchById
+
+        [Fact]
+        public async Task DeletePitchById_Should_Return204_When_UserIsAssociatedAndPitchIsFound()
+        {
+            var validPitchId = PitchTestHelper.GetValidPitchId2();  // supposed to have logged in user as sending profile
+
+            var result = await _sut.DeletePitchById(validPitchId);
+
+            var noContentResult = Assert.IsType<NoContentResult>(result);
+            Assert.Equal(StatusCodes.Status204NoContent, noContentResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeletePitchById_Should_Return401_When_UserIsNotLoggedIn()
+        {
+            var validPitchId = PitchTestHelper.GetValidPitchId2();  // supposed to have logged in user as sending profile
+            AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
+
+            var result = await _sut.DeletePitchById(validPitchId);
+
+            var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(StatusCodes.Status401Unauthorized, unauthResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeletePitchById_Should_Return403_When_LoggedInUserDoesNotContainSendingProfile()
+        {
+            var validPitchId = PitchTestHelper.GetValidPitchId1();  // not supposed to have logged in user as sending profile
+
+            var result = await _sut.DeletePitchById(validPitchId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status403Forbidden, objectResult.StatusCode);
+        }
 
 
 

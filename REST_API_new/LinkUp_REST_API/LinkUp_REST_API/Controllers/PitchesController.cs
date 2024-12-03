@@ -141,12 +141,50 @@ namespace LinkUp_REST_API.Controllers
             catch (Exception ex)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
-                return BadRequest("Create pitch failed");
+                return BadRequest("Get pitch failed");
             }
         }
 
 
         // DeletePitchById: restricted to sendingProfile pitches
+        [HttpDelete("deletePitch/{pitchId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeletePitchById([FromQuery] Guid pitchId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var isUserLoggedIn = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(isUserLoggedIn))
+                {
+                    return Unauthorized("You must be logged in before you can delete sended pitches");
+                }
+
+                var result = await _pitchService.DeletePitchById(pitchId, isUserLoggedIn);
+
+                if (result.isSucces)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+                return BadRequest("Delete pitch failed");
+            }
+        }
+
 
 
         // UpdatePitch (omitted): when a pitch has been send it's shouldn't be possible to edit the message like an email

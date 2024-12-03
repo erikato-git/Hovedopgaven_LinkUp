@@ -196,11 +196,11 @@ namespace LinkUp_REST_API_TESTS.Util
                 },
                 new Pitch
                 {
-                    PitchId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                    PitchId = PitchTestHelper.GetValidPitchId2(),
                     SendingDate = DateTime.UtcNow.AddMinutes(-30),
                     TextMessage = "This is a test pitch for profile 2",
-                    RecipientProfileId = ProfileTestHelper.GetValidProfileId1(), // Links to Profile 1
-                    ProfileId = ProfileTestHelper.GetValidProfileId2(),
+                    RecipientProfileId = ProfileTestHelper.GetValidProfileId2(), // Links to Profile 1
+                    ProfileId = ProfileTestHelper.GetValidProfileId1(),
                     Profile = null
                 },
                 new Pitch
@@ -214,11 +214,11 @@ namespace LinkUp_REST_API_TESTS.Util
                 },
                 new Pitch
                 {
-                    PitchId = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                    PitchId = PitchTestHelper.GetPitchIdWithNoAssociated(),
                     SendingDate = DateTime.UtcNow.AddHours(-12),
                     TextMessage = "This is a test pitch for profile 4",
-                    RecipientProfileId = ProfileTestHelper.GetValidProfileId2(),
-                    ProfileId = ProfileTestHelper.GetValidProfileId1(),
+                    RecipientProfileId = Guid.NewGuid(),
+                    ProfileId = ProfileTestHelper.GetValidProfileId2(),
                     Profile = null
                 }
 

@@ -26,5 +26,15 @@ namespace LinkUp_REST_API_TESTS.TestHelpers
             return Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
         }
 
+        public static Guid GetValidPitchId2()
+        {
+            return Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd");
+        }
+
+        public static Guid GetPitchIdWithNoAssociated()
+        {
+            return Guid.NewGuid();
+        }
+
     }
 }
