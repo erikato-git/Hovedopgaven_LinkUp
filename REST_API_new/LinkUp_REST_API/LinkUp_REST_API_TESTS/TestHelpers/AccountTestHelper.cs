@@ -1,4 +1,6 @@
 ﻿using LinkUp_REST_API.DTOs.Requests;
+using LinkUp_REST_API.DTOs.Requests.Completed;
+using LinkUp_REST_API.DTOs.Requests.Pending;
 using LinkUp_REST_API.Models;
 using System;
 using System.Collections.Generic;
@@ -60,7 +62,7 @@ namespace LinkUp_REST_API_TESTS.TestHelpers
                 Profession = "Software Engineer",
                 Title = "Senior Developer",
                 AlternativeTitle = "Tech Lead",
-                ProfilePicture = "https://example.com/john_doe.jpg",
+                ProfilePicture = null,
                 ProfileDescription = "Experienced software engineer specializing in backend development.",
             };
 
@@ -69,7 +71,7 @@ namespace LinkUp_REST_API_TESTS.TestHelpers
                 AccountId = Guid.NewGuid(),
                 Email = "johndoe@example.com",
                 Password = "SecurePassword123!", // Use secure password practices in real applications
-                SavedProfileIds = new List<Guid> { profile.ProfileId },
+                FavoriteProfiles = new List<Guid> { profile.ProfileId },
                 PersonInformationId = personInformation.PersonInformationId,
                 PersonInformation = personInformation,
                 Profiles = new List<Profile> { profile }

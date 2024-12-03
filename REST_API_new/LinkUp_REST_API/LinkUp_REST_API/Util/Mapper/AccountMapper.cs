@@ -1,6 +1,6 @@
 ﻿using LinkUp_REST_API.Core;
-using LinkUp_REST_API.DTOs.Requests;
-using LinkUp_REST_API.DTOs.Responses;
+using LinkUp_REST_API.DTOs.Requests.Completed;
+using LinkUp_REST_API.DTOs.Responses.Completed;
 using LinkUp_REST_API.Models;
 
 namespace LinkUp_REST_API.Util.Mapper
@@ -39,7 +39,7 @@ namespace LinkUp_REST_API.Util.Mapper
                 AccountId = uniqueId, // Generate a new unique ID
                 Email = input.Email,
                 Password = Authentication.HashingPasswordWithSaltUsingSHA256(input.Password, uniqueId), // Optionally hash the password
-                SavedProfileIds = new List<Guid>(), // Initialize as empty
+                FavoriteProfiles = new List<Guid>(), // Initialize as empty
                 PersonInformation = new PersonInformation
                 {
                     PersonInformationId = Guid.NewGuid(), // Generate a unique ID for the associated PersonInformation

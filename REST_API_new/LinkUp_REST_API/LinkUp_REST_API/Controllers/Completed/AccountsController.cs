@@ -1,5 +1,5 @@
 ﻿using LinkUp_REST_API.Core.Interfaces;
-using LinkUp_REST_API.DTOs.Requests;
+using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -151,7 +151,7 @@ namespace LinkUp_REST_API.Controllers.Completed
 
 
         [Authorize]
-        [HttpGet("getExternalAccountById")]
+        [HttpGet("getExternalAccountById/{accountId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

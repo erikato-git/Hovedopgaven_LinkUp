@@ -12,13 +12,10 @@ namespace LinkUp_REST_API.Core
 {
     public class Authentication : IAuthentication
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly JwtSettings _jwtSettings;
 
-        public Authentication(IHttpContextAccessor httpContextAccessor, IOptions<JwtSettings> jwtSettings)
+        public Authentication(IOptions<JwtSettings> jwtSettings)
         {
-            // TODO: remove '_httpContextAccessor' again if no methods use it
-            _httpContextAccessor = httpContextAccessor;
             _jwtSettings = jwtSettings.Value;
         }
 

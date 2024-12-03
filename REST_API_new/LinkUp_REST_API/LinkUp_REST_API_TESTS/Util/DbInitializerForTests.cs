@@ -29,8 +29,8 @@ namespace LinkUp_REST_API_TESTS.Util
         public static void ReinitDbForTests(DataContext dbContext)
         {
             dbContext.Accounts.RemoveRange(dbContext.Accounts);
-            //dbContext.Profiles.RemoveRange(dbContext.Profiles);
-            //dbContext.Pitches.RemoveRange(dbContext.Pitches);
+            dbContext.Profiles.RemoveRange(dbContext.Profiles);
+            dbContext.Pitches.RemoveRange(dbContext.Pitches);
             //dbContext.Keywords.RemoveRange(dbContext.Keywords);
             //dbContext.Educations.RemoveRange(dbContext.Educations);
             dbContext.SaveChanges();
@@ -42,33 +42,33 @@ namespace LinkUp_REST_API_TESTS.Util
         {
             return new List<Profile>
             {
-                //new Profile
-                //{
-                //    ProfileId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                //    Profession = "Software Engineer",
-                //    Title = "Full Stack Developer",
-                //    AlternativeTitle = "Tech Enthusiast",
-                //    ProfilePicture = "profile1.jpg",
-                //    ProfileDescription = "Experienced in building web applications",
-                //    AccountId = Guid.Parse("11111111-1111-1111-1111-111111111111"), // Links to an Account
-                //    KeywordId = Guid.NewGuid(),
-                //    PortfolioId = Guid.NewGuid(),
-                //    AudienceSpecificationId = Guid.NewGuid(),
-                //    Pitches = null
-                //},
-                //new Profile
-                //{
-                //    ProfileId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                //    Profession = "Graphic Designer",
-                //    Title = "Creative Specialist",
-                //    ProfilePicture = "profile2.jpg",
-                //    ProfileDescription = "Specialized in UI/UX design",
-                //    AccountId = Guid.Parse("22222222-2222-2222-2222-222222222222"), // Links to another Account
-                //    KeywordId = Guid.NewGuid(),
-                //    PortfolioId = Guid.NewGuid(),
-                //    AudienceSpecificationId = null, // No audience specification
-                //    Pitches = null
-                //},
+                new Profile
+                {
+                    ProfileId = ProfileTestHelper.GetValidProfileId1(),
+                    Profession = "Software Engineer",
+                    Title = "Full Stack Developer",
+                    AlternativeTitle = "Tech Enthusiast",
+                    ProfilePicture = null,
+                    ProfileDescription = "Experienced in building web applications",
+                    AccountId = AuthenticationTestHelper.GetValidAccountId1(), // Links to an Account
+                    KeywordId = Guid.NewGuid(),
+                    PortfolioId = Guid.NewGuid(),
+                    AudienceSpecificationId = Guid.NewGuid(),
+                    Pitches = null
+                },
+                new Profile
+                {
+                    ProfileId = ProfileTestHelper.GetValidProfileId2(),
+                    Profession = "Graphic Designer",
+                    Title = "Creative Specialist",
+                    ProfilePicture = null,
+                    ProfileDescription = "Specialized in UI/UX design",
+                    AccountId = Guid.Parse("22222222-2222-2222-2222-222222222222"), // Links to another Account
+                    KeywordId = Guid.NewGuid(),
+                    PortfolioId = Guid.NewGuid(),
+                    AudienceSpecificationId = null, // No audience specification
+                    Pitches = null
+                },
                 //new Profile
                 //{
                 //    ProfileId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
@@ -121,7 +121,7 @@ namespace LinkUp_REST_API_TESTS.Util
                         Gender = "Female"
                     },
                     Profiles = new List<Profile>(),
-                    SavedProfileIds = new List<Guid>()
+                    FavoriteProfiles = new List<Guid>() { ProfileTestHelper.GetValidProfileId1() }
                 },
                 new Account
                 {
@@ -139,7 +139,7 @@ namespace LinkUp_REST_API_TESTS.Util
                         Gender = "Male"
                     },
                     Profiles = new List<Profile>(),
-                    SavedProfileIds = new List<Guid>()
+                    FavoriteProfiles = new List<Guid>()
                 },
                 //new Account
                 //{

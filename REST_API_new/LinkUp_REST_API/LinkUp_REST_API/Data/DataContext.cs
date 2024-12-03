@@ -13,7 +13,7 @@ namespace LinkUp_REST_API.Data.DbContextConnections
         /*
          * Constructor required by test-container, I cannot configure connection-string from DI, it doesn't work with test-containers in xUnit > WebApplicationFactory
          */
-        public DataContext(DbContextOptions<DataContext> options): base(options)
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -47,26 +47,26 @@ namespace LinkUp_REST_API.Data.DbContextConnections
                 .HasForeignKey<Keyword>(k => k.ProfileId)
                 .OnDelete(DeleteBehavior.Cascade);  // Cascade deletion for composition
 
-            // Profile to Portfolio (One-to-one relationship) - TODO
-            //modelBuilder.Entity<Profile>()
-            //    .HasOne(p => p.Portfolio)
-            //    .WithOne(po => po.Profile)
-            //    .HasForeignKey<Portfolio>(po => po.ProfileId)
-            //    .OnDelete(DeleteBehavior.Cascade);  // Cascade deletion for composition
+            // Profile to Portfolio (One-to-one relationship)
+            modelBuilder.Entity<Profile>()
+                .HasOne(p => p.Portfolio)
+                .WithOne(po => po.Profile)
+                .HasForeignKey<Portfolio>(po => po.ProfileId)
+                .OnDelete(DeleteBehavior.Cascade);  // Cascade deletion for composition
 
             // Profile to Pitch (One-to-many relationship)
             modelBuilder.Entity<Profile>()
                 .HasMany(p => p.Pitches)
                 .WithOne(pi => pi.Profile)
                 .HasForeignKey(pi => pi.ProfileId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);  // Pitches not destroyed when the profile is destroyed
 
-            // Profile to AudienceSpecification (One-to-one relationship) - TODO
-            //modelBuilder.Entity<Profile>()
-            //    .HasOne(p => p.AudienceSpecification)
-            //    .WithOne(a => a.Profile)
-            //    .HasForeignKey<AudienceSpecification>(a => a.ProfileId)
-            //    .OnDelete(DeleteBehavior.Cascade);  // Cascade deletion for composition
+            // Profile to AudienceSpecification (One-to-one relationship)
+            modelBuilder.Entity<Profile>()
+                .HasOne(p => p.AudienceSpecification)
+                .WithOne(a => a.Profile)
+                .HasForeignKey<AudienceSpecification>(a => a.ProfileId)
+                .OnDelete(DeleteBehavior.Cascade);  // Cascade deletion for composition
 
             // Keyword to Education (One-to-one relationship)
             modelBuilder.Entity<Keyword>()
@@ -74,9 +74,8 @@ namespace LinkUp_REST_API.Data.DbContextConnections
                 .WithOne(k => k.Keyword)
                 .HasForeignKey<Keyword>(k => k.EducationId)
                 .OnDelete(DeleteBehavior.Cascade);  // Cascade deletion for composition
+
+
         }
-
-
     }
-
 }

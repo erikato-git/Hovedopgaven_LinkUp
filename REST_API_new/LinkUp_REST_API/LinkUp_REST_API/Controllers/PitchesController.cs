@@ -1,0 +1,79 @@
+﻿using LinkUp_REST_API.Core.Interfaces;
+using LinkUp_REST_API.DTOs.Requests;
+using LinkUp_REST_API.DTOs.Requests.Completed;
+using LinkUp_REST_API.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LinkUp_REST_API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PitchesController : ControllerBase
+    {
+        private IPitchService _pitchService;
+        private IAuthentication _authentication;
+
+        public PitchesController(IPitchService pitchService, IAuthentication authentication)
+        {
+            _pitchService = pitchService;
+            _authentication = authentication;
+        }
+
+
+        // CreatePitch
+        [HttpPost("createPitch")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreatePitch([FromBody] PitchCreateInput dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var isUserLoggedIn = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(isUserLoggedIn))
+                {
+                    return Unauthorized("You must be logged in before you can send a pitch");
+                }
+
+                var result = await _pitchService.CreatePitch(dto, isUserLoggedIn);
+
+                if (result.isSucces)
+                {
+                    // TODO: insert 'GetByAccountId' path in ""
+                    return Created("", result);
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+                return BadRequest("Create pitch failed");
+            }
+        }
+
+        // GetAllAssociatedPitches
+
+
+        // GetPitchById: restricted to associated pitches
+
+
+        // DeletePitchById: restricted to sendingProfile pitches
+
+
+        // UpdatePitch (omitted): when a pitch has been send it's shouldn't be possible to edit the message like an email
+
+
+
+    }
+}

@@ -10,7 +10,7 @@ namespace LinkUp_REST_API.Models
         public required string Profession { get; set; }
         public required string Title { get; set; }
         public string? AlternativeTitle { get; set; }
-        public string? ProfilePicture { get; set; }
+        public Media? ProfilePicture { get; set; }
         public string? ProfileDescription { get; set; }
 
 

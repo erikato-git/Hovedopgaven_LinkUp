@@ -4,7 +4,8 @@ using LinkUp_REST_API.Core;
 using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.Data.DbContextConnections;
 using LinkUp_REST_API.Repositories;
-using LinkUp_REST_API.Repositories.Interfaces;
+using LinkUp_REST_API.Repositories.Completed;
+using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services;
 using LinkUp_REST_API.Services.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
@@ -51,14 +52,12 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
 
             // reals
 
-            var httpContextAccessor = _factory.Services.GetRequiredService<IHttpContextAccessor>();
-
             _scope = _factory.Services.CreateScope();
             _dbContext = _scope.ServiceProvider.GetRequiredService<DataContext>();
             _jwtSettings = _scope.ServiceProvider.GetRequiredService<IOptions<JwtSettings>>();
 
             _accountRepository = new AccountRepository(_dbContext);
-            _authentication = new Authentication(httpContextAccessor, _jwtSettings);
+            _authentication = new Authentication(_jwtSettings);
             _accountService = new AccountService(_accountRepository, _authentication);
 
 
@@ -84,7 +83,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
-            // TODO: find comprehensive way to test for JWT is returned
+            // TODO: find proper way to test for JWT is returned
         }
 
         [Fact]

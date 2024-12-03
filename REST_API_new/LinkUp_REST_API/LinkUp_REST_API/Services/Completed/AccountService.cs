@@ -1,6 +1,6 @@
 ﻿using LinkUp_REST_API.Core.Interfaces;
-using LinkUp_REST_API.DTOs.Requests;
-using LinkUp_REST_API.Repositories.Interfaces;
+using LinkUp_REST_API.DTOs.Requests.Completed;
+using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
 using LinkUp_REST_API.Util.Mapper;

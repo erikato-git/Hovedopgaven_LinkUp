@@ -8,8 +8,6 @@ namespace REST_API.Repositories.Interfaces
     {
         // Common repository methods
         Task GetByIdAsync(Guid id);
-        Task GetAllAsync();
-        Task UpdateAsync(Pitch pitch);
         Task<bool> SaveChangesAsync();
 
         // Custom methods
