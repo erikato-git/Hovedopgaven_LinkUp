@@ -1,5 +1,7 @@
-﻿using LinkUp_REST_API.DTOs.Requests;
+﻿using CloudinaryDotNet;
+using LinkUp_REST_API.DTOs.Requests;
 using LinkUp_REST_API.DTOs.Requests.Completed;
+using LinkUp_REST_API.Models;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Interfaces;
 using LinkUp_REST_API.Services.Interfaces.Completed;
@@ -23,6 +25,88 @@ namespace LinkUp_REST_API.Services
             _profileRepository = profileRepository;
         }
 
+
+        public async Task<ResultDTO> GetPitchById(Guid pitchId, string userAccountId)
+        {
+            // null-checks
+            if( string.IsNullOrEmpty(userAccountId) || string.IsNullOrEmpty(pitchId.ToString()))
+            {
+                return ResultDTO.Failure(400, "Invalid inputs");
+            }
+
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if(loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Logged in user not found");
+            }
+
+            if(loggedInUser.Profiles == null || loggedInUser.Profiles.Count == 0)
+            {
+                return ResultDTO.Failure(409, "User has no profiles at current moment and is unable to retrieve any associated pitches");
+            }
+
+            // check pitch exist
+            var pitchFound = await _pitchRepository.GetByIdAsync(pitchId);
+
+            if( pitchFound == null)
+            {
+                return ResultDTO.Failure(404, "Pitch was not found");
+            }
+
+            // check if logged in user is associated to the pitch (has authorization)
+            var profileIds = loggedInUser.Profiles.Select(p => p.ProfileId).ToList();
+            var isAssociated = false;
+
+            foreach (var profileId in profileIds)
+            {
+                if (profileId == pitchFound.ProfileId || profileId == pitchFound.RecipientProfileId)
+                {
+                    isAssociated = true;
+                }
+            }
+
+            if(!isAssociated)
+            {
+                return ResultDTO.Failure(403, "You are not associated with the pitch");
+            }
+
+            return ResultDTO.Succes(pitchFound, 200, $"Pitch {pitchId} has been retrieved");
+        }
+
+
+        public async Task<ResultDTO> GetAllAssociatedPithes(string userAccountId)
+        {
+            // null-check
+            if (string.IsNullOrEmpty(userAccountId))
+            {
+                return ResultDTO.Failure(400, "Invalid input");
+            }
+
+            // get all profiles from logged in user
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if (loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Logged in user not found");
+            }
+
+            // get pitches send from user's profiles
+            var allAssociatedPitches = new List<Pitch>();
+
+            var sendPitches = await _pitchRepository.GetPitchesSendByAccount(loggedInUser);
+
+            // get pitches received by user's profiles
+            var receivedPitches = await _pitchRepository.GetPitchesReceivedByAccount(loggedInUser);
+
+            // merge pitches
+            allAssociatedPitches.AddRange(sendPitches ?? new List<Pitch>());
+            allAssociatedPitches.AddRange(receivedPitches ?? new List<Pitch>());
+
+            return ResultDTO.Succes(allAssociatedPitches, 200, "All associated profiles have been extracted");
+        }
+
+
         public async Task<ResultDTO> CreatePitch(PitchCreateInput dto, string userAccountId)
         {
             // null-checks - 400
@@ -37,6 +121,12 @@ namespace LinkUp_REST_API.Services
             if(loggedInAccount == null)
             {
                 return ResultDTO.Failure(404, "Logged in user was not found");
+            }
+
+            // check account has at least one profile
+            if(loggedInAccount.Profiles == null || loggedInAccount.Profiles.Count() == 0 )
+            {
+                return ResultDTO.Failure(409, "You must have at least one account before you are allowed to send a pitch");
             }
 
             // check account contains sendingProfile - 409
@@ -82,15 +172,6 @@ namespace LinkUp_REST_API.Services
             throw new NotImplementedException();
         }
 
-        public Task<ResultDTO> GetAllAssociatedPithes(string userAccountId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ResultDTO> GetPitchById(Guid id, string userAccountId)
-        {
-            throw new NotImplementedException();
-        }
 
     }
 }

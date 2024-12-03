@@ -185,47 +185,43 @@ namespace LinkUp_REST_API_TESTS.Util
         {
             return new List<Pitch>
             {
-                //new Pitch
-                //{
-                //    PitchId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                //    SendingDate = DateTime.UtcNow,
-                //    TextMessage = "This is a test pitch for profile 1",
-                //    RecipientProfileId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Links to Profile 1
-                //    RecipientAccountId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                //    ProfileId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                //    Profile = null
-                //},
-                //new Pitch
-                //{
-                //    PitchId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                //    SendingDate = DateTime.UtcNow.AddMinutes(-30),
-                //    TextMessage = "This is a test pitch for profile 2",
-                //    RecipientProfileId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), // Links to Profile 2
-                //    RecipientAccountId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                //    ProfileId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                //    Profile = null
-                //},
-                //new Pitch
-                //{
-                //    PitchId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                //    SendingDate = DateTime.UtcNow.AddDays(-1),
-                //    TextMessage = "This is a test pitch for profile 3",
-                //    RecipientProfileId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                //    RecipientAccountId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                //    ProfileId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                //    Profile = null
-                //},
-                //new Pitch
-                //{
-                //    PitchId = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
-                //    SendingDate = DateTime.UtcNow.AddHours(-12),
-                //    TextMessage = "This is a test pitch for profile 4",
-                //    RecipientProfileId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                //    RecipientAccountId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-                //    ProfileId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                //    Profile = null
-                //}
-            
+                new Pitch
+                {
+                    PitchId = PitchTestHelper.GetValidPitchId1(),
+                    SendingDate = DateTime.UtcNow,
+                    TextMessage = "This is a test pitch for profile 1",
+                    RecipientProfileId = ProfileTestHelper.GetValidProfileId1(), // Links to Profile 1
+                    ProfileId = ProfileTestHelper.GetValidProfileId2(),
+                    Profile = null
+                },
+                new Pitch
+                {
+                    PitchId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                    SendingDate = DateTime.UtcNow.AddMinutes(-30),
+                    TextMessage = "This is a test pitch for profile 2",
+                    RecipientProfileId = ProfileTestHelper.GetValidProfileId1(), // Links to Profile 1
+                    ProfileId = ProfileTestHelper.GetValidProfileId2(),
+                    Profile = null
+                },
+                new Pitch
+                {
+                    PitchId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+                    SendingDate = DateTime.UtcNow.AddDays(-1),
+                    TextMessage = "This is a test pitch for profile 3",
+                    RecipientProfileId = ProfileTestHelper.GetValidProfileId2(),
+                    ProfileId = ProfileTestHelper.GetValidProfileId1(),
+                    Profile = null
+                },
+                new Pitch
+                {
+                    PitchId = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                    SendingDate = DateTime.UtcNow.AddHours(-12),
+                    TextMessage = "This is a test pitch for profile 4",
+                    RecipientProfileId = ProfileTestHelper.GetValidProfileId2(),
+                    ProfileId = ProfileTestHelper.GetValidProfileId1(),
+                    Profile = null
+                }
+
             };
         }
 

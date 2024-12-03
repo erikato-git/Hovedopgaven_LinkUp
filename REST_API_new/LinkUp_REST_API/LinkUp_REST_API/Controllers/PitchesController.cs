@@ -1,6 +1,7 @@
 ﻿using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.DTOs.Requests;
 using LinkUp_REST_API.DTOs.Requests.Completed;
+using LinkUp_REST_API.Models;
 using LinkUp_REST_API.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -62,10 +63,87 @@ namespace LinkUp_REST_API.Controllers
             }
         }
 
+
         // GetAllAssociatedPitches
+        [HttpGet("getAllAssociatedPitches")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetAllAssociatedPitches()
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var isUserLoggedIn = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(isUserLoggedIn))
+                {
+                    return Unauthorized("You must be logged in before you can get associated pitches for your account");
+                }
+
+                var result = await _pitchService.GetAllAssociatedPithes(isUserLoggedIn);
+
+                if (result.isSucces)
+                {
+                    // TODO: insert 'GetByAccountId' path in ""
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+                return BadRequest("Create pitch failed");
+            }
+        }
 
 
-        // GetPitchById: restricted to associated pitches
+        // GetPitchById
+        [HttpGet("getPitchById/{pitchId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetPitchById([FromQuery] Guid pitchId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var isUserLoggedIn = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(isUserLoggedIn))
+                {
+                    return Unauthorized("You must be logged in before you can get associated pitches for your account");
+                }
+
+                var result = await _pitchService.GetPitchById(pitchId, isUserLoggedIn);
+
+                if (result.isSucces)
+                {
+                    // TODO: insert 'GetByAccountId' path in ""
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+                return BadRequest("Create pitch failed");
+            }
+        }
 
 
         // DeletePitchById: restricted to sendingProfile pitches

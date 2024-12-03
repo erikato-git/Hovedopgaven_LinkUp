@@ -142,6 +142,47 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests
         }
 
 
+        // GetAllAssociatedPitches
+
+        [Fact]
+        public async Task GetAllAssociatedPitches_Should_Return200_When_AssociatedPitchesForLoggedInAccountHaveBeenFetched()
+        {
+
+            var result = await _sut.GetAllAssociatedPitches();
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetAllAssociatedPitches_Should_Return401_When_UserIsNotLoggedIn()
+        {
+            AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
+
+            var result = await _sut.GetAllAssociatedPitches();
+
+            var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(StatusCodes.Status401Unauthorized, unauthResult.StatusCode);
+        }
+
+
+        // GetPitchById
+
+        [Fact]
+        public async Task GetPitchById_Should_Return200_When_UserIsAssociatedAndPitchIsFound()
+        {
+            var validPitchId = PitchTestHelper.GetValidPitchId1();  // supposed to be associated to logged in user
+
+            var result = await _sut.GetPitchById(validPitchId);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        }
+
+
+
+
+
 
 
         public Task DisposeAsync()
