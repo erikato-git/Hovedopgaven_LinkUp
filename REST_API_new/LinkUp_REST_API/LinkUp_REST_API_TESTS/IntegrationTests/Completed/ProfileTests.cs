@@ -5,7 +5,6 @@ using LinkUp_REST_API.Data.DbContextConnections;
 using LinkUp_REST_API.Repositories;
 using LinkUp_REST_API.Services;
 using LinkUp_REST_API.Util;
-using LinkUp_REST_API_TESTS.TestHelpers;
 using LinkUp_REST_API_TESTS.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +22,7 @@ using LinkUp_REST_API.Controllers.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Completed;
+using LinkUp_REST_API_TESTS.TestHelpers.Completed;
 
 namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
 {

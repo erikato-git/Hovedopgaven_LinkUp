@@ -1,5 +1,4 @@
-﻿using LinkUp_REST_API.DTOs.Requests.Pending;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LinkUp_REST_API.DTOs.Requests.Completed
 {
@@ -13,7 +12,13 @@ namespace LinkUp_REST_API.DTOs.Requests.Completed
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]       // TODO: should be more complex
         public required string Password { get; set; }
 
-        public required PersonInformationCreateInput PersonInformation { get; set; }
+        // PersonInformation
+        public required string FirstName { get; set; }
+        public required string Surname { get; set; }
+        public string? Phone { get; set; }
+        public DateOnly BirthDate { get; set; }
+        public required string Gender { get; set; }          // TODO: enum
+
     }
 
 }

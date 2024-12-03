@@ -3,7 +3,7 @@ using LinkUp_REST_API.Repositories;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
-using LinkUp_REST_API.Util.Mapper;
+using LinkUp_REST_API.Util.Mapper.Completed;
 
 namespace LinkUp_REST_API.Services.Completed
 {

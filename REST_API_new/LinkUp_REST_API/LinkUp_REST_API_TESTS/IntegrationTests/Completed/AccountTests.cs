@@ -10,7 +10,7 @@ using LinkUp_REST_API.Services;
 using LinkUp_REST_API.Services.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
-using LinkUp_REST_API_TESTS.TestHelpers;
+using LinkUp_REST_API_TESTS.TestHelpers.Completed;
 using LinkUp_REST_API_TESTS.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -155,7 +155,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
         public async Task CreateAccount_Should_Return409_When_UserIsUnder13YearsOld()
         {
             var createAccountDto = AccountTestHelper.GenerateValidAccountCreateInput();
-            createAccountDto.PersonInformation.BirthDate = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-12));
+            createAccountDto.BirthDate = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-12));
             AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
 
 

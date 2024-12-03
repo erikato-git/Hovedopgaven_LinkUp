@@ -4,6 +4,7 @@ using LinkUp_REST_API.Data.DbContextConnections;
 using LinkUp_REST_API.Extensions;
 using LinkUp_REST_API.Repositories;
 using LinkUp_REST_API.Repositories.Completed;
+using LinkUp_REST_API.Repositories.Interfaces;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services;
 using LinkUp_REST_API.Services.Completed;
@@ -13,7 +14,6 @@ using LinkUp_REST_API.Util;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using REST_API.Repositories.Interfaces;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +31,10 @@ builder.Services.AddScoped<IProfileServiceHelper,ProfileServiceHelper>();
 
 builder.Services.AddScoped<IPitchRepository,PitchRepository>();
 builder.Services.AddScoped<IPitchService,PitchService>();
+
+builder.Services.AddScoped<IKeywordRepository,KeywordRepository>();
+builder.Services.AddScoped<IKeywordService,KeywordService>();
+
 
 
 builder.Services.AddDbContext<DataContext>();

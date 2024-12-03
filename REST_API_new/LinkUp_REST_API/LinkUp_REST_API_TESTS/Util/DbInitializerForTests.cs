@@ -3,6 +3,7 @@ using LinkUp_REST_API.Core;
 using LinkUp_REST_API.Data.DbContextConnections;
 using LinkUp_REST_API.Models;
 using LinkUp_REST_API_TESTS.TestHelpers;
+using LinkUp_REST_API_TESTS.TestHelpers.Completed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace LinkUp_REST_API_TESTS.Util
             dbContext.Profiles.AddRange(GetProfilesForTest());
             dbContext.Pitches.AddRange(GetPitchesForTest());
             dbContext.Keywords.AddRange(GetKeywordsForTest());
-            dbContext.Educations.AddRange(GetEducationsForTest());
+            //dbContext.Educations.AddRange(GetEducationsForTest());
             dbContext.SaveChanges();                                // saves into test-container database
         }
 
@@ -31,7 +32,7 @@ namespace LinkUp_REST_API_TESTS.Util
             dbContext.Accounts.RemoveRange(dbContext.Accounts);
             dbContext.Profiles.RemoveRange(dbContext.Profiles);
             dbContext.Pitches.RemoveRange(dbContext.Pitches);
-            //dbContext.Keywords.RemoveRange(dbContext.Keywords);
+            dbContext.Keywords.RemoveRange(dbContext.Keywords);
             //dbContext.Educations.RemoveRange(dbContext.Educations);
             dbContext.SaveChanges();
             InitDbForTests(dbContext);                              // re-init new items
@@ -51,7 +52,7 @@ namespace LinkUp_REST_API_TESTS.Util
                     ProfilePicture = null,
                     ProfileDescription = "Experienced in building web applications",
                     AccountId = AuthenticationTestHelper.GetValidAccountId1(), // Links to an Account
-                    KeywordId = Guid.NewGuid(),
+                    KeywordId = KeywordTestHelper.GetValidKeywordId1(),
                     PortfolioId = Guid.NewGuid(),
                     AudienceSpecificationId = Guid.NewGuid(),
                     Pitches = null
@@ -230,16 +231,16 @@ namespace LinkUp_REST_API_TESTS.Util
         {
             return new List<Keyword>
             {
-                //new Keyword
-                //{
-                //    KeywordId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                //    Availability = "Full-time",
-                //    YearsOfExperience = 5,
-                //    ProfileId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                //    EducationId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Links to Education 1
-                //    Profile = null,
-                //    Education = null
-                //},
+                new Keyword
+                {
+                    KeywordId = KeywordTestHelper.GetValidKeywordId1(),
+                    Availability = "Full-time",
+                    YearsOfExperience = 5,
+                    ProfileId = ProfileTestHelper.GetValidProfileId1(),
+                    EducationId = null, // Links to Education 1
+                    Profile = null,
+                    Education = null
+                },
                 //new Keyword
                 //{
                 //    KeywordId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
@@ -280,11 +281,11 @@ namespace LinkUp_REST_API_TESTS.Util
             {
                 //new Education
                 //{
-                //    EducationId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Matches Keyword 1
+                //    EducationId = EducationTestHelper.GetValidEducationId1(), // Matches Keyword 1
                 //    NameOfEducation = "Bachelor of Computer Science",
                 //    Institution = "University of Technology",
-                //    GraduationYear = "2015",
-                //    KeywordId = Guid.Parse("11111111-1111-1111-1111-111111111111"), // Links back to Keyword 1
+                //    GraduationYear = 2015,
+                //    KeywordId = KeywordTestHelper.GetValidKeywordId1(), // Links back to Keyword 1
                 //    Keyword = null
                 //},
                 //new Education

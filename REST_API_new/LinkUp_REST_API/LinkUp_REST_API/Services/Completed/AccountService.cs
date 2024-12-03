@@ -3,7 +3,7 @@ using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
-using LinkUp_REST_API.Util.Mapper;
+using LinkUp_REST_API.Util.Mapper.Completed;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LinkUp_REST_API.Services.Completed
@@ -134,7 +134,7 @@ namespace LinkUp_REST_API.Services.Completed
             // Check new user is min. 13 (GDPR)
             var minAge = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-13));
 
-            if (dto.PersonInformation.BirthDate.Year >= minAge.Year)
+            if (dto.BirthDate.Year >= minAge.Year)
             {
                 return ResultDTO.Failure(409, "User must be min. 13 years old");
             }

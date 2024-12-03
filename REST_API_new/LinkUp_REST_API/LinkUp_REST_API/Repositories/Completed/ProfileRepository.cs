@@ -16,6 +16,47 @@ namespace LinkUp_REST_API.Repositories.Completed
             _dbContext = dataContext;
         }
 
+
+        public async Task<Keyword?> CreateKeywordAsync(Guid profileId, Keyword keyword)
+        {
+            // null checks
+            if( string.IsNullOrEmpty(profileId.ToString()) || keyword == null )
+            {
+                throw new ArgumentNullException("Invalid arguments");
+            }
+
+            // check profile exist
+            var profileFound = await _dbContext.Profiles.FirstOrDefaultAsync(p => p.ProfileId == profileId);
+
+            if( profileFound == null )
+            {
+                return null;
+            }
+
+            // connect keyword to profile
+            keyword.ProfileId = profileFound.ProfileId;
+            keyword.Profile = profileFound;
+
+            // create keyword
+            var keywordCreated = await _dbContext.Keywords.AddAsync(keyword);
+
+            // save changes
+            var saved = await SaveChangesAsync();
+
+            if(saved)
+            {
+                return keywordCreated.Entity;
+            }
+
+            return null;
+        }
+
+        public Task<bool> DeleteKeywordAsync(Guid profileId, Keyword keyword)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public async Task<Pitch?> CreatePitchAsync(Guid profileId, Pitch pitch)
         {
             // null-checks
@@ -217,16 +258,6 @@ namespace LinkUp_REST_API.Repositories.Completed
         }
 
         public Task<IEnumerable<Profile>?> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Keyword?> CreateKeywordAsync(Guid profileId, Keyword keyword)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteKeywordAsync(Guid profileId, Keyword keyword)
         {
             throw new NotImplementedException();
         }
