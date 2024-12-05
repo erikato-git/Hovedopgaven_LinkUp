@@ -5,7 +5,7 @@ namespace LinkUp_REST_API.Util.Mapper
 {
     public class KeywordMapper
     {
-        public static Keyword MapToKeyword(KeywordCreateUpdateInput input)
+        public static Keyword MapToKeyword(KeywordCreateInput input)
         {
             if (input == null)
             {
@@ -18,12 +18,9 @@ namespace LinkUp_REST_API.Util.Mapper
                 Availability = input.Availability,
                 YearsOfExperience = input.YearsOfExperience,
                 ProfileId = input.ProfileId,
-                EducationId = input.EducationId,
                 Education = input.Education
             };
         }
-
-
 
 
     }

@@ -5,6 +5,7 @@ namespace LinkUp_REST_API.Util.Mapper.Completed
 {
     public class ProfileMapper
     {
+
         public static Profile MapToProfile(ProfileCreateInput input)
         {
             if (input == null)
@@ -12,22 +13,39 @@ namespace LinkUp_REST_API.Util.Mapper.Completed
                 throw new ArgumentNullException(nameof(input), "ProfileCreateInput cannot be null");
             }
 
-            return new Profile
+            var education = new Education
             {
-                ProfileId = Guid.NewGuid(),             // Consider to put generating of Ids another place, it's a huge responsibility
+                EducationId = Guid.NewGuid(),
+                NameOfEducation = input.NameOfEducation,
+                Institution = input.Institution,
+                GraduationYear = input.GraduationYear
+            };
+
+            var keyword = new Keyword
+            {
+                KeywordId = Guid.NewGuid(),
+                Availability = input.Availability,
+                YearsOfExperience = input.YearsOfExperience,
+                EducationId = education.EducationId,
+                Education = education,
+            };
+
+            // Map Profile properties
+            var profile = new Profile
+            {
+                ProfileId = Guid.NewGuid(), // Consider moving ID generation elsewhere
                 Profession = input.Profession,
                 Title = input.Title,
                 AlternativeTitle = input.AlternativeTitle,
-                //ProfilePicture = input.ProfilePicture,            // will be added later
                 ProfileDescription = input.ProfileDescription,
-                KeywordId = input.KeywordId,
-                Keyword = input.Keyword,
                 AccountId = input.AccountId,
-                PortfolioId = input.PortfolioId,
-                Portfolio = input.Portfolio,
-                AudienceSpecificationId = input.AudienceSpecificationId,
-                AudienceSpecification = input.AudienceSpecification
+                KeywordId = keyword.KeywordId,
+                Keyword = keyword,
+                // TODO: portfolio
+                // TODO: audienceSpecification
             };
+
+            return profile;
         }
 
 

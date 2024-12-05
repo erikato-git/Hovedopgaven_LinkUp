@@ -145,7 +145,7 @@ namespace LinkUp_REST_API.Services.Completed
                 return ResultDTO.Failure(403, $"Your account doesn't contain profile with profileId {profileId}");
             }
 
-            var deleted = await _accountRepository.DeleteProfileAsync(profileToDelete);
+            var deleted = await _accountRepository.DeleteProfileAsync(Guid.Parse(userAccountId), profileToDelete);
 
             if (!deleted)
             {

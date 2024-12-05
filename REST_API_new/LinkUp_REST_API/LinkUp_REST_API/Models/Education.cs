@@ -6,9 +6,9 @@ namespace LinkUp_REST_API.Models
     {
         [Key]
         public Guid EducationId { get; set; }
-        public required string NameOfEducation { get; set; }
-        public required string Institution { get; set; }
-        public required int GraduationYear { get; set; }
+        public string? NameOfEducation { get; set; }
+        public string? Institution { get; set; }
+        public int? GraduationYear { get; set; }
 
         // Navigation properties to Keyword
         public Guid KeywordId { get; set; }

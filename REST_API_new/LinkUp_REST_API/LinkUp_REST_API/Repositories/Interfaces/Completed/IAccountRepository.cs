@@ -19,7 +19,7 @@ namespace LinkUp_REST_API.Repositories.Interfaces.Completed
 
         // Composition
         Task<Profile?> CreateProfileAsync(Guid accountId, Profile profile);
-        Task<bool> DeleteProfileAsync(Profile profile);
+        Task<bool> DeleteProfileAsync(Guid accountId, Profile profile);
     }
 
 

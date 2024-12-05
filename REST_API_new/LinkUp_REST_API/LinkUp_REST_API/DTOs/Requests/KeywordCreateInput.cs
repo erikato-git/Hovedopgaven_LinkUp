@@ -2,14 +2,13 @@
 
 namespace LinkUp_REST_API.DTOs.Requests
 {
-    public class KeywordCreateUpdateInput
+    public class KeywordCreateInput
     {
         public string? Availability { get; set; }
         public int? YearsOfExperience { get; set; }
 
         public Guid ProfileId { get; set; }
 
-        public Guid? EducationId { get; set; }
         public Education? Education { get; set; }
 
     }

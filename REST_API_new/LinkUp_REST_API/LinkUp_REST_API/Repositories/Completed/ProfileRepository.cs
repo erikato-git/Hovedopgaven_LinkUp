@@ -33,9 +33,17 @@ namespace LinkUp_REST_API.Repositories.Completed
                 return null;
             }
 
-            // connect keyword to profile
+            // profile does already have a keyword
+            if( !string.IsNullOrEmpty(profileFound.KeywordId.ToString()) )
+            {
+                return null;
+            }
+
+            // connect keyword and profile
             keyword.ProfileId = profileFound.ProfileId;
             keyword.Profile = profileFound;
+            profileFound.KeywordId = keyword.ProfileId;
+            profileFound.Keyword = keyword;
 
             // create keyword
             var keywordCreated = await _dbContext.Keywords.AddAsync(keyword);
@@ -51,9 +59,39 @@ namespace LinkUp_REST_API.Repositories.Completed
             return null;
         }
 
-        public Task<bool> DeleteKeywordAsync(Guid profileId, Keyword keyword)
+        public async Task<bool> DeleteKeywordAsync(Guid profileId, Keyword keyword)
         {
-            throw new NotImplementedException();
+            // null check
+            if( string.IsNullOrEmpty(profileId.ToString()) || keyword == null )
+            {
+                throw new ArgumentNullException("Invalid arguments");
+            }
+
+            // find target profile
+            var profileFound = await _dbContext.Profiles.FirstOrDefaultAsync(x => x.ProfileId == profileId);
+
+            if(profileFound == null )
+            {
+                throw new KeyNotFoundException($"Profile with ID {profileId} was not found.");
+            }
+
+            // check associations
+            if (profileFound.KeywordId != keyword.KeywordId)
+            {
+                throw new InvalidOperationException("The provided keywordId does not belong to the specified profile.");
+            }
+
+            // remove associations
+            profileFound.KeywordId = null;
+            profileFound.Keyword = null;
+
+            // delete keyword
+            _dbContext.Keywords.Remove(keyword);
+
+            // save changes
+            var saved = await SaveChangesAsync();
+
+            return saved;
         }
 
 
@@ -70,10 +108,18 @@ namespace LinkUp_REST_API.Repositories.Completed
 
             if(sendingProfile == null)
             {
-                return null;
+                throw new KeyNotFoundException($"Profile with ID {profileId} was not found.");
+            }
+
+            // connect pitch and sendingProfile
+
+            if( sendingProfile.Pitches == null )
+            {
+                sendingProfile.Pitches = new List<Pitch>();
             }
 
             pitch.Profile = sendingProfile;
+            sendingProfile.Pitches.Add(pitch);
 
             // add pitch to dbcontext and save changes
             
@@ -102,13 +148,13 @@ namespace LinkUp_REST_API.Repositories.Completed
 
             if( profileFound == null)
             {
-                return false;
+                throw new KeyNotFoundException($"Profile with ID {profileId} was not found.");
             }
 
             // check profile is sending-profile
             if(profileFound.ProfileId != pitch.ProfileId)
             {
-                return false;
+                throw new InvalidOperationException("The provided pitch does not belong to the specified profile.");
             }
 
             // check pitch exist
@@ -116,8 +162,11 @@ namespace LinkUp_REST_API.Repositories.Completed
 
             if( pitchFound == null)
             {
-                return false;
+                throw new KeyNotFoundException($"Profile with ID {profileId} was not found.");
             }
+
+            // detach profile and pitch
+            profileFound.Pitches?.Remove(pitch);
 
             // delete pitch
             _dbContext.Pitches.Remove(pitchFound);
@@ -125,12 +174,7 @@ namespace LinkUp_REST_API.Repositories.Completed
             // save changes
             var saved = await SaveChangesAsync();
 
-            if(!saved)
-            {
-                return false;
-            }
-
-            return true;
+            return saved;
         }
 
 
@@ -145,14 +189,11 @@ namespace LinkUp_REST_API.Repositories.Completed
             var existingProfile = await _dbContext.Profiles
                 .Include(p => p.Account) // Include navigation properties if necessary
                 .Include(p => p.Keyword)
-                .Include(p => p.Portfolio)
-                .Include(p => p.AudienceSpecification)
-                .Include(p => p.Pitches)
                 .FirstOrDefaultAsync(p => p.ProfileId == dto.ProfileId);
 
             if (existingProfile == null)
             {
-                return null; // Return null if the profile does not exist
+                throw new KeyNotFoundException($"Profile with ID {dto.ProfileId} was not found.");
             }
 
             // Update Profile properties
@@ -181,25 +222,37 @@ namespace LinkUp_REST_API.Repositories.Completed
                 existingProfile.ProfileDescription = dto.ProfileDescription;
             }
 
-            // Update navigation properties if provided
-            if (dto.KeywordId.HasValue)
+            // Update Keyword properties if provided
+            if (existingProfile.Keyword != null)
             {
-                existingProfile.KeywordId = dto.KeywordId;
-            }
+                if (!string.IsNullOrEmpty(dto.Availability))
+                {
+                    existingProfile.Keyword.Availability = dto.Availability;
+                }
 
-            if (dto.PortfolioId.HasValue)
-            {
-                existingProfile.PortfolioId = dto.PortfolioId;
-            }
+                if (dto.YearsOfExperience.HasValue)
+                {
+                    existingProfile.Keyword.YearsOfExperience = dto.YearsOfExperience.Value;
+                }
 
-            if (dto.AudienceSpecificationId.HasValue)
-            {
-                existingProfile.AudienceSpecificationId = dto.AudienceSpecificationId;
-            }
+                // Update nested Education properties
+                if (existingProfile.Keyword.Education != null)
+                {
+                    if (!string.IsNullOrEmpty(dto.NameOfEducation))
+                    {
+                        existingProfile.Keyword.Education.NameOfEducation = dto.NameOfEducation;
+                    }
 
-            if (dto.Pitches != null && dto.Pitches.Any())
-            {
-                existingProfile.Pitches = dto.Pitches;
+                    if (!string.IsNullOrEmpty(dto.Institution))
+                    {
+                        existingProfile.Keyword.Education.Institution = dto.Institution;
+                    }
+
+                    if (dto.GraduationYear.HasValue)
+                    {
+                        existingProfile.Keyword.Education.GraduationYear = dto.GraduationYear.Value;
+                    }
+                }
             }
 
             // Save changes
@@ -212,6 +265,10 @@ namespace LinkUp_REST_API.Repositories.Completed
 
             return null;
         }
+
+
+
+
 
         public async Task<Profile?> GetByIdAsync(Guid id)
         {
@@ -236,7 +293,7 @@ namespace LinkUp_REST_API.Repositories.Completed
 
             if (accountExist == null)
             {
-                return null;
+                throw new KeyNotFoundException($"Account with ID {accountId} was not found.");
             }
 
             var profilesForAccount = await _dbContext.Profiles.Where(x => x.AccountId.Equals(accountId)).ToListAsync();

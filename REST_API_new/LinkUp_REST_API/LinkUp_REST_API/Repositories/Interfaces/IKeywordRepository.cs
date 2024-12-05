@@ -1,4 +1,5 @@
-﻿using LinkUp_REST_API.Models;
+﻿using LinkUp_REST_API.DTOs.Requests;
+using LinkUp_REST_API.Models;
 using LinkUp_REST_API.Models.Pending;
 
 namespace LinkUp_REST_API.Repositories.Interfaces
@@ -8,12 +9,12 @@ namespace LinkUp_REST_API.Repositories.Interfaces
         // Common repository methods
         Task<Keyword?> GetByIdAsync(Guid id);
         Task<IEnumerable<Keyword>?> GetAllAsync();
-        Task<Keyword?> UpdateAsync(Keyword keyword);
+        Task<Keyword?> UpdateAsync(KeywordUpdateInput keyword);
         Task<bool> SaveChangesAsync();
 
         // Composition
-        Task<Education?> CreateEducation(Keyword keyword, Education education);
-        Task<bool> DeleteEducation(Keyword keyword, Education education);
+        Task<Education?> CreateEducation(Guid keywordId, Education education);
+        Task<bool> DeleteEducation(Guid keywordId, Education education);
 
     }
 }

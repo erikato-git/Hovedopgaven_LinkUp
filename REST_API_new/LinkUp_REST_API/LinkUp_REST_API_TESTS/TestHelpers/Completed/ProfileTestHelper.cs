@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LinkUp_REST_API.DTOs.Requests.Completed;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace LinkUp_REST_API_TESTS.TestHelpers.Completed
 {
@@ -20,12 +21,19 @@ namespace LinkUp_REST_API_TESTS.TestHelpers.Completed
                 AlternativeTitle = "Web Developer",
                 ProfilePicture = null, // Replace with a mock `IFormFile` if needed for tests
                 ProfileDescription = "Experienced in building modern web applications.",
-                AccountId = AuthenticationTestHelper.GetValidAccountId1(),      // Supposed to be logged in user
-                KeywordId = Guid.NewGuid(),
-                PortfolioId = Guid.NewGuid(),
-                AudienceSpecificationId = Guid.NewGuid(),
+                AccountId = AuthenticationTestHelper.GetValidAccountId1(), // Assumes a helper method for fetching a valid account ID
+
+                // Keyword
+                Availability = "Available", // Example availability status
+                YearsOfExperience = new Random().Next(1, 15), // Generate a random number for years of experience
+
+                // Education
+                NameOfEducation = "Bachelor of Science in Computer Science",
+                Institution = "University of Technology",
+                GraduationYear = DateTime.Now.Year - new Random().Next(1, 10) // Graduation year within the last 10 years
             };
         }
+
 
         public static ProfileUpdateInput GenerateValidProfileUpdateInput()
         {
@@ -38,18 +46,19 @@ namespace LinkUp_REST_API_TESTS.TestHelpers.Completed
                 ProfilePicture = null,
                 ProfileDescription = "Experienced developer specializing in web and cloud technologies.",
                 AccountId = AuthenticationTestHelper.GetValidAccountId1(),
-                KeywordId = Guid.NewGuid(),
-                Keyword = new Keyword
-                {
-                    KeywordId = Guid.NewGuid(),
-                },
-                PortfolioId = Guid.NewGuid(),
-                Portfolio = null,
-                AudienceSpecificationId = Guid.NewGuid(),
-                AudienceSpecification = null,
-                Pitches = null
+
+                // Keyword
+                Availability = "Full-Time",
+                YearsOfExperience = 8,
+
+                // Education (nested within Keyword)
+                NameOfEducation = "Bachelor of Science in Computer Science",
+                Institution = "University of Aarhus",
+                GraduationYear = DateTime.Now.Year - 5,
+
             };
         }
+
 
         public static ProfileSearchQueryInput GenerateValidSearchQueryDTO()
         {
@@ -69,12 +78,17 @@ namespace LinkUp_REST_API_TESTS.TestHelpers.Completed
 
         public static Guid GetValidProfileId1()
         {
-            return Guid.Parse("617122cf-c317-42c8-9c59-24830c640e6a");
+            return Guid.Parse("617122cf-c317-42c8-9c59-24830c640e61");
         }
 
         public static Guid GetValidProfileId2()
         {
-            return Guid.Parse("617122cf-c317-42c8-9c59-24830c640e6b");
+            return Guid.Parse("617122cf-c317-42c8-9c59-24830c640e62");
+        }
+
+        public static Guid GetValidProfileId3()
+        {
+            return Guid.Parse("617122cf-c317-42c8-9c59-24830c640e63");
         }
 
     }

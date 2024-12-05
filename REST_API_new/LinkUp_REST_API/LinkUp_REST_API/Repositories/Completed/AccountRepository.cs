@@ -32,11 +32,21 @@ namespace LinkUp_REST_API.Repositories.Completed
                 return null;
             }
 
-            profile.AccountId = targetAccount.AccountId;        // adding profile to targetAccount
+            // connect profile and account
+            profile.AccountId = targetAccount.AccountId;      
             profile.Account = targetAccount;
 
+            if(targetAccount.Profiles == null)
+            {
+                targetAccount.Profiles = new List<Profile>();
+            }
+
+            targetAccount.Profiles.Add(profile);
+
+            // create profile
             _dbContext.Profiles.Add(profile);
 
+            // save changes
             var saved = await SaveChangesAsync();
 
             if (saved)
@@ -45,6 +55,40 @@ namespace LinkUp_REST_API.Repositories.Completed
             }
 
             return null;
+        }
+
+        public async Task<bool> DeleteProfileAsync(Guid accountId, Profile profile)
+        {
+            if ( string.IsNullOrEmpty(accountId.ToString()) || profile == null )
+            {
+                throw new ArgumentNullException("Invalid inputs");
+            }
+
+            var targetAccount = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == accountId);
+
+            if (targetAccount == null)
+            {
+                return false;
+            }
+
+            // de-connect profile and account
+            if( targetAccount.Profiles == null)
+            {
+                return false;
+            }
+
+            targetAccount.Profiles.Remove(profile);
+
+            // save changes
+            var saved = await SaveChangesAsync();
+
+            if (saved)
+            {
+                return true;
+            }
+
+            return false;
+
         }
 
 
@@ -79,24 +123,6 @@ namespace LinkUp_REST_API.Repositories.Completed
             var account = await _dbContext.Accounts.Include(x => x.PersonInformation).Include(x => x.Profiles).FirstOrDefaultAsync(x => x.AccountId == id);
 
             return account;
-        }
-
-        /*
-         * Composition
-         * Just adds more coupling
-         */
-        public async Task<bool> DeleteProfileAsync(Profile profile)
-        {
-            if (profile == null)
-            {
-                throw new ArgumentNullException(nameof(profile));
-            }
-
-            _dbContext.Profiles.Remove(profile);
-
-            var saved = await SaveChangesAsync();
-
-            return saved;
         }
 
 

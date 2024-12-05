@@ -14,17 +14,30 @@ namespace LinkUp_REST_API.DTOs.Requests.Completed
         public string? ProfileDescription { get; set; }
 
 
+        // Account
         public Guid AccountId { get; set; }
 
-        public Guid? KeywordId { get; set; }
-        public Keyword? Keyword { get; set; }
 
-        public Guid? PortfolioId { get; set; }
-        public Portfolio? Portfolio { get; set; }
+        // Keywork
+        public string? Availability { get; set; }           // TODO: Enum
+        public int? YearsOfExperience { get; set; }
 
-        public Guid? AudienceSpecificationId { get; set; }
-        public AudienceSpecification? AudienceSpecification { get; set; }
+        // Education (nested)
+        public string? NameOfEducation { get; set; }
+        public string? Institution { get; set; }
+        public int? GraduationYear { get; set; }
 
-        public List<Pitch>? Pitches { get; set; }
+
+
+        // Portfolio
+        //public Guid? PortfolioId { get; set; }
+        //public Portfolio? Portfolio { get; set; }
+
+
+        // AudienceSpecification
+        //public Guid? AudienceSpecificationId { get; set; }
+        //public AudienceSpecification? AudienceSpecification { get; set; }
+
+
     }
 }

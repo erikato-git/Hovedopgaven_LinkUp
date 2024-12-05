@@ -27,6 +27,7 @@ namespace LinkUp_REST_API.Services.Completed
                 return ResultDTO.Failure(400, "Input is invalid");
             }
 
+            // Delete account also checks if user exist
             var accountDeleted = await _accountRepository.DeleteAsync(Guid.Parse(userAccountId));
 
             if (!accountDeleted)

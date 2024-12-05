@@ -5,7 +5,7 @@ using LinkUp_REST_API.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LinkUp_REST_API.Controllers
+namespace LinkUp_REST_API.Controllers.Completed
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -26,7 +26,7 @@ namespace LinkUp_REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateKeyword([FromBody] KeywordCreateUpdateInput dto)
+        public async Task<IActionResult> CreateKeyword([FromBody] KeywordCreateInput dto)
         {
             try
             {
@@ -103,8 +103,87 @@ namespace LinkUp_REST_API.Controllers
 
 
         // UpdateKeyword
+        [HttpPut("updateKeyword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateKeyword([FromBody] KeywordUpdateInput dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var loggedInAccount = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(loggedInAccount))
+                {
+                    return Unauthorized("You must to be logged in before you can update your keyword");
+                }
+
+                var result = await _keywordService.UpdateKeyword(dto, loggedInAccount);
+
+                if (result.isSucces)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+                // TODO: log-info: AccountId (loggedInUser), UTC.Now, ex.stack-trace 
+                return BadRequest("Updated profile failed");
+            }
+        }
 
 
         // DeleteKeywordById
+        [HttpDelete("deleteKeyword/{keywordId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteKeywordById([FromQuery] Guid keywordId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var loggedInAccount = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(loggedInAccount))
+                {
+                    return Unauthorized($"You must to be logged in before you can delete keyword {keywordId} from your account");
+                }
+
+                var result = await _keywordService.DeleteKeywordById(keywordId, loggedInAccount);
+
+                if (result.isSucces)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+                return BadRequest("Get own account failed");
+            }
+        }
+
+
     }
 }

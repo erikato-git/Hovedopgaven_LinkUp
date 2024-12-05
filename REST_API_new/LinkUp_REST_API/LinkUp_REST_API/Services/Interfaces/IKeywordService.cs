@@ -6,9 +6,9 @@ namespace LinkUp_REST_API.Services.Interfaces
 {
     public interface IKeywordService
     {
-        Task<ResultDTO> CreateKeyword(KeywordCreateUpdateInput createDto, string userAccountId);
+        Task<ResultDTO> CreateKeyword(KeywordCreateInput createDto, string userAccountId);
         Task<ResultDTO> GetKeywordById(Guid id, string userAccountId);
-        Task<ResultDTO> UpdateKeyword(KeywordCreateUpdateInput updateDto, string userAccountId);
+        Task<ResultDTO> UpdateKeyword(KeywordUpdateInput updateDto, string userAccountId);
         Task<ResultDTO> DeleteKeywordById(Guid id, string userAccountId);
     }
 }

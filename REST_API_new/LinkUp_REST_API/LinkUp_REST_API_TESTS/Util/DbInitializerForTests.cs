@@ -2,7 +2,6 @@
 using LinkUp_REST_API.Core;
 using LinkUp_REST_API.Data.DbContextConnections;
 using LinkUp_REST_API.Models;
-using LinkUp_REST_API_TESTS.TestHelpers;
 using LinkUp_REST_API_TESTS.TestHelpers.Completed;
 using System;
 using System.Collections.Generic;
@@ -23,7 +22,7 @@ namespace LinkUp_REST_API_TESTS.Util
             dbContext.Profiles.AddRange(GetProfilesForTest());
             dbContext.Pitches.AddRange(GetPitchesForTest());
             dbContext.Keywords.AddRange(GetKeywordsForTest());
-            //dbContext.Educations.AddRange(GetEducationsForTest());
+            dbContext.Educations.AddRange(GetEducationsForTest());
             dbContext.SaveChanges();                                // saves into test-container database
         }
 
@@ -33,7 +32,7 @@ namespace LinkUp_REST_API_TESTS.Util
             dbContext.Profiles.RemoveRange(dbContext.Profiles);
             dbContext.Pitches.RemoveRange(dbContext.Pitches);
             dbContext.Keywords.RemoveRange(dbContext.Keywords);
-            //dbContext.Educations.RemoveRange(dbContext.Educations);
+            dbContext.Educations.RemoveRange(dbContext.Educations);
             dbContext.SaveChanges();
             InitDbForTests(dbContext);                              // re-init new items
         }
@@ -65,24 +64,24 @@ namespace LinkUp_REST_API_TESTS.Util
                     ProfilePicture = null,
                     ProfileDescription = "Specialized in UI/UX design",
                     AccountId = Guid.Parse("22222222-2222-2222-2222-222222222222"), // Links to another Account
-                    KeywordId = Guid.NewGuid(),
+                    KeywordId = KeywordTestHelper.GetValidKeywordId2(),
                     PortfolioId = Guid.NewGuid(),
                     AudienceSpecificationId = null, // No audience specification
                     Pitches = null
                 },
-                //new Profile
-                //{
-                //    ProfileId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                //    Profession = "Marketing Manager",
-                //    Title = "Digital Marketer",
-                //    ProfilePicture = "profile3.jpg",
-                //    ProfileDescription = "Expert in SEO and digital campaigns",
-                //    AccountId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                //    KeywordId = Guid.NewGuid(),
-                //    PortfolioId = Guid.NewGuid(),
-                //    AudienceSpecificationId = Guid.NewGuid(),
-                //    Pitches = null
-                //},
+                new Profile
+                {
+                    ProfileId = ProfileTestHelper.GetValidProfileId3(),
+                    Profession = "Marketing Manager",
+                    Title = "Digital Marketer",
+                    ProfilePicture = null,
+                    ProfileDescription = "Expert in SEO and digital campaigns",
+                    AccountId = AuthenticationTestHelper.GetValidAccountId1(),
+                    KeywordId = null,
+                    PortfolioId = null,
+                    AudienceSpecificationId = Guid.NewGuid(),
+                    Pitches = null
+                },
                 //new Profile
                 //{
                 //    ProfileId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
@@ -241,36 +240,16 @@ namespace LinkUp_REST_API_TESTS.Util
                     Profile = null,
                     Education = null
                 },
-                //new Keyword
-                //{
-                //    KeywordId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                //    Availability = "Freelance",
-                //    YearsOfExperience = 3,
-                //    ProfileId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                //    EducationId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), // Links to Education 2
-                //    Profile = null,
-                //    Education = null
-                //},
-                //new Keyword
-                //{
-                //    KeywordId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                //    Availability = "Part-time",
-                //    YearsOfExperience = 7,
-                //    ProfileId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                //    EducationId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), // Links to Education 3
-                //    Profile = null,
-                //    Education = null
-                //},
-                //new Keyword
-                //{
-                //    KeywordId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-                //    Availability = "Available on-demand",
-                //    YearsOfExperience = 10,
-                //    ProfileId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                //    EducationId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"), // Links to Education 4
-                //    Profile = null,
-                //    Education = null
-                //}
+                new Keyword
+                {
+                    KeywordId = KeywordTestHelper.GetValidKeywordId2(),
+                    Availability = "Freelance",
+                    YearsOfExperience = 3,
+                    ProfileId = ProfileTestHelper.GetValidProfileId2(),
+                    EducationId = null,
+                    Profile = null,
+                    Education = null
+                }
             
             };
         }
