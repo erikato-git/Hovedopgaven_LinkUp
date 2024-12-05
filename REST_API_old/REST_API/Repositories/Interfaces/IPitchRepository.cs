@@ -1,5 +1,4 @@
-﻿using Microsoft.Identity.Client;
-using REST_API.Models;
+﻿using REST_API.Models;
 
 namespace REST_API.Repositories.Interfaces
 {

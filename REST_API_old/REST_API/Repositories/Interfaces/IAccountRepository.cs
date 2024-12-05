@@ -1,6 +1,4 @@
-﻿using REST_API.DTOs.AccountDomain;
-using REST_API.Models;
-using REST_API.Util;
+﻿using REST_API.Models;
 
 namespace REST_API.Repositories.Interfaces
 {

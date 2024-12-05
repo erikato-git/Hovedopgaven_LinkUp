@@ -2,7 +2,6 @@
 using REST_API.Data;
 using REST_API.Models;
 using REST_API.Repositories.Interfaces;
-using System.Security.Principal;
 
 namespace REST_API.Repositories
 {

@@ -8,7 +8,6 @@ namespace LinkUp_REST_API.Repositories.Interfaces.Completed
     {
         // Common repository methods
         Task<Profile?> GetByIdAsync(Guid id);
-        Task<IEnumerable<Profile>?> GetAllAsync();
         Task<Profile?> UpdateAsync(ProfileUpdateInput dto);
         Task<bool> SaveChangesAsync();
 
@@ -18,14 +17,9 @@ namespace LinkUp_REST_API.Repositories.Interfaces.Completed
 
 
         // Composition
-        Task<Keyword?> CreateKeywordAsync(Guid profileId, Keyword keyword);
-        Task<bool> DeleteKeywordAsync(Guid profileId, Keyword keyword);
-        Task<Portfolio?> CreatePortfolioAsync(Guid profileId, Portfolio portfolio);
-        Task<bool> DeletePortfolioAsync(Guid profileId, Portfolio portfolio);
-        Task<AudienceSpecification?> CreateAudienceSpecificationAsync(Guid profileId, AudienceSpecification audienceSpecification);
-        Task<bool> DeleteAudienceSpecificationAsync(Guid profileId, AudienceSpecification audienceSpecification);
-        Task<Pitch?> CreatePitchAsync(Guid profileId, Pitch pitch);
-        Task<bool> DeletePitchAsync(Guid profileId, Pitch pitch);
+        Task<Profile?> CreateProfileAsync(Guid accountId, Profile profile);
+        Task<bool> DeleteProfileAsync(Guid accountId, Profile profile);
+
 
     }
 }

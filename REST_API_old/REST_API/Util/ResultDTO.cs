@@ -9,10 +9,10 @@
         public static ResultDTO SuccesResult(object data, String message)
         {
             return new ResultDTO
-            { 
+            {
                 isSuccess = true,
-                Data = data, 
-                Message = message 
+                Data = data,
+                Message = message
             };
         }
 

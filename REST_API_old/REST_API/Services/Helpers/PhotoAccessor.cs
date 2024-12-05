@@ -18,7 +18,7 @@ namespace REST_API.Services.Helpers
                 config.Value.ApiKey,
                 config.Value.ApiSecret
             );
-            _cloudinary = new Cloudinary( account );
+            _cloudinary = new Cloudinary(account);
         }
 
         /*

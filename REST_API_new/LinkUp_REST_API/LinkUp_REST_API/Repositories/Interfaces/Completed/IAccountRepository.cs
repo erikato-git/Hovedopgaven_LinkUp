@@ -17,9 +17,6 @@ namespace LinkUp_REST_API.Repositories.Interfaces.Completed
         Task<bool> AddSavedProfileAsync(Account account, Guid profileId);
         Task<Account?> GetAccountByEmailAsync(string email);
 
-        // Composition
-        Task<Profile?> CreateProfileAsync(Guid accountId, Profile profile);
-        Task<bool> DeleteProfileAsync(Guid accountId, Profile profile);
     }
 
 

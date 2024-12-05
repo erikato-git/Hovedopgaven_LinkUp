@@ -68,7 +68,7 @@ namespace REST_API.Util.Mapper
 
             if (!string.IsNullOrEmpty(updateAccountDto.Password))
             {
-                existingAccount.Password = Authentication.HashingPasswordWithSaltUsingSHA256(updateAccountDto.Password, existingAccount.AccountId); 
+                existingAccount.Password = Authentication.HashingPasswordWithSaltUsingSHA256(updateAccountDto.Password, existingAccount.AccountId);
             }
 
             return existingAccount;

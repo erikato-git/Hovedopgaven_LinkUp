@@ -12,8 +12,8 @@ namespace REST_API.Data
         /*
          * DbContextOptions<T> enables me to configure settings for DataContext outside the class in Program.cs
          */
-        public MssqlDbContext(DbContextOptions<MssqlDbContext> options): base(options) 
-        { 
+        public MssqlDbContext(DbContextOptions<MssqlDbContext> options) : base(options)
+        {
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

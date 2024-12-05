@@ -14,5 +14,9 @@ namespace LinkUp_REST_API.Repositories.Interfaces.Completed
         Task<IEnumerable<Pitch>?> GetPitchesReceivedByAccount(Account account);
         Task<IEnumerable<Pitch>?> GetPitchesSendByAccount(Account account);
 
+        // Composition
+        Task<Pitch?> CreatePitchAsync(Guid profileId, Pitch pitch);
+        Task<bool> DeletePitchAsync(Guid profileId, Pitch pitch);
+
     }
 }

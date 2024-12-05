@@ -1,6 +1,5 @@
 ﻿using REST_API.DTOs.ProfileDomain;
 using REST_API.Models;
-using REST_API.Services.IHelpers;
 
 namespace REST_API.Services.Helpers
 {

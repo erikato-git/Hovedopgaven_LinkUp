@@ -145,7 +145,7 @@ namespace LinkUp_REST_API.Services.Completed
                 return ResultDTO.Failure(403, $"Your account doesn't contain profile with profileId {profileId}");
             }
 
-            var deleted = await _accountRepository.DeleteProfileAsync(Guid.Parse(userAccountId), profileToDelete);
+            var deleted = await _profileRepository.DeleteProfileAsync(Guid.Parse(userAccountId), profileToDelete);
 
             if (!deleted)
             {
@@ -217,7 +217,7 @@ namespace LinkUp_REST_API.Services.Completed
             var profile = ProfileMapper.MapToProfile(dto);
 
             // Create profile (composition)
-            var createdProfile = await _accountRepository.CreateProfileAsync(Guid.Parse(userAccountId), profile);
+            var createdProfile = await _profileRepository.CreateProfileAsync(Guid.Parse(userAccountId), profile);
 
             if (createdProfile == null)
             {

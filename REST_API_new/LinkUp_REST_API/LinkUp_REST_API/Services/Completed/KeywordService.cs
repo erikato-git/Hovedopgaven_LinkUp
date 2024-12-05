@@ -60,7 +60,7 @@ namespace LinkUp_REST_API.Services.Completed
             }
 
             // delete keyword (composition)
-            var keywordDeleted = await _profileRepository.DeleteKeywordAsync(profileFound.ProfileId, keywordExist);
+            var keywordDeleted = await _keywordRepository.DeleteKeywordAsync(profileFound.ProfileId, keywordExist);
 
             if (!keywordDeleted)
             {
@@ -199,7 +199,7 @@ namespace LinkUp_REST_API.Services.Completed
             var keyword = KeywordMapper.MapToKeyword(createDto);
 
             // create keyword
-            var keywordCreated = await _profileRepository.CreateKeywordAsync(profileFound.ProfileId, keyword);
+            var keywordCreated = await _keywordRepository.CreateKeywordAsync(profileFound.ProfileId, keyword);
 
             if (keywordCreated == null)
             {

@@ -1,7 +1,4 @@
-﻿using REST_API.DTOs.AccountDomain;
-using REST_API.DTOs.ProfileDomain;
-using REST_API.Models;
-using REST_API.Repositories;
+﻿using REST_API.DTOs.ProfileDomain;
 using REST_API.Repositories.Interfaces;
 using REST_API.Services.Helpers;
 using REST_API.Services.IHelpers;
@@ -89,9 +86,9 @@ namespace REST_API.Services.Domains
 
                     var existingProfile = await _profileServiceHelper.GetProfileFromAccount(existingAccount, dto.AccountId);
 
-                    if(existingProfile != null)
+                    if (existingProfile != null)
                     {
-                        var generatedProfile = ProfileMapper.MapUpdateProfileDTOToProfile(dto,existingProfile);
+                        var generatedProfile = ProfileMapper.MapUpdateProfileDTOToProfile(dto, existingProfile);
 
                         if (generatedProfile != null)
                         {

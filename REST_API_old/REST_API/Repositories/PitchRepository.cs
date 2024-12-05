@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using REST_API.Data;
 using REST_API.Models;
 using REST_API.Repositories.Interfaces;
@@ -46,7 +45,7 @@ namespace REST_API.Repositories
 
         public async Task<IEnumerable<Pitch>?> GetPitchesByRecipientAccountIdAsync(Guid recipientAccountId)
         {
-            if(recipientAccountId == Guid.Empty)
+            if (recipientAccountId == Guid.Empty)
             {
                 return null;
             }
@@ -60,7 +59,7 @@ namespace REST_API.Repositories
                                                                         .Where(x => x.RecipientAccountId == recipientAccountId)
                                                                         .ToListAsync();
 
-                if(pitchesWithRecipientAccountId.Any())
+                if (pitchesWithRecipientAccountId.Any())
                 {
                     return pitchesWithRecipientAccountId;
                 }

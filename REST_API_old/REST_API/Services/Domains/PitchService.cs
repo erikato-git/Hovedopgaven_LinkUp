@@ -1,7 +1,5 @@
 ﻿using REST_API.DTOs.PitchDomain;
-using REST_API.Models;
 using REST_API.Repositories.Interfaces;
-using REST_API.Services.Helpers;
 using REST_API.Services.IHelpers;
 using REST_API.Services.Interfaces;
 using REST_API.Util;

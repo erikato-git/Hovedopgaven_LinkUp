@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using REST_API.Controllers.IHelpers;
-using REST_API.DTOs.AccountDomain;
 using REST_API.DTOs.ProfileDomain;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
@@ -128,7 +125,7 @@ namespace REST_API.Controllers
 
             var userAccountId = _profileControllerHelper.ExtractUserAccountId(User);
 
-            var result = await _profileService.DeleteProfile(profileId, userAccountId); 
+            var result = await _profileService.DeleteProfile(profileId, userAccountId);
 
             if (result == null)
             {

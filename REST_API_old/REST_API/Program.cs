@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using REST_API.Controllers.IHelpers;
 using REST_API.Data;
 using REST_API.Repositories;
 using REST_API.Repositories.Interfaces;
@@ -16,12 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddScoped<IAccountRepository,AccountRepository>();
-builder.Services.AddScoped<IAccountService,AccountService>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IPitchRepository, PitchRepository>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
-builder.Services.AddScoped<IPhotoAccessor,PhotoAccessor>();
+builder.Services.AddScoped<IPhotoAccessor, PhotoAccessor>();
 
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));     // IOptions-pattern
 

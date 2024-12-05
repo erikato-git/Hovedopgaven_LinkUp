@@ -1,16 +1,12 @@
-﻿using Azure.Identity;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using REST_API.DTOs.AccountDomain;
-using REST_API.Models;
+﻿using REST_API.DTOs.AccountDomain;
 using REST_API.Repositories.Interfaces;
-using REST_API.Services.Helpers;
 using REST_API.Services.IHelpers;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
 using REST_API.Util.Mapper;
 
 namespace REST_API.Services.Domains
-{ 
+{
     public class AccountService : IAccountService
     {
         private IAccountRepository _accountRepository;
@@ -108,7 +104,7 @@ namespace REST_API.Services.Domains
                     var parsedGuid = Guid.Parse(userAccountId);
                     var existingAccount = await _accountRepository.GetAccountByIdAsync(parsedGuid);
 
-                    if(existingAccount == null)
+                    if (existingAccount == null)
                     {
                         return ResultDTO.FailureResult(ErrorMessages.AccountSerivce_UpdateAccount_LoggedInAccountDoesNotExist);
                     }

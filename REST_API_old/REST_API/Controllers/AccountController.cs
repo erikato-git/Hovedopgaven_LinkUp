@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using REST_API.Controllers.IHelpers;
 using REST_API.DTOs.AccountDomain;
 using REST_API.Models;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
-using System.ComponentModel.DataAnnotations;
 
 namespace REST_API.Controllers
 {
@@ -29,7 +26,7 @@ namespace REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Login([FromBody]LoginDTO dto)
+        public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
             if (!ModelState.IsValid)
             {
@@ -65,22 +62,22 @@ namespace REST_API.Controllers
 
             var result = await _accountService.CreateAccount(dto);
 
-            if(result == null)
+            if (result == null)
             {
                 return BadRequest();
             }
 
-            if(result.isSuccess)
+            if (result.isSuccess)
             {
                 return Created("", result.Data);
             }
 
-            if(result.Message.Equals(ErrorMessages.AccountService_CreateAccount_EmailForAccountAlreadyExist))
+            if (result.Message.Equals(ErrorMessages.AccountService_CreateAccount_EmailForAccountAlreadyExist))
             {
                 return Conflict(result.Message);
             }
 
-            if(result.Message.Equals(ErrorMessages.AccountSerivce_CreateAccount_CreateAccountFailed))
+            if (result.Message.Equals(ErrorMessages.AccountSerivce_CreateAccount_CreateAccountFailed))
             {
                 return new ObjectResult(new { })
                 {
@@ -96,7 +93,7 @@ namespace REST_API.Controllers
 
         [Authorize]
         [HttpPut("updateAccount")]
-        [ProducesResponseType(StatusCodes.Status200OK)]            
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -121,7 +118,7 @@ namespace REST_API.Controllers
                 return Ok(result.Data);
             }
 
-            if(result.Message.Equals(ErrorMessages.AccountSerivce_UpdateAccount_YouCannotUpdateAnotherPersonsAccount))
+            if (result.Message.Equals(ErrorMessages.AccountSerivce_UpdateAccount_YouCannotUpdateAnotherPersonsAccount))
             {
                 return new ObjectResult(new { })
                 {
@@ -135,7 +132,7 @@ namespace REST_API.Controllers
                 return Unauthorized(result.Message);
             }
 
-            if(result.Message.Equals(ErrorMessages.AccountSerivce_UpdateAccount_UpdateAccountFailed))
+            if (result.Message.Equals(ErrorMessages.AccountSerivce_UpdateAccount_UpdateAccountFailed))
             {
                 return new ObjectResult(new { })
                 {
@@ -177,7 +174,7 @@ namespace REST_API.Controllers
                 return Ok(result.Data);
             }
 
-            if(result.Message.Equals(ErrorMessages.AccountSerivce_GetAccountById_AccountNotFound))
+            if (result.Message.Equals(ErrorMessages.AccountSerivce_GetAccountById_AccountNotFound))
             {
                 return NotFound(result.Message);
             }
@@ -233,7 +230,7 @@ namespace REST_API.Controllers
             }
 
 
-            return BadRequest(result.Message); 
+            return BadRequest(result.Message);
         }
 
     }

@@ -72,7 +72,7 @@ namespace LinkUp_REST_API.Services.Completed
             }
 
             // delete pitch
-            var pitchDeleted = await _profileRepository.DeletePitchAsync(pitchFound.ProfileId, pitchFound);
+            var pitchDeleted = await _pitchRepository.DeletePitchAsync(pitchFound.ProfileId, pitchFound);
 
             if (!pitchDeleted)
             {
@@ -214,7 +214,7 @@ namespace LinkUp_REST_API.Services.Completed
             var pitch = PitchMapper.MapToPitch(dto);
 
             // create pitch
-            var pitchCreated = await _profileRepository.CreatePitchAsync(dto.SenderProfileId, pitch);
+            var pitchCreated = await _pitchRepository.CreatePitchAsync(dto.SenderProfileId, pitch);
 
             if (pitchCreated == null)
             {

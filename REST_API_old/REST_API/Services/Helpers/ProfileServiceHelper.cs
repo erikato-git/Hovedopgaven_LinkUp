@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using REST_API.Data;
-using REST_API.DTOs;
 using REST_API.DTOs.ProfileDomain;
 using REST_API.Models;
-using REST_API.Repositories.Interfaces;
 using REST_API.Services.IHelpers;
 
 namespace REST_API.Services.Helpers
@@ -28,7 +26,7 @@ namespace REST_API.Services.Helpers
 
             var profile = await _dbContext.Profiles.FirstOrDefaultAsync(x => x.ProfileId == profileId);
 
-            if(profile != null)
+            if (profile != null)
             {
                 var containsProfile = account.AccountId.Equals(profile.AccountId);
 

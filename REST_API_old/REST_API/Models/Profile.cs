@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace REST_API.Models
 {
@@ -20,14 +19,14 @@ namespace REST_API.Models
         // Navigation properties to Keyword
         public Guid? KeywordId { get; set; }
         public Keyword? Keyword { get; set; }
-        
+
         // Navigation properties to Portfolio
         public Guid? PortfolioId { get; set; }
         public Portfolio? Portfolio { get; set; }
 
         // Navigation properties to AudienceSpecificationId
         public Guid? AudienceSpecificationId { get; set; }
-        public AudienceSpecification? AudienceSpecification  { get; set; }
+        public AudienceSpecification? AudienceSpecification { get; set; }
 
         // Navigation properties to Pitch
         public List<Pitch>? Pitches { get; set; }

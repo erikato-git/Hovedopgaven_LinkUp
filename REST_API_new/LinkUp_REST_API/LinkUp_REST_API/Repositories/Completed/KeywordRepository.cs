@@ -94,19 +94,83 @@ namespace LinkUp_REST_API.Repositories.Completed
             return keyword;
         }
 
-        public Task<Education?> CreateEducation(Guid keywordId, Education education)
+
+
+        public async Task<Keyword?> CreateKeywordAsync(Guid profileId, Keyword keyword)
         {
-            throw new NotImplementedException();
+            // null checks
+            if (string.IsNullOrEmpty(profileId.ToString()) || keyword == null)
+            {
+                throw new ArgumentNullException("Invalid arguments");
+            }
+
+            // check profile exist
+            var profileFound = await _dbContext.Profiles.FirstOrDefaultAsync(p => p.ProfileId == profileId);
+
+            if (profileFound == null)
+            {
+                return null;
+            }
+
+            // profile does already have a keyword
+            if (!string.IsNullOrEmpty(profileFound.KeywordId.ToString()))
+            {
+                return null;
+            }
+
+            // connect keyword and profile
+            keyword.ProfileId = profileFound.ProfileId;
+            keyword.Profile = profileFound;
+            profileFound.KeywordId = keyword.ProfileId;
+            profileFound.Keyword = keyword;
+
+            // create keyword
+            var keywordCreated = await _dbContext.Keywords.AddAsync(keyword);
+
+            // save changes
+            var saved = await SaveChangesAsync();
+
+            if (saved)
+            {
+                return keywordCreated.Entity;
+            }
+
+            return null;
         }
 
-        public Task<bool> DeleteEducation(Guid keyword, Education education)
+        public async Task<bool> DeleteKeywordAsync(Guid profileId, Keyword keyword)
         {
-            throw new NotImplementedException();
-        }
+            // null check
+            if (string.IsNullOrEmpty(profileId.ToString()) || keyword == null)
+            {
+                throw new ArgumentNullException("Invalid arguments");
+            }
 
-        public Task<IEnumerable<Keyword>?> GetAllAsync()
-        {
-            throw new NotImplementedException();
+            // find target profile
+            var profileFound = await _dbContext.Profiles.FirstOrDefaultAsync(x => x.ProfileId == profileId);
+
+            if (profileFound == null)
+            {
+                throw new KeyNotFoundException($"Profile with ID {profileId} was not found.");
+            }
+
+            // check associations
+            if (profileFound.KeywordId != keyword.KeywordId)
+            {
+                throw new InvalidOperationException("The provided keywordId does not belong to the specified profile.");
+            }
+
+            // remove associations
+            profileFound.KeywordId = null;
+            profileFound.Keyword = null;
+
+            // delete keyword
+            _dbContext.Keywords.Remove(keyword);
+
+            // save changes
+            var saved = await SaveChangesAsync();
+
+            return saved;
         }
 
 

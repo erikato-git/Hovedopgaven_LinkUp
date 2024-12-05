@@ -3,44 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\services\\completed\\keywordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\services\\completed\\keywordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\integrationtests\\completed\\keywordtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\integrationtests\\completed\\keywordtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\testhelpers\\completed\\keywordtesthelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\testhelpers\\completed\\keywordtesthelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api_tests\\util\\dbinitializerfortests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{01FEF079-DD08-486D-B868-AEB12ADF2CA4}|LinkUp_REST_API_TESTS\\LinkUp_REST_API_TESTS.csproj|solutionrelative:linkup_rest_api_tests\\util\\dbinitializerfortests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\controllers\\completed\\keywordscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\controllers\\completed\\keywordscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\repositories\\completed\\profilerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\repositories\\completed\\profilerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\services\\completed\\pitchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\services\\completed\\pitchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\repositories\\completed\\keywordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\repositories\\completed\\keywordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\repositories\\completed\\accountrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\repositories\\completed\\accountrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\repositories\\interfaces\\ikeywordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\repositories\\interfaces\\ikeywordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\util\\mapper\\completed\\profilemapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\util\\mapper\\completed\\profilemapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\repositories\\interfaces\\completed\\iprofilerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\repositories\\interfaces\\completed\\iprofilerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\models\\profile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\models\\profile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\repositories\\completed\\profilerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\repositories\\completed\\profilerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\repositories\\completed\\pitchrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\repositories\\completed\\pitchrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\repositories\\interfaces\\completed\\ipitchrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\repositories\\interfaces\\completed\\ipitchrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -55,137 +43,92 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "KeywordService.cs",
-              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Services\\Completed\\KeywordService.cs",
-              "RelativeDocumentMoniker": "LinkUp_REST_API\\Services\\Completed\\KeywordService.cs",
-              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Services\\Completed\\KeywordService.cs",
-              "RelativeToolTip": "LinkUp_REST_API\\Services\\Completed\\KeywordService.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAuwC4AAAAMAAAAAAAAAA==",
+              "Title": "PitchService.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Services\\Completed\\PitchService.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\Services\\Completed\\PitchService.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Services\\Completed\\PitchService.cs*",
+              "RelativeToolTip": "LinkUp_REST_API\\Services\\Completed\\PitchService.cs*",
+              "ViewState": "AgIAAMkAAAAAAAAAAAAwwNgAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-03T19:41:38.202Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "KeywordTests.cs",
-              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Completed\\KeywordTests.cs",
-              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\IntegrationTests\\Completed\\KeywordTests.cs",
-              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\IntegrationTests\\Completed\\KeywordTests.cs",
-              "RelativeToolTip": "LinkUp_REST_API_TESTS\\IntegrationTests\\Completed\\KeywordTests.cs",
-              "ViewState": "AgIAAN8AAAAAAAAAAAAMwOwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-03T19:40:22.923Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "DbInitializerForTests.cs",
-              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\Util\\DbInitializerForTests.cs",
-              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\Util\\DbInitializerForTests.cs",
-              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\Util\\DbInitializerForTests.cs",
-              "RelativeToolTip": "LinkUp_REST_API_TESTS\\Util\\DbInitializerForTests.cs",
-              "ViewState": "AgIAAOMAAAAAAAAAAAAmwPQAAABEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-03T21:15:39.486Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "KeywordsController.cs",
-              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Controllers\\Completed\\KeywordsController.cs",
-              "RelativeDocumentMoniker": "LinkUp_REST_API\\Controllers\\Completed\\KeywordsController.cs",
-              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Controllers\\Completed\\KeywordsController.cs",
-              "RelativeToolTip": "LinkUp_REST_API\\Controllers\\Completed\\KeywordsController.cs",
-              "ViewState": "AgIAAJMAAAAAAAAAAAD4v6gAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-03T22:04:23.871Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "ProfileMapper.cs",
-              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Util\\Mapper\\Completed\\ProfileMapper.cs",
-              "RelativeDocumentMoniker": "LinkUp_REST_API\\Util\\Mapper\\Completed\\ProfileMapper.cs",
-              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Util\\Mapper\\Completed\\ProfileMapper.cs",
-              "RelativeToolTip": "LinkUp_REST_API\\Util\\Mapper\\Completed\\ProfileMapper.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAYwDEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T22:38:06.631Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Profile.cs",
-              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Models\\Profile.cs",
-              "RelativeDocumentMoniker": "LinkUp_REST_API\\Models\\Profile.cs",
-              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Models\\Profile.cs",
-              "RelativeToolTip": "LinkUp_REST_API\\Models\\Profile.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAA0wAUAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T22:39:15.171Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "KeywordTestHelper.cs",
-              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\TestHelpers\\Completed\\KeywordTestHelper.cs",
-              "RelativeDocumentMoniker": "LinkUp_REST_API_TESTS\\TestHelpers\\Completed\\KeywordTestHelper.cs",
-              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API_TESTS\\TestHelpers\\Completed\\KeywordTestHelper.cs",
-              "RelativeToolTip": "LinkUp_REST_API_TESTS\\TestHelpers\\Completed\\KeywordTestHelper.cs",
-              "ViewState": "AgIAADUAAAAAAAAAAIAwwEQAAABDAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-05T00:08:22.93Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "KeywordRepository.cs",
-              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Completed\\KeywordRepository.cs",
-              "RelativeDocumentMoniker": "LinkUp_REST_API\\Repositories\\Completed\\KeywordRepository.cs",
-              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Completed\\KeywordRepository.cs",
-              "RelativeToolTip": "LinkUp_REST_API\\Repositories\\Completed\\KeywordRepository.cs",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAowFUAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-05T00:07:32.809Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AccountRepository.cs",
-              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Completed\\AccountRepository.cs",
-              "RelativeDocumentMoniker": "LinkUp_REST_API\\Repositories\\Completed\\AccountRepository.cs",
-              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Completed\\AccountRepository.cs",
-              "RelativeToolTip": "LinkUp_REST_API\\Repositories\\Completed\\AccountRepository.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T23:50:09.224Z",
+              "WhenOpened": "2024-12-05T00:44:05.805Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
+              "Title": "PitchRepository.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Completed\\PitchRepository.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\Repositories\\Completed\\PitchRepository.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Completed\\PitchRepository.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\Repositories\\Completed\\PitchRepository.cs",
+              "ViewState": "AgIAAI8AAAAAAAAAAAAuwKEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T00:41:57.171Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IPitchRepository.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Interfaces\\Completed\\IPitchRepository.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\Repositories\\Interfaces\\Completed\\IPitchRepository.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Interfaces\\Completed\\IPitchRepository.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\Repositories\\Interfaces\\Completed\\IPitchRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T00:41:20.945Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "KeywordRepository.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Completed\\KeywordRepository.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\Repositories\\Completed\\KeywordRepository.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Completed\\KeywordRepository.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\Repositories\\Completed\\KeywordRepository.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwK4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T00:39:34.726Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IKeywordRepository.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Interfaces\\IKeywordRepository.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\Repositories\\Interfaces\\IKeywordRepository.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Interfaces\\IKeywordRepository.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\Repositories\\Interfaces\\IKeywordRepository.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T00:38:33.811Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IProfileRepository.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Interfaces\\Completed\\IProfileRepository.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\Repositories\\Interfaces\\Completed\\IProfileRepository.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Interfaces\\Completed\\IProfileRepository.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\Repositories\\Interfaces\\Completed\\IProfileRepository.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T00:35:41.713Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "ProfileRepository.cs",
               "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Completed\\ProfileRepository.cs",
               "RelativeDocumentMoniker": "LinkUp_REST_API\\Repositories\\Completed\\ProfileRepository.cs",
               "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Repositories\\Completed\\ProfileRepository.cs",
               "RelativeToolTip": "LinkUp_REST_API\\Repositories\\Completed\\ProfileRepository.cs",
-              "ViewState": "AgIAADYAAAAAAAAAAAAowF4AAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T23:35:03.029Z",
+              "WhenOpened": "2024-12-05T00:34:02.744Z",
               "EditorCaption": ""
             }
           ]

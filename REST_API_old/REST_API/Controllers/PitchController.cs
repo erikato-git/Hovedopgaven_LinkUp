@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using REST_API.Controllers.IHelpers;
 using REST_API.DTOs.PitchDomain;
-using REST_API.DTOs.ProfileDomain;
 using REST_API.Services.Interfaces;
 using REST_API.Util;
 

@@ -8,13 +8,12 @@ namespace LinkUp_REST_API.Repositories.Interfaces
     {
         // Common repository methods
         Task<Keyword?> GetByIdAsync(Guid id);
-        Task<IEnumerable<Keyword>?> GetAllAsync();
         Task<Keyword?> UpdateAsync(KeywordUpdateInput keyword);
         Task<bool> SaveChangesAsync();
 
         // Composition
-        Task<Education?> CreateEducation(Guid keywordId, Education education);
-        Task<bool> DeleteEducation(Guid keywordId, Education education);
+        Task<Keyword?> CreateKeywordAsync(Guid profileId, Keyword keyword);
+        Task<bool> DeleteKeywordAsync(Guid profileId, Keyword keyword);
 
     }
 }

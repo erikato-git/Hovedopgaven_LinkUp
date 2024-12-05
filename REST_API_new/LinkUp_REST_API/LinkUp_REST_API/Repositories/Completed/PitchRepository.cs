@@ -66,19 +66,99 @@ namespace LinkUp_REST_API.Repositories.Completed
             return pitches;
         }
 
-        public Task GetAllAsync()
+        public async Task<Pitch?> CreatePitchAsync(Guid profileId, Pitch pitch)
         {
-            throw new NotImplementedException();
+            // null-checks
+
+            if (profileId == Guid.Empty) throw new ArgumentNullException(nameof(profileId));
+            if (pitch == null) throw new ArgumentNullException(nameof(pitch));
+
+            // attach whole profile to pitch
+
+            var sendingProfile = await _dbContext.Profiles.FirstOrDefaultAsync(p => p.ProfileId == profileId);
+
+            if (sendingProfile == null)
+            {
+                throw new KeyNotFoundException($"Profile with ID {profileId} was not found.");
+            }
+
+            // connect pitch and sendingProfile
+
+            if (sendingProfile.Pitches == null)
+            {
+                sendingProfile.Pitches = new List<Pitch>();
+            }
+
+            pitch.Profile = sendingProfile;
+            sendingProfile.Pitches.Add(pitch);
+
+            // add pitch to dbcontext and save changes
+
+            var createdPitch = _dbContext.Pitches.Add(pitch);
+
+            var saved = await SaveChangesAsync();
+
+            if (!saved)
+            {
+                return null;
+            }
+
+            return createdPitch.Entity;
         }
 
-        public Task<bool> SaveChangesAsync()
+        public async Task<bool> DeletePitchAsync(Guid profileId, Pitch pitch)
         {
-            throw new NotImplementedException();
+            // null checks
+            if (string.IsNullOrEmpty(profileId.ToString()) || pitch == null)
+            {
+                throw new ArgumentNullException("Invalid arguments");
+            }
+
+            // check profile exist
+            var profileFound = await _dbContext.Profiles.FirstOrDefaultAsync(x => x.ProfileId == profileId);
+
+            if (profileFound == null)
+            {
+                throw new KeyNotFoundException($"Profile with ID {profileId} was not found.");
+            }
+
+            // check profile is sending-profile
+            if (profileFound.ProfileId != pitch.ProfileId)
+            {
+                throw new InvalidOperationException("The provided pitch does not belong to the specified profile.");
+            }
+
+            // check pitch exist
+            var pitchFound = await _dbContext.Pitches.FirstOrDefaultAsync(x => x.ProfileId == profileId);
+
+            if (pitchFound == null)
+            {
+                throw new KeyNotFoundException($"Profile with ID {profileId} was not found.");
+            }
+
+            // detach profile and pitch
+            profileFound.Pitches?.Remove(pitch);
+
+            // delete pitch
+            _dbContext.Pitches.Remove(pitchFound);
+
+            // save changes
+            var saved = await SaveChangesAsync();
+
+            return saved;
         }
 
-        public Task UpdateAsync(Pitch pitch)
+        public async Task<bool> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _dbContext.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to save changes", ex);
+            }
         }
+
     }
 }

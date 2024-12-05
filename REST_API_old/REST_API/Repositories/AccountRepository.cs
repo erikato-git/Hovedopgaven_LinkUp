@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.JSInterop.Infrastructure;
 using REST_API.Data;
-using REST_API.DTOs.AccountDomain;
-using REST_API.Migrations;
 using REST_API.Models;
 using REST_API.Repositories.Interfaces;
-using System.Security.Principal;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using String = System.String;
 
 namespace REST_API.Repositories
@@ -22,8 +17,8 @@ namespace REST_API.Repositories
 
         public async Task<Account?> GetAccountByEmailAsync(String email)
         {
-            if(String.IsNullOrWhiteSpace(email))
-            {  
+            if (String.IsNullOrWhiteSpace(email))
+            {
                 return null;
             }
 
@@ -38,7 +33,7 @@ namespace REST_API.Repositories
                 return false;
             }
 
-            var found = await _dbContext.Accounts.FirstOrDefaultAsync(x =>x.Email == email);
+            var found = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == email);
             return found != null;
         }
 
@@ -92,7 +87,7 @@ namespace REST_API.Repositories
         {
             var found = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == id);
 
-            if(found != null)
+            if (found != null)
             {
                 var deleted = _dbContext.Accounts.Remove(found);
 
@@ -109,7 +104,7 @@ namespace REST_API.Repositories
 
         public async Task<Profile?> CreateProfileAsync(Account account, Profile profile)
         {
-            if(account == null || profile == null)
+            if (account == null || profile == null)
             {
                 return null;
             }
@@ -121,7 +116,7 @@ namespace REST_API.Repositories
                 profile.AccountId = targetAccount.AccountId;        // adding profile to targetAccount
                 profile.Account = targetAccount;
 
-                if(targetAccount.Profiles != null)
+                if (targetAccount.Profiles != null)
                 {
                     _dbContext.Profiles.Add(profile);
 
@@ -140,7 +135,7 @@ namespace REST_API.Repositories
 
         public async Task<bool> DeleteProfileAsync(Account account, Guid profileId)
         {
-            if(account == null || String.IsNullOrEmpty(profileId.ToString()))
+            if (account == null || String.IsNullOrEmpty(profileId.ToString()))
             {
                 return false;       // TODO: research if it's more proper to throw an exception
             }
@@ -190,7 +185,7 @@ namespace REST_API.Repositories
                 {
                     var belongsToOwnAccount = accountFound.Profiles?.FirstOrDefault(x => x.ProfileId == profileId);
 
-                    if(belongsToOwnAccount == null)
+                    if (belongsToOwnAccount == null)
                     {
                         accountFound.SavedProfileIds?.Add(profileId);
 
