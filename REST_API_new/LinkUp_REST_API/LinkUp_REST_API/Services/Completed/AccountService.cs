@@ -1,17 +1,17 @@
-﻿using LinkUp_REST_API.Core.Interfaces;
+﻿using LinkUp_REST_API.Core;
+using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
 using LinkUp_REST_API.Util.Mapper.Completed;
-using Microsoft.IdentityModel.Tokens;
 
 namespace LinkUp_REST_API.Services.Completed
 {
     public class AccountService : IAccountService
     {
-        private IAccountRepository _accountRepository;
-        private IAuthentication _authentication;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IAuthentication _authentication;
 
         public AccountService(IAccountRepository accountRepository, IAuthentication authentication)
         {
@@ -208,6 +208,12 @@ namespace LinkUp_REST_API.Services.Completed
                 }
             }
 
+            // Hash password if it's specified in dto
+            if( !string.IsNullOrEmpty(dto.Password) )
+            {
+                dto.Password = Authentication.HashingPasswordWithSaltUsingSHA256(dto.Password, Guid.Parse(userAccountId));
+            }
+
             // Find exising account
             var existingAccount = await _accountRepository.GetByIdAsync(dto.AccountId);
             if (existingAccount == null)
@@ -226,12 +232,6 @@ namespace LinkUp_REST_API.Services.Completed
             return ResultDTO.Succes(updatedAccount, 200, "Account has been updated");
         }
 
-
-
-        public Task<ResultDTO> Logout()
-        {
-            throw new NotImplementedException();
-        }
 
     }
 }

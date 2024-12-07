@@ -19,7 +19,7 @@ namespace LinkUp_REST_API_TESTS.TestHelpers.Completed
                 Profession = "Software Developer",
                 Title = "Full-Stack Engineer",
                 AlternativeTitle = "Web Developer",
-                ProfilePicture = null, // Replace with a mock `IFormFile` if needed for tests
+                //ProfilePicture = null, // TODO: Media
                 ProfileDescription = "Experienced in building modern web applications.",
                 AccountId = AuthenticationTestHelper.GetValidAccountId1(), // Assumes a helper method for fetching a valid account ID
 
@@ -43,9 +43,8 @@ namespace LinkUp_REST_API_TESTS.TestHelpers.Completed
                 Profession = "Software Engineer",
                 Title = "Senior Developer",
                 AlternativeTitle = "Full Stack Developer",
-                ProfilePicture = null,
+                //ProfilePicture = null,    // TODO: media
                 ProfileDescription = "Experienced developer specializing in web and cloud technologies.",
-                AccountId = AuthenticationTestHelper.GetValidAccountId1(),
 
                 // Keyword
                 Availability = "Full-Time",

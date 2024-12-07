@@ -1,18 +1,18 @@
 ﻿using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.DTOs.Requests.Completed;
-using LinkUp_REST_API.Models;
 using LinkUp_REST_API.Services.Interfaces.Completed;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkUp_REST_API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PitchesController : ControllerBase
     {
-        private IPitchService _pitchService;
-        private IAuthentication _authentication;
+        private readonly IPitchService _pitchService;
+        private readonly IAuthentication _authentication;
 
         public PitchesController(IPitchService pitchService, IAuthentication authentication)
         {
@@ -33,7 +33,11 @@ namespace LinkUp_REST_API.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
@@ -55,7 +59,7 @@ namespace LinkUp_REST_API.Controllers
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Create pitch failed");
@@ -74,7 +78,11 @@ namespace LinkUp_REST_API.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
@@ -96,10 +104,10 @@ namespace LinkUp_REST_API.Controllers
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
-                return BadRequest("Create pitch failed");
+                return BadRequest("Get associated pitches failed");
             }
         }
 
@@ -109,13 +117,18 @@ namespace LinkUp_REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetPitchById([FromQuery] Guid pitchId)
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]  
+        public async Task<IActionResult> GetPitchById(Guid pitchId)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
@@ -137,7 +150,7 @@ namespace LinkUp_REST_API.Controllers
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Get pitch failed");
@@ -150,13 +163,17 @@ namespace LinkUp_REST_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> DeletePitchById([FromQuery] Guid pitchId)
+        public async Task<IActionResult> DeletePitchById(Guid pitchId)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
@@ -177,13 +194,12 @@ namespace LinkUp_REST_API.Controllers
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Delete pitch failed");
             }
         }
-
 
 
         // UpdatePitch (omitted): when a pitch has been send it's shouldn't be possible to edit the message like an email

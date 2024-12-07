@@ -1,21 +1,21 @@
-﻿using CloudinaryDotNet.Actions;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using LinkUp_REST_API.Data.DbContextConnections;
-using LinkUp_REST_API.Models;
-using Microsoft.Extensions.Options;
-using LinkUp_REST_API.Util;
-using Account = CloudinaryDotNet.Account;
-using Microsoft.EntityFrameworkCore;
-using LinkUp_REST_API.DTOs.Responses.Completed;
 using LinkUp_REST_API.DTOs.Requests.Completed;
+using LinkUp_REST_API.DTOs.Responses.Completed;
+using LinkUp_REST_API.Models;
 using LinkUp_REST_API.Services.Interfaces.Completed;
+using LinkUp_REST_API.Util;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Account = CloudinaryDotNet.Account;
 
 namespace LinkUp_REST_API.Services.Completed
 {
     public class ProfileServiceHelper : IProfileServiceHelper
     {
-        private DataContext _dbContext;
-        private Cloudinary _cloudinary;
+        private readonly DataContext _dbContext;
+        private readonly Cloudinary _cloudinary;
 
         public ProfileServiceHelper(DataContext dataContext, IOptions<CloudinarySettings> config)
         {
@@ -197,6 +197,8 @@ namespace LinkUp_REST_API.Services.Completed
             var result = await profiles
                 .Select(profile => new ProfileSearchQueryOutput
                 {
+                    ProfileId = profile.ProfileId, // Include the ProfileId
+
                     Profession = profile.Profession,
 
                     Title = profile.Title,

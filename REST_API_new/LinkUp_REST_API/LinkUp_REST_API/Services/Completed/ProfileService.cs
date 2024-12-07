@@ -1,5 +1,4 @@
 ﻿using LinkUp_REST_API.DTOs.Requests.Completed;
-using LinkUp_REST_API.Repositories;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
@@ -9,9 +8,9 @@ namespace LinkUp_REST_API.Services.Completed
 {
     public class ProfileService : IProfileService
     {
-        private IProfileRepository _profileRepository;
-        private IAccountRepository _accountRepository;
-        private IProfileServiceHelper _helper;
+        private readonly IProfileRepository _profileRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IProfileServiceHelper _helper;
         public ProfileService(IAccountRepository accountRepository, IProfileRepository profileRepository, IProfileServiceHelper helper)
         {
             _accountRepository = accountRepository;
@@ -152,6 +151,8 @@ namespace LinkUp_REST_API.Services.Completed
                 return ResultDTO.Failure(500, $"Profile {profileId} wasn't deleted due to internal server error");
             }
 
+            // TODO: Remember to delete images from cloud
+
             return ResultDTO.Succes(deleted, 204, "Profile has been deleted");
         }
 
@@ -164,7 +165,14 @@ namespace LinkUp_REST_API.Services.Completed
             }
 
             // Check if user has authorization
-            var hasAutorization = dto.AccountId.ToString().Equals(userAccountId);
+            var profileFound = await _profileRepository.GetByIdAsync(dto.ProfileId);
+
+            if(profileFound == null)
+            {
+                return ResultDTO.Failure(404, "Profile not found");
+            }
+
+            var hasAutorization = profileFound.AccountId.Equals(Guid.Parse(userAccountId)); 
 
             if (!hasAutorization)
             {
@@ -178,6 +186,8 @@ namespace LinkUp_REST_API.Services.Completed
             {
                 return ResultDTO.Failure(500, $"Failed to update profile {dto.ProfileId} due to internal server error");
             }
+
+            // TODO: if changes has been made to profilePicture or later portfolio make sure to update those as well in the cloud
 
             return ResultDTO.Succes(updatedProfile, 200, "Your profile has been updated");
         }
@@ -224,17 +234,17 @@ namespace LinkUp_REST_API.Services.Completed
                 return ResultDTO.Failure(500, $"Profile could not be created for account {userAccountId} due to internal server error");
             }
 
-            // Handle ProfilePicture
-            if (dto.ProfilePicture != null || dto.ProfilePicture?.Length > 0)
-            {
-                // Save Media
-                var mediaSaved = await _helper.SaveMedia(dto.ProfilePicture, createdProfile);
+            // TODO: Handle ProfilePicture
+            //if (dto.ProfilePicture != null || dto.ProfilePicture?.Length > 0)
+            //{
+            //    // Save Media
+            //    var mediaSaved = await _helper.SaveMedia(dto.ProfilePicture, createdProfile);
 
-                if (mediaSaved)
-                {
-                    return ResultDTO.Succes(createdProfile, 201, "Profile has been created with profile picture");
-                }
-            }
+            //    if (mediaSaved)
+            //    {
+            //        return ResultDTO.Succes(createdProfile, 201, "Profile has been created with profile picture");
+            //    }
+            //}
 
             return ResultDTO.Succes(createdProfile, 201, "Profile has been created");
         }

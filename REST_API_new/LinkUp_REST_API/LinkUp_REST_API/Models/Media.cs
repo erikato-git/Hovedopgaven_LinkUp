@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace LinkUp_REST_API.Models
 {
@@ -8,8 +9,11 @@ namespace LinkUp_REST_API.Models
         public Guid MediaId { get; set; }
         public required string URL { get; set; }
 
-        // Navigation Property
+        // Foreign keys
         public Guid ProfileId { get; set; }
+
+        // Navigation Property
+        [JsonIgnore]
         public Profile? Profile { get; set; }
     }
 }

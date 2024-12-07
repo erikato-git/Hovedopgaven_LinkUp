@@ -18,7 +18,7 @@ namespace LinkUp_REST_API.Util.Mapper.Completed
                 EducationId = Guid.NewGuid(),
                 NameOfEducation = input.NameOfEducation,
                 Institution = input.Institution,
-                GraduationYear = input.GraduationYear
+                GraduationYear = input.GraduationYear,
             };
 
             var keyword = new Keyword
@@ -29,6 +29,9 @@ namespace LinkUp_REST_API.Util.Mapper.Completed
                 EducationId = education.EducationId,
                 Education = education,
             };
+
+            // Link the keyword ID to education
+            education.KeywordId = keyword.KeywordId;
 
             // Map Profile properties
             var profile = new Profile

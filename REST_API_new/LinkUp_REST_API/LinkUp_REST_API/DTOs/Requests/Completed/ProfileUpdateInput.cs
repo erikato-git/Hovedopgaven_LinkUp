@@ -1,6 +1,4 @@
-﻿using LinkUp_REST_API.Models.Pending;
-using LinkUp_REST_API.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using LinkUp_REST_API.Models;
 
 namespace LinkUp_REST_API.DTOs.Requests.Completed
 {
@@ -10,22 +8,22 @@ namespace LinkUp_REST_API.DTOs.Requests.Completed
         public string? Profession { get; set; }
         public string? Title { get; set; }
         public string? AlternativeTitle { get; set; }
-        public Media? ProfilePicture { get; set; }
+        //public Media? ProfilePicture { get; set; } // TODO: Media
         public string? ProfileDescription { get; set; }
 
 
         // Account
-        public Guid AccountId { get; set; }
+        //public Guid AccountId { get; set; }
 
 
         // Keywork
-        public string? Availability { get; set; }           // TODO: Enum
+        public string? Availability { get; set; }          // TODO: Enum
         public int? YearsOfExperience { get; set; }
 
         // Education (nested)
         public string? NameOfEducation { get; set; }
         public string? Institution { get; set; }
-        public int? GraduationYear { get; set; }
+        public int? GraduationYear { get; set; } 
 
 
 

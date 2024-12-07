@@ -88,13 +88,5 @@ namespace LinkUp_REST_API.Core
             return accountIdClaim ?? string.Empty;
         }
 
-
-        public bool CheckAccountIdMatchLoginId(Guid loginId, string UserAccountId)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
     }
 }

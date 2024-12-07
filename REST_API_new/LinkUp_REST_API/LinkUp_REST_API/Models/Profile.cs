@@ -1,5 +1,6 @@
 ﻿using LinkUp_REST_API.Models.Pending;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace LinkUp_REST_API.Models
 {
@@ -14,23 +15,18 @@ namespace LinkUp_REST_API.Models
         public string? ProfileDescription { get; set; }
 
 
-        // Navigation properties to Account
+        // Foreign keys
         public Guid AccountId { get; set; }
-        public Account? Account { get; set; }
-
-        // Navigation properties to Keyword
         public Guid? KeywordId { get; set; }
-        public Keyword? Keyword { get; set; }
-
-        // Navigation properties to Portfolio
         public Guid? PortfolioId { get; set; }
-        public Portfolio? Portfolio { get; set; }
-
-        // Navigation properties to AudienceSpecificationId
         public Guid? AudienceSpecificationId { get; set; }
-        public AudienceSpecification? AudienceSpecification { get; set; }
 
-        // Navigation properties to Pitch
+        // Navigation properties
+        [JsonIgnore]
+        public Account? Account { get; set; }
+        public Keyword? Keyword { get; set; }
         public List<Pitch>? Pitches { get; set; }
+        public Portfolio? Portfolio { get; set; }
+        public AudienceSpecification? AudienceSpecification { get; set; }
     }
 }

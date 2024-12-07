@@ -10,7 +10,6 @@ using LinkUp_REST_API.Services.Interfaces;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -23,23 +22,42 @@ builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
-builder.Services.AddScoped<IProfileService,ProfileService>();
-builder.Services.AddScoped<IProfileRepository,ProfileRepository>();
-builder.Services.AddScoped<IProfileServiceHelper,ProfileServiceHelper>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IProfileServiceHelper, ProfileServiceHelper>();
 
-builder.Services.AddScoped<IPitchRepository,PitchRepository>();
-builder.Services.AddScoped<IPitchService,PitchService>();
+builder.Services.AddScoped<IPitchRepository, PitchRepository>();
+builder.Services.AddScoped<IPitchService, PitchService>();
 
-builder.Services.AddScoped<IKeywordRepository,KeywordRepository>();
-builder.Services.AddScoped<IKeywordService,KeywordService>();
+builder.Services.AddScoped<IKeywordRepository, KeywordRepository>();
+builder.Services.AddScoped<IKeywordService, KeywordService>();
 
 
 
 builder.Services.AddDbContext<DataContext>();
 
 // JWT
+//builder.Services.AddScoped<JwtAuthenticationService>();
+
+// JWT
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
-builder.Services.AddScoped<JwtAuthenticationService>();
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o =>
+    {
+        o.RequireHttpsMetadata = false;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]!)),
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidAudience = builder.Configuration["JWT:Audience"],
+            ClockSkew = TimeSpan.Zero,
+        };
+    });
+
+
 
 // Cloudinary
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));     // IOptions-pattern
@@ -61,6 +79,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

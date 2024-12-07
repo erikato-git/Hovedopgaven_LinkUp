@@ -1,6 +1,5 @@
 ﻿using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.Services.Interfaces.Pending;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkUp_REST_API.Controllers.Pending
@@ -9,8 +8,8 @@ namespace LinkUp_REST_API.Controllers.Pending
     [ApiController]
     public class AudienceSpecificationsController : ControllerBase
     {
-        private IAudienceSpecificationService _audienceSpecificationService;
-        private IAuthentication _authentication;
+        private readonly IAudienceSpecificationService _audienceSpecificationService;
+        private readonly IAuthentication _authentication;
 
         public AudienceSpecificationsController(IAudienceSpecificationService audienceSpecificationService, IAuthentication authentication)
         {

@@ -32,23 +32,26 @@ namespace LinkUp_REST_API.Util.Mapper.Completed
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
 
-            var uniqueId = Guid.NewGuid();
+            var personInformation = new PersonInformation
+            {
+                PersonInformationId = Guid.NewGuid(),
+                FirstName = input.FirstName,
+                Surname = input.Surname,
+                Phone = input.Phone,
+                BirthDate = input.BirthDate,
+                Gender = input.Gender
+            };
 
+            var uniqueAccountId = Guid.NewGuid();
+            
             return new Account
             {
-                AccountId = uniqueId, // Generate a new unique ID
+                AccountId = uniqueAccountId, // Generate a new unique ID
                 Email = input.Email,
-                Password = Authentication.HashingPasswordWithSaltUsingSHA256(input.Password, uniqueId), // Optionally hash the password
+                Password = Authentication.HashingPasswordWithSaltUsingSHA256(input.Password, uniqueAccountId), // Optionally hash the password
                 FavoriteProfiles = new List<Guid>(), // Initialize as empty
-                PersonInformation = new PersonInformation
-                {
-                    PersonInformationId = Guid.NewGuid(), // Generate a unique ID for the associated PersonInformation
-                    FirstName = input.FirstName,
-                    Surname = input.Surname,
-                    Phone = input.Phone,
-                    BirthDate = input.BirthDate,
-                    Gender = input.Gender
-                },
+                PersonInformationId = personInformation.PersonInformationId,
+                PersonInformation = personInformation,
                 Profiles = new List<Profile>() // Initialize as empty
             };
         }

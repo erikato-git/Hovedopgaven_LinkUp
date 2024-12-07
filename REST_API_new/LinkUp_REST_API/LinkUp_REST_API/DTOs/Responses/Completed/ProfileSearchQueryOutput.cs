@@ -4,6 +4,7 @@ namespace LinkUp_REST_API.DTOs.Responses.Completed
 {
     public class ProfileSearchQueryOutput
     {
+        public Guid ProfileId { get; set; }
         public required string Profession { get; set; }
         public required string Title { get; set; }
         public string? AlternativeTitle { get; set; }

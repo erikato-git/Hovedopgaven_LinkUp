@@ -1,9 +1,7 @@
-﻿using CloudinaryDotNet;
-using LinkUp_REST_API.DTOs.Requests.Completed;
+﻿using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Models;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
-using LinkUp_REST_API.Services.Interfaces.Pending;
 using LinkUp_REST_API.Util;
 using LinkUp_REST_API.Util.Mapper.Completed;
 
@@ -11,9 +9,9 @@ namespace LinkUp_REST_API.Services.Completed
 {
     public class PitchService : IPitchService
     {
-        private IPitchRepository _pitchRepository;
-        private IAccountRepository _accountRepository;
-        private IProfileRepository _profileRepository;
+        private readonly IPitchRepository _pitchRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IProfileRepository _profileRepository;
 
         public PitchService(IAccountRepository accountRepository, IPitchRepository pitchRepository, IProfileRepository profileRepository)
         {

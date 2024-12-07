@@ -1,4 +1,4 @@
-﻿using LinkUp_REST_API.DTOs.Requests;
+﻿using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Models;
 using System;
 using System.Collections.Generic;
@@ -30,13 +30,9 @@ namespace LinkUp_REST_API_TESTS.TestHelpers.Completed
                 Availability = "Full-Time", // Example availability
                 YearsOfExperience = new Random().Next(1, 20), // Random years of experience between 1 and 20
                 ProfileId = ProfileTestHelper.GetValidProfileId1(), // Generate a new GUID for ProfileId
-                Education = new Education
-                {
-                    EducationId = Guid.NewGuid(), // Generate a new GUID for Education
-                    NameOfEducation = "Bachelor of Science in Computer Science", // Example education name
-                    Institution = "University of Aarhus", // Example institution
-                    GraduationYear = DateTime.Now.Year - new Random().Next(1, 10) // Random graduation year in the last 10 years
-                }
+                NameOfEducation = "Bachelor of Science in Computer Science", // Example education name
+                Institution = "University of Aarhus", // Example institution
+                GraduationYear = DateTime.Now.Year - new Random().Next(1, 10) // Random graduation year in the last 10 years
             };
         }
 
@@ -47,13 +43,9 @@ namespace LinkUp_REST_API_TESTS.TestHelpers.Completed
                 Availability = "Full-Time", // Example availability
                 YearsOfExperience = new Random().Next(1, 20), // Random years of experience between 1 and 20
                 ProfileId = ProfileTestHelper.GetValidProfileId3(), // Generate a new GUID for ProfileId
-                Education = new Education
-                {
-                    EducationId = Guid.NewGuid(), // Generate a new GUID for Education
-                    NameOfEducation = "Bachelor of Science in Computer Science", // Example education name
-                    Institution = "University of Aarhus", // Example institution
-                    GraduationYear = DateTime.Now.Year - new Random().Next(1, 10) // Random graduation year in the last 10 years
-                }
+                NameOfEducation = "Bachelor of Science in Computer Science", // Example education name
+                Institution = "University of Aarhus", // Example institution
+                GraduationYear = DateTime.Now.Year - new Random().Next(1, 10) // Random graduation year in the last 10 years
             };
         }
 

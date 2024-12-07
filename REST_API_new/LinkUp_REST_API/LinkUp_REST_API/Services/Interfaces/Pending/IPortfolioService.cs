@@ -1,5 +1,4 @@
-﻿using LinkUp_REST_API.DTOs.Requests;
-using LinkUp_REST_API.Util;
+﻿using LinkUp_REST_API.Util;
 
 namespace LinkUp_REST_API.Services.Interfaces.Pending
 {

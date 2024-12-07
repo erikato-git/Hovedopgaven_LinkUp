@@ -1,6 +1,5 @@
 ﻿using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.Services.Interfaces.Pending;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkUp_REST_API.Controllers.Pending
@@ -9,8 +8,8 @@ namespace LinkUp_REST_API.Controllers.Pending
     [ApiController]
     public class EducationsController : ControllerBase
     {
-        private IEducationService _educationService;
-        private IAuthentication _authentication;
+        private readonly IEducationService _educationService;
+        private readonly IAuthentication _authentication;
 
         public EducationsController(IEducationService educationService, IAuthentication authentication)
         {

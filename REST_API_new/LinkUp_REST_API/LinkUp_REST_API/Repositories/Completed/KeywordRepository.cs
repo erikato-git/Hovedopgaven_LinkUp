@@ -1,5 +1,5 @@
 ﻿using LinkUp_REST_API.Data.DbContextConnections;
-using LinkUp_REST_API.DTOs.Requests;
+using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Models;
 using LinkUp_REST_API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ namespace LinkUp_REST_API.Repositories.Completed
 {
     public class KeywordRepository : IKeywordRepository
     {
-        private DataContext _dbContext;
+        private readonly DataContext _dbContext;
 
         public KeywordRepository(DataContext dbContext)
         {
@@ -89,7 +89,9 @@ namespace LinkUp_REST_API.Repositories.Completed
             }
 
             // get keyword
-            var keyword = await _dbContext.Keywords.FirstOrDefaultAsync(x => x.KeywordId == id);
+            var keyword = await _dbContext.Keywords
+                .Include(x => x.Education)
+                .FirstOrDefaultAsync(x => x.KeywordId == id);
 
             return keyword;
         }
@@ -119,9 +121,7 @@ namespace LinkUp_REST_API.Repositories.Completed
             }
 
             // connect keyword and profile
-            keyword.ProfileId = profileFound.ProfileId;
-            keyword.Profile = profileFound;
-            profileFound.KeywordId = keyword.ProfileId;
+            profileFound.KeywordId = keyword.KeywordId;
             profileFound.Keyword = keyword;
 
             // create keyword

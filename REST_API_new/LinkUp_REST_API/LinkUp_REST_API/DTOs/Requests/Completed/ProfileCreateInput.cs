@@ -1,14 +1,11 @@
-﻿using LinkUp_REST_API.Models.Pending;
-using LinkUp_REST_API.Models;
-
-namespace LinkUp_REST_API.DTOs.Requests.Completed
+﻿namespace LinkUp_REST_API.DTOs.Requests.Completed
 {
     public class ProfileCreateInput
     {
         public required string Profession { get; set; }
         public required string Title { get; set; }
         public string? AlternativeTitle { get; set; }
-        public IFormFile? ProfilePicture { get; set; }
+        //public IFormFile? ProfilePicture { get; set; }    // TODO: Media
         public string? ProfileDescription { get; set; }
 
         public Guid AccountId { get; set; }
@@ -16,7 +13,7 @@ namespace LinkUp_REST_API.DTOs.Requests.Completed
         // Keyword
         public string? Availability { get; set; }           // TODO: Enum
         public int? YearsOfExperience { get; set; }
-        
+
         // Education (nested)
         public string? NameOfEducation { get; set; }
         public string? Institution { get; set; }

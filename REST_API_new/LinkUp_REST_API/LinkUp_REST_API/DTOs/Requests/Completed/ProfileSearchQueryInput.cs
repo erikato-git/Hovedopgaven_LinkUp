@@ -1,6 +1,4 @@
-﻿using LinkUp_REST_API.Models;
-
-namespace LinkUp_REST_API.DTOs.Requests.Completed
+﻿namespace LinkUp_REST_API.DTOs.Requests.Completed
 {
     public class ProfileSearchQueryInput
     {

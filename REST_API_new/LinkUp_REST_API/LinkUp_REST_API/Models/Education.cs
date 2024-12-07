@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace LinkUp_REST_API.Models
 {
@@ -10,8 +12,11 @@ namespace LinkUp_REST_API.Models
         public string? Institution { get; set; }
         public int? GraduationYear { get; set; }
 
-        // Navigation properties to Keyword
+        // Foreign keys
         public Guid KeywordId { get; set; }
+
+        // Navigation properties
+        [JsonIgnore]
         public Keyword? Keyword { get; set; }
     }
 }

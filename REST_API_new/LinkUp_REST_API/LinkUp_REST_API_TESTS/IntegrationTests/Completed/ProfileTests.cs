@@ -195,7 +195,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
             // Arrange
             var profile = _dbContext.Profiles.First();
             var updateProfile = ProfileTestHelper.GenerateValidProfileUpdateInput();        // first account and profile are supposed to be attached
-            updateProfile.AccountId = Guid.NewGuid();
+            updateProfile.ProfileId = ProfileTestHelper.GetValidProfileId2();               // profileId is not supposed to be associated to logged in account
 
             // Act
             var result = await _sut.UpdateProfile(updateProfile);

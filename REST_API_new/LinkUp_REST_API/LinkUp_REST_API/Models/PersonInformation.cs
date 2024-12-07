@@ -11,5 +11,9 @@ namespace LinkUp_REST_API.Models
         public string? Phone { get; set; }
         public DateOnly BirthDate { get; set; }
         public required string Gender { get; set; }          // TODO: enum
+
+        // Foreign key
+        public Guid AccountId { get; set; }
+
     }
 }

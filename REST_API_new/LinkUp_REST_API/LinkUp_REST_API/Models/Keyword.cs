@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace LinkUp_REST_API.Models
 {
@@ -9,12 +10,13 @@ namespace LinkUp_REST_API.Models
         public string? Availability { get; set; }           // TODO: Enum
         public int? YearsOfExperience { get; set; }
 
-        // Navigation properties to Profile
+        // Foreign keys
         public Guid ProfileId { get; set; }
-        public Profile? Profile { get; set; }
-
-        // Navigation properties to Education
         public Guid? EducationId { get; set; }
+
+        // Navigation properties
+        [JsonIgnore]
+        public Profile? Profile { get; set; }
         public Education? Education { get; set; }
     }
 }

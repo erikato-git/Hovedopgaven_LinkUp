@@ -2,9 +2,7 @@
 using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace LinkUp_REST_API.Controllers.Completed
 {
@@ -12,8 +10,8 @@ namespace LinkUp_REST_API.Controllers.Completed
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private IAccountService _accountService;
-        private IAuthentication _authentication;
+        private readonly IAccountService _accountService;
+        private readonly IAuthentication _authentication;
 
         public AccountsController(IAccountService accountService, IAuthentication authentication)
         {
@@ -36,7 +34,11 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
@@ -57,7 +59,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Login failed");
@@ -77,7 +79,11 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
@@ -99,7 +105,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Create account failed");
@@ -120,7 +126,11 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
@@ -141,7 +151,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 // TODO: log-info: AccountId (loggedInUser), UTC.Now, ex.stack-trace 
@@ -157,13 +167,17 @@ namespace LinkUp_REST_API.Controllers.Completed
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetExternalAccountById([FromQuery] Guid accountId)
+        public async Task<IActionResult> GetExternalAccountById(Guid accountId)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
@@ -184,7 +198,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Get external account failed");
@@ -204,7 +218,11 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
@@ -225,7 +243,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Get own account failed");
@@ -248,7 +266,11 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
@@ -269,7 +291,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Get own account failed");
@@ -277,7 +299,7 @@ namespace LinkUp_REST_API.Controllers.Completed
         }
 
 
-        // Logout for JWT authentication is handled on the Client-side
+        // Logout (omitted): Authentication for JWT is handled on the Client-side
 
 
 

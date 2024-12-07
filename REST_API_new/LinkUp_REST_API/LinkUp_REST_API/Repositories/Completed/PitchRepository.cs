@@ -7,7 +7,7 @@ namespace LinkUp_REST_API.Repositories.Completed
 {
     public class PitchRepository : IPitchRepository
     {
-        private DataContext _dbContext;
+        private readonly DataContext _dbContext;
 
         public PitchRepository(DataContext dataContext)
         {

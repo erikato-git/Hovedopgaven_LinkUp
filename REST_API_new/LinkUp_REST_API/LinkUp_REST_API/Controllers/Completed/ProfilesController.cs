@@ -1,9 +1,7 @@
 ﻿using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.DTOs.Requests.Completed;
-using LinkUp_REST_API.Services.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkUp_REST_API.Controllers.Completed
@@ -13,8 +11,8 @@ namespace LinkUp_REST_API.Controllers.Completed
     [ApiController]
     public class ProfilesController : ControllerBase
     {
-        private IProfileService _profileService;
-        private IAuthentication _authentication;
+        private readonly IProfileService _profileService;
+        private readonly IAuthentication _authentication;
 
         public ProfilesController(IProfileService profileService, IAuthentication authentication)
         {
@@ -34,7 +32,11 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
@@ -56,7 +58,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Create profile failed");
@@ -70,20 +72,24 @@ namespace LinkUp_REST_API.Controllers.Completed
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetProfileById([FromQuery] Guid profileId)
+        public async Task<IActionResult> GetProfileById(Guid profileId)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
 
                 if (string.IsNullOrEmpty(isUserLoggedIn))
                 {
-                    return Unauthorized("You must be logged in before you can create a profile for your account");
+                    return Unauthorized("You must be logged in before you can get a profile for your account");
                 }
 
                 var result = await _profileService.GetProfileById(profileId);
@@ -97,7 +103,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Get profile failed");
@@ -116,7 +122,11 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
@@ -137,7 +147,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 // TODO: log-info: AccountId (loggedInUser), UTC.Now, ex.stack-trace 
@@ -159,14 +169,18 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
 
                 if (string.IsNullOrEmpty(loggedInAccount))
                 {
-                    return Unauthorized("You must to be logged in before you can delete your own account");
+                    return Unauthorized("You must to be logged in before you can delete one of your own profiles");
                 }
 
                 var result = await _profileService.DeleteProfileById(profileId, loggedInAccount);
@@ -180,7 +194,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Delete profile failed");
@@ -189,7 +203,7 @@ namespace LinkUp_REST_API.Controllers.Completed
 
 
         // SearchProfiles
-        [HttpGet("searchProfiles/{query}")]
+        [HttpGet("searchProfiles")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -201,7 +215,11 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
@@ -222,7 +240,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Search profiles failed");
@@ -235,13 +253,17 @@ namespace LinkUp_REST_API.Controllers.Completed
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddToFavorites([FromQuery] Guid profileId)
+        public async Task<IActionResult> AddToFavorites(Guid profileId)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
@@ -262,7 +284,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Add profile to favorites failed");
@@ -276,20 +298,24 @@ namespace LinkUp_REST_API.Controllers.Completed
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RemoveFromFavorites([FromQuery] Guid profileId)
+        public async Task<IActionResult> RemoveFromFavorites(Guid profileId)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
 
                 if (string.IsNullOrEmpty(loggedInAccount))
                 {
-                    return Unauthorized("You must to be logged in before you can add a profile to favorites");
+                    return Unauthorized("You must to be logged in before you can remove a profile from favorites");
                 }
 
                 var result = await _profileService.RemoveProfileFromFavorites(profileId, loggedInAccount);
@@ -303,7 +329,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Add profile to favorites failed");

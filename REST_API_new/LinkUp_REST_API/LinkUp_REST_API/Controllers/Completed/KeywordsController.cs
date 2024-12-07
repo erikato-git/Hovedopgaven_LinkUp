@@ -1,18 +1,18 @@
 ﻿using LinkUp_REST_API.Core.Interfaces;
-using LinkUp_REST_API.DTOs.Requests;
 using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinkUp_REST_API.Controllers.Completed
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class KeywordsController : ControllerBase
     {
-        private IKeywordService _keywordService;
-        private IAuthentication _authentication;
+        private readonly IKeywordService _keywordService;
+        private readonly IAuthentication _authentication;
 
         public KeywordsController(IKeywordService keywordService, IAuthentication authentication)
         {
@@ -32,7 +32,11 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
@@ -54,7 +58,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Create keyword failed");
@@ -67,20 +71,24 @@ namespace LinkUp_REST_API.Controllers.Completed
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetKeywordById([FromQuery] Guid keywordId)
+        public async Task<IActionResult> GetKeywordById(Guid keywordId)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var isUserLoggedIn = _authentication.GetCurrentUserId(User);
 
                 if (string.IsNullOrEmpty(isUserLoggedIn))
                 {
-                    return Unauthorized("You must be logged in before you can create a profile for your account");
+                    return Unauthorized("You must be logged in before you can get a keyword for one your profiles");
                 }
 
                 var result = await _keywordService.GetKeywordById(keywordId, isUserLoggedIn);
@@ -94,7 +102,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 return BadRequest("Get profile failed");
@@ -114,7 +122,11 @@ namespace LinkUp_REST_API.Controllers.Completed
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
@@ -135,7 +147,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
                 // TODO: log-info: AccountId (loggedInUser), UTC.Now, ex.stack-trace 
@@ -150,13 +162,17 @@ namespace LinkUp_REST_API.Controllers.Completed
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteKeywordById([FromQuery] Guid keywordId)
+        public async Task<IActionResult> DeleteKeywordById(Guid keywordId)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
                 }
 
                 var loggedInAccount = _authentication.GetCurrentUserId(User);
@@ -177,10 +193,10 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return StatusCode(result.StatusCode, result.Message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
-                return BadRequest("Get own account failed");
+                return BadRequest("Delete keyword failed");
             }
         }
 

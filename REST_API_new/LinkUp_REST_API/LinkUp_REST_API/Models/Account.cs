@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LinkUp_REST_API.Models
 {
@@ -11,11 +12,11 @@ namespace LinkUp_REST_API.Models
         public List<Guid>? FavoriteProfiles { get; set; } = new List<Guid>();
 
 
-        // Navigation properties to PersonInformation
+        // Foreign keys
         public Guid PersonInformationId { get; set; }
-        public required PersonInformation PersonInformation { get; set; }
 
-        // Navigation properties to Profile
+        // Navigation properties
+        public required PersonInformation PersonInformation { get; set; }
         public List<Profile>? Profiles { get; set; } = new List<Profile>();
     }
 }

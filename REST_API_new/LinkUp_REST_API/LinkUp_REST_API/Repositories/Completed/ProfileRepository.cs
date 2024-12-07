@@ -1,7 +1,6 @@
 ﻿using LinkUp_REST_API.Data.DbContextConnections;
 using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Models;
-using LinkUp_REST_API.Models.Pending;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +8,7 @@ namespace LinkUp_REST_API.Repositories.Completed
 {
     public class ProfileRepository : IProfileRepository
     {
-        private DataContext _dbContext;
+        private readonly DataContext _dbContext;
 
         public ProfileRepository(DataContext dataContext)
         {
@@ -50,10 +49,11 @@ namespace LinkUp_REST_API.Repositories.Completed
                 existingProfile.AlternativeTitle = dto.AlternativeTitle;
             }
 
-            if (dto.ProfilePicture != null)
-            {
-                existingProfile.ProfilePicture = dto.ProfilePicture;
-            }
+            // TODO: Media
+            //if (dto.ProfilePicture != null)
+            //{
+            //    existingProfile.ProfilePicture = dto.ProfilePicture;
+            //}
 
             if (!string.IsNullOrEmpty(dto.ProfileDescription))
             {
@@ -115,7 +115,11 @@ namespace LinkUp_REST_API.Repositories.Completed
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var profile = await _dbContext.Profiles.FirstOrDefaultAsync(x => x.ProfileId == id);
+            var profile = await _dbContext.Profiles
+                .Include(k => k.Keyword)
+                .ThenInclude(e => e.Education)
+                // TODO: also include portfolio and audience-specification when they are implemented
+                .FirstOrDefaultAsync(x => x.ProfileId == id);
 
             return profile;
         }

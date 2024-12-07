@@ -1,5 +1,4 @@
-﻿using LinkUp_REST_API.Data.DbContextConnections;
-using LinkUp_REST_API.DTOs.Requests.Completed;
+﻿using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.DTOs.Responses.Completed;
 using LinkUp_REST_API.Models;
 

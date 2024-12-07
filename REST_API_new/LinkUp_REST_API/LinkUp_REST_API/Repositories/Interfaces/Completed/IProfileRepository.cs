@@ -1,6 +1,5 @@
-﻿using LinkUp_REST_API.Models.Pending;
+﻿using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Models;
-using LinkUp_REST_API.DTOs.Requests.Completed;
 
 namespace LinkUp_REST_API.Repositories.Interfaces.Completed
 {

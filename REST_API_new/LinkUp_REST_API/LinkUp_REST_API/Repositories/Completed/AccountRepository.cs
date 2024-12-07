@@ -2,16 +2,13 @@
 using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Models;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LinkUp_REST_API.Repositories.Completed
 {
     public class AccountRepository : IAccountRepository
     {
-        private DataContext _dbContext;
+        private readonly DataContext _dbContext;
 
         public AccountRepository(DataContext dataContext)
         {
@@ -125,6 +122,8 @@ namespace LinkUp_REST_API.Repositories.Completed
                 return null;
             }
 
+
+
             var account = _dbContext.Accounts.Add(dto);
 
             var saved = await SaveChangesAsync();
@@ -151,22 +150,6 @@ namespace LinkUp_REST_API.Repositories.Completed
                 .FirstOrDefaultAsync(x => x.Email == email);
 
             return accountFound;
-        }
-
-        public Task<bool> AddSavedProfileAsync(Account account, Guid profileId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> doesEmailForAccountExistAsync(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public Task<IEnumerable<Account>?> GetAllAsync()
-        {
-            throw new NotImplementedException();
         }
 
 

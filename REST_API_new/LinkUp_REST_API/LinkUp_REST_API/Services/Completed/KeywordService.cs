@@ -1,18 +1,17 @@
-﻿using LinkUp_REST_API.DTOs.Requests;
+﻿using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Repositories.Interfaces;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Interfaces;
 using LinkUp_REST_API.Util;
 using LinkUp_REST_API.Util.Mapper;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LinkUp_REST_API.Services.Completed
 {
     public class KeywordService : IKeywordService
     {
-        private IAccountRepository _accountRepository;
-        private IProfileRepository _profileRepository;
-        private IKeywordRepository _keywordRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IProfileRepository _profileRepository;
+        private readonly IKeywordRepository _keywordRepository;
 
         public KeywordService(IAccountRepository accountRepository, IKeywordRepository keywordRepository, IProfileRepository profileRepository)
         {
