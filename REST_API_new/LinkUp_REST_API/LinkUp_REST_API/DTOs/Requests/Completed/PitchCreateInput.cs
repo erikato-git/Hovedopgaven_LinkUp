@@ -12,11 +12,9 @@ namespace LinkUp_REST_API.DTOs.Requests.Completed
         [DefaultValue("Default pitch message text.")]
         public required string TextMessage { get; set; }
 
-        [StringLength(36)]
         [DefaultValue("00000000-0000-0000-0000-000000000000")]
         public Guid RecipientProfileId { get; set; }
 
-        [StringLength(36)]
         [DefaultValue("00000000-0000-0000-0000-000000000000")]
         public Guid SenderProfileId { get; set; }
     }

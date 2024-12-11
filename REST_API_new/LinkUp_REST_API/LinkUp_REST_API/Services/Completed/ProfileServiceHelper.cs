@@ -8,6 +8,7 @@ using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using Account = CloudinaryDotNet.Account;
 
 namespace LinkUp_REST_API.Services.Completed
@@ -25,11 +26,12 @@ namespace LinkUp_REST_API.Services.Completed
                 config.Value.ApiSecret
             );
             _cloudinary = new Cloudinary(account);
+            _cloudinary.Api.Secure = true;
 
             _dbContext = dataContext;
         }
 
-        public async Task<bool> DeleteMedia(Guid mediaId)
+        public async Task<bool> DeleteMedia(string mediaId)
         {
             if (string.IsNullOrEmpty(mediaId.ToString()))
             {
@@ -64,7 +66,7 @@ namespace LinkUp_REST_API.Services.Completed
             return true;
         }
 
-        public async Task<bool> SaveMedia(IFormFile file, Profile profile)
+        public async Task<Media?> SaveMedia(IFormFile file, Profile profile)
         {
             if (file == null || profile == null)
             {
@@ -72,11 +74,11 @@ namespace LinkUp_REST_API.Services.Completed
             }
 
             // Add file to Cloudinary
-            var uploadResult = await AddPhotoToCloudinary(file);
+            var uploadResult = await AddPhotoToCloudinary(file, profile);
 
             if (uploadResult == null)
             {
-                return false;
+                return null;
             }
 
             // Add media object to database
@@ -87,15 +89,20 @@ namespace LinkUp_REST_API.Services.Completed
 
             if (!saved)
             {
-                return false;
+                return null;
             }
 
-            return true;
+            return uploadResult;
         }
 
 
-        public async Task<Media> AddPhotoToCloudinary(IFormFile file)
+        private async Task<Media?> AddPhotoToCloudinary(IFormFile file, Profile profile)
         {
+            if (file == null || profile == null)
+            {
+                throw new ArgumentNullException("File or profile is invalid");
+            }
+
             if (file.Length > 0)
             {
                 await using var stream = file.OpenReadStream();
@@ -112,11 +119,15 @@ namespace LinkUp_REST_API.Services.Completed
                     throw new Exception(uploadResult.Error.Message);
                 }
 
-                return new Media
+                var media = new Media
                 {
-                    MediaId = Guid.Parse(uploadResult.PublicId),
+                    MediaId = uploadResult.PublicId,
                     URL = uploadResult.Url.ToString(),
+                    ProfileId = profile.ProfileId,
+                    Profile = profile
                 };
+                
+                return media;
             }
 
             return null;

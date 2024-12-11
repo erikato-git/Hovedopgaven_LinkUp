@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinkUp_REST_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241206115646_Update_Keyword_Education_CascadeDeletion")]
-    partial class Update_Keyword_Education_CascadeDeletion
+    [Migration("20241211124652_LinkUp")]
+    partial class LinkUp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -104,9 +104,8 @@ namespace LinkUp_REST_API.Migrations
 
             modelBuilder.Entity("LinkUp_REST_API.Models.Media", b =>
                 {
-                    b.Property<Guid>("MediaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("MediaId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("ProfileId")
                         .HasColumnType("uniqueidentifier");
@@ -235,6 +234,9 @@ namespace LinkUp_REST_API.Migrations
 
                     b.Property<Guid?>("KeywordId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("MediaId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("PortfolioId")
                         .HasColumnType("uniqueidentifier");

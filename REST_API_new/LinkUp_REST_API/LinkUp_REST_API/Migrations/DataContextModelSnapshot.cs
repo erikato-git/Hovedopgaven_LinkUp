@@ -101,9 +101,8 @@ namespace LinkUp_REST_API.Migrations
 
             modelBuilder.Entity("LinkUp_REST_API.Models.Media", b =>
                 {
-                    b.Property<Guid>("MediaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("MediaId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("ProfileId")
                         .HasColumnType("uniqueidentifier");
@@ -232,6 +231,9 @@ namespace LinkUp_REST_API.Migrations
 
                     b.Property<Guid?>("KeywordId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("MediaId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("PortfolioId")
                         .HasColumnType("uniqueidentifier");

@@ -6,7 +6,6 @@ namespace LinkUp_REST_API.DTOs.Requests.Completed
 {
     public class AccountUpdateInput
     {
-        [StringLength(36)]
         [DefaultValue("00000000-0000-0000-0000-000000000000")]
         public required Guid AccountId { get; set; }
 

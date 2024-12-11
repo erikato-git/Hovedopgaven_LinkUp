@@ -6,8 +6,8 @@ namespace LinkUp_REST_API.Services.Interfaces.Completed
 {
     public interface IProfileServiceHelper
     {
-        Task<bool> SaveMedia(IFormFile file, Profile profile);
-        Task<bool> DeleteMedia(Guid mediaId);
+        Task<Media?> SaveMedia(IFormFile file, Profile profile);
+        Task<bool> DeleteMedia(string mediaId);
         Task<IEnumerable<ProfileSearchQueryOutput>?> QuerySearchedProfiles(ProfileSearchQueryInput dto);
 
     }

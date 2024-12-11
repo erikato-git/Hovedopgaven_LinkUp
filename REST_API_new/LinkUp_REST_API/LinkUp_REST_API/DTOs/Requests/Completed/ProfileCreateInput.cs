@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata.Ecma335;
 
 namespace LinkUp_REST_API.DTOs.Requests.Completed
 {
@@ -21,7 +22,6 @@ namespace LinkUp_REST_API.DTOs.Requests.Completed
         [DefaultValue("Profile description not provided.")]
         public string? ProfileDescription { get; set; }
 
-        [StringLength(36)]
         [DefaultValue("00000000-0000-0000-0000-000000000000")]
         public Guid AccountId { get; set; }
 

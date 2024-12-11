@@ -268,20 +268,53 @@ namespace LinkUp_REST_API.Services.Completed
                 return ResultDTO.Failure(500, $"Profile could not be created for account {userAccountId} due to internal server error");
             }
 
-            // TODO: Handle ProfilePicture
-            //if (dto.ProfilePicture != null || dto.ProfilePicture?.Length > 0)
-            //{
-            //    // Save Media
-            //    var mediaSaved = await _helper.SaveMedia(dto.ProfilePicture, createdProfile);
 
-            //    if (mediaSaved)
-            //    {
-            //        return ResultDTO.Succes(createdProfile, 201, "Profile has been created with profile picture");
-            //    }
-            //}
+            // TODO: Handle ProfilePicture
+            
 
             return ResultDTO.Succes(createdProfile, 201, "Profile has been created");
         }
 
+        public async Task<ResultDTO> UploadFile(ProfileMediaUpload dto, string userAccountId)
+        {
+            if ( dto == null || string.IsNullOrEmpty(userAccountId) )
+            {
+                return ResultDTO.Failure(400, "Invalid inputs");
+            }
+
+            // User and profile
+
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if(loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Logged in account was not found");
+            }
+
+            var profile = loggedInUser.Profiles?.FirstOrDefault();
+
+            if (profile == null)
+            {
+                return ResultDTO.Failure(400, "HEJ");
+            }
+
+            // Upload result to Cloudinary
+
+            if (dto.UploadFile == null || dto.UploadFile?.Length == 0)
+            {
+                return ResultDTO.Failure(400, "Invalid upload file");
+            }
+
+            // Save Media
+            var mediaSaved = await _helper.SaveMedia(dto.UploadFile!, profile);
+
+            if (mediaSaved == null)
+            {
+                return ResultDTO.Failure(500, "System failed to upload or failed save upload-result");
+            }
+
+            return ResultDTO.Succes(mediaSaved, 201, "Profile has been created with profile picture");
+
+        }
     }
 }
