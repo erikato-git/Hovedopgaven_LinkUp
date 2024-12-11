@@ -23,6 +23,7 @@ using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Completed;
 using LinkUp_REST_API_TESTS.TestHelpers.Completed;
+using LinkUp_REST_API.DTOs.Requests.Completed;
 
 namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
 {
@@ -211,8 +212,13 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
         public async Task DeleteProfileById_Should_Return204_When_ProfileWasDeletedFromLoggedInUser()
         {
             var profile = _dbContext.Profiles.First();
+            var dto = new ProfileDeleteInput
+            {
+                ProfileId = profile.ProfileId,
+                Password = AccountTestHelper.GetValidPassword()
+            };
 
-            var result = await _sut.DeleteProfileById(profile.ProfileId);
+            var result = await _sut.DeleteProfileById(dto);
 
             var noContentResult = Assert.IsType<NoContentResult>(result);
             Assert.Equal(StatusCodes.Status204NoContent, noContentResult.StatusCode);
@@ -222,9 +228,14 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
         public async Task DeleteProfileById_Should_Return401_When_UserIsNotLoggedIn()
         {
             var profile = _dbContext.Profiles.First();
+            var dto = new ProfileDeleteInput
+            {
+                ProfileId = profile.ProfileId,
+                Password = AccountTestHelper.GetValidPassword()
+            };
             AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
 
-            var result = await _sut.DeleteProfileById(profile.ProfileId);
+            var result = await _sut.DeleteProfileById(dto);
 
             var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
             Assert.Equal(StatusCodes.Status401Unauthorized, unauthResult.StatusCode);
@@ -233,7 +244,14 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
         [Fact]
         public async Task DeleteProfileById_Should_Return403_When_UserTriesToDeleteProfileItDoesNotOwn()
         {
-            var result = await _sut.DeleteProfileById(Guid.NewGuid());
+            var profile = _dbContext.Profiles.First();
+            var dto = new ProfileDeleteInput
+            {
+                ProfileId = Guid.NewGuid(),
+                Password = AccountTestHelper.GetValidPassword()
+            };
+
+            var result = await _sut.DeleteProfileById(dto);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(StatusCodes.Status403Forbidden, objectResult.StatusCode);
@@ -247,7 +265,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
         {
             var query = ProfileTestHelper.GenerateValidSearchQueryDTO();
 
-            var result = await _sut.SearchQuery(query);
+            var result = await _sut.SearchProfiles(query);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
@@ -259,7 +277,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
             var query = ProfileTestHelper.GenerateValidSearchQueryDTO();
             AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
 
-            var result = await _sut.SearchQuery(query);
+            var result = await _sut.SearchProfiles(query);
 
             var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
             Assert.Equal(StatusCodes.Status401Unauthorized, unauthResult.StatusCode);

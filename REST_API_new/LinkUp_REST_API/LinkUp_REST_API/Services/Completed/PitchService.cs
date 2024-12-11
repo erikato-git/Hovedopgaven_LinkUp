@@ -167,7 +167,7 @@ namespace LinkUp_REST_API.Services.Completed
             // null-checks - 400
             if (dto == null || string.IsNullOrEmpty(userAccountId))
             {
-                return ResultDTO.Failure(404, "Invalid inputs");
+                return ResultDTO.Failure(400, "Invalid inputs");
             }
 
             // get logged in account - 404

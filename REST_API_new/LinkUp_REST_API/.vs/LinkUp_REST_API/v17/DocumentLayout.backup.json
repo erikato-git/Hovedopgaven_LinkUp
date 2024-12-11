@@ -1,12 +1,128 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\controllers\\completed\\profilescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\controllers\\completed\\profilescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\services\\completed\\profileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\services\\completed\\profileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\dtos\\requests\\completed\\profiledeleteinput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\dtos\\requests\\completed\\profiledeleteinput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\dtos\\requests\\completed\\profileupdateinput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\dtos\\requests\\completed\\profileupdateinput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\dtos\\requests\\completed\\profilecreateinput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\dtos\\requests\\completed\\profilecreateinput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|c:\\users\\erikk\\onedrive\\skrivebord\\hovedopgaven_linkup\\rest_api_new\\linkup_rest_api\\linkup_rest_api\\dtos\\requests\\completed\\profilesearchqueryinput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{38861B18-0925-4250-BE29-4710F17CFE3C}|LinkUp_REST_API\\LinkUp_REST_API.csproj|solutionrelative:linkup_rest_api\\dtos\\requests\\completed\\profilesearchqueryinput.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ProfilesController.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Controllers\\Completed\\ProfilesController.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\Controllers\\Completed\\ProfilesController.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Controllers\\Completed\\ProfilesController.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\Controllers\\Completed\\ProfilesController.cs",
+              "ViewState": "AgIAAMoAAAAAAAAAAAAcwNMAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-10T15:42:11.582Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ProfileService.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Services\\Completed\\ProfileService.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\Services\\Completed\\ProfileService.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\Services\\Completed\\ProfileService.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\Services\\Completed\\ProfileService.cs",
+              "ViewState": "AgIAANgAAAAAAAAAAAAmwOAAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-10T15:42:31.92Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ProfileCreateInput.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileCreateInput.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileCreateInput.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileCreateInput.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileCreateInput.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwAUAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-10T15:42:49.382Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ProfileDeleteInput.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileDeleteInput.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileDeleteInput.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileDeleteInput.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileDeleteInput.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-10T15:42:55.697Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ProfileSearchQueryInput.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileSearchQueryInput.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileSearchQueryInput.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileSearchQueryInput.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileSearchQueryInput.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-10T15:43:00.557Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ProfileUpdateInput.cs",
+              "DocumentMoniker": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileUpdateInput.cs",
+              "RelativeDocumentMoniker": "LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileUpdateInput.cs",
+              "ToolTip": "C:\\Users\\erikk\\OneDrive\\Skrivebord\\Hovedopgaven_LinkUp\\REST_API_new\\LinkUp_REST_API\\LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileUpdateInput.cs",
+              "RelativeToolTip": "LinkUp_REST_API\\DTOs\\Requests\\Completed\\ProfileUpdateInput.cs",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAUwDwAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-10T15:43:04.901Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

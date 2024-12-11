@@ -99,9 +99,9 @@ namespace LinkUp_REST_API.Util.Mapper.Completed
                 personInfo.Phone = input.Phone;
             }
 
-            if (input.BirthDate.HasValue)
+            if (input.BirthDate.Year > 0)
             {
-                personInfo.BirthDate = input.BirthDate.Value;
+                personInfo.BirthDate = input.BirthDate;
             }
 
             if (!string.IsNullOrEmpty(input.Gender))

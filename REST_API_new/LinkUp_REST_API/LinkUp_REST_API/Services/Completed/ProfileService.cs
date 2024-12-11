@@ -1,4 +1,5 @@
-﻿using LinkUp_REST_API.DTOs.Requests.Completed;
+﻿using LinkUp_REST_API.Core;
+using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
@@ -122,33 +123,42 @@ namespace LinkUp_REST_API.Services.Completed
             return ResultDTO.Succes(queriedProfiles, 200, "Profiles have been retrieved");
         }
 
-        public async Task<ResultDTO> DeleteProfileById(Guid profileId, string userAccountId)
+        public async Task<ResultDTO> DeleteProfileById(ProfileDeleteInput dto, string userAccountId)
         {
-            if (string.IsNullOrEmpty(profileId.ToString()) || string.IsNullOrEmpty(userAccountId))
+            if (string.IsNullOrEmpty(dto.ProfileId.ToString()) || string.IsNullOrEmpty(userAccountId))
             {
                 return ResultDTO.Failure(400, "Invalid inputs");
             }
 
-            // Check if user has particular profile
-            var profilesForAccount = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+            // Check logged in user exist
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
 
-            if (profilesForAccount == null)
+            if (loggedInUser == null)
             {
-                return ResultDTO.Failure(404, "Account has no profiles");
+                return ResultDTO.Failure(404, "Account does not have any profiles");
             }
 
-            var profileToDelete = profilesForAccount.Profiles?.FirstOrDefault(x => x.ProfileId == profileId);
+            // Check correct password has been provided
+            var hashedPassword = Authentication.HashingPasswordWithSaltUsingSHA256(dto.Password, Guid.Parse(userAccountId));
+
+            if(!loggedInUser.Password.Equals(hashedPassword))
+            {
+                return ResultDTO.Failure(403, "Invalid password");
+            }
+
+            // Check if user has particular profile
+            var profileToDelete = loggedInUser.Profiles?.FirstOrDefault(x => x.ProfileId == dto.ProfileId);
 
             if (profileToDelete == null)
             {
-                return ResultDTO.Failure(403, $"Your account doesn't contain profile with profileId {profileId}");
+                return ResultDTO.Failure(403, $"Your account doesn't contain profile with profileId {dto.ProfileId}");
             }
 
             var deleted = await _profileRepository.DeleteProfileAsync(Guid.Parse(userAccountId), profileToDelete);
 
             if (!deleted)
             {
-                return ResultDTO.Failure(500, $"Profile {profileId} wasn't deleted due to internal server error");
+                return ResultDTO.Failure(500, $"Profile {dto.ProfileId} wasn't deleted due to internal server error");
             }
 
             // TODO: Remember to delete images from cloud
@@ -162,6 +172,22 @@ namespace LinkUp_REST_API.Services.Completed
             if (dto == null || string.IsNullOrEmpty(userAccountId))
             {
                 return ResultDTO.Failure(400, "Invalid inputs");
+            }
+
+            // Check logged in user exist
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if (loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Account has no profiles");
+            }
+
+            // Check correct password has been provided
+            var hashedPassword = Authentication.HashingPasswordWithSaltUsingSHA256(dto.Password, Guid.Parse(userAccountId));
+
+            if (!loggedInUser.Password.Equals(hashedPassword))
+            {
+                return ResultDTO.Failure(403, "Invalid password");
             }
 
             // Check if user has authorization
@@ -215,6 +241,14 @@ namespace LinkUp_REST_API.Services.Completed
             if (dto == null || string.IsNullOrEmpty(userAccountId))
             {
                 return ResultDTO.Failure(400, "Inputs are invalid");
+            }
+
+            // Check logged in user exist
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if (loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Logged in account was not found");
             }
 
             // Check AccountId in dto match userAccountId

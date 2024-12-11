@@ -45,6 +45,7 @@ namespace LinkUp_REST_API_TESTS.TestHelpers.Completed
                 AlternativeTitle = "Full Stack Developer",
                 //ProfilePicture = null,    // TODO: media
                 ProfileDescription = "Experienced developer specializing in web and cloud technologies.",
+                Password = AccountTestHelper.GetValidPassword(),
 
                 // Keyword
                 Availability = "Full-Time",

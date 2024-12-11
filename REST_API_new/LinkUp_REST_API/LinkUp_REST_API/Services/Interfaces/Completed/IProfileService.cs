@@ -8,7 +8,7 @@ namespace LinkUp_REST_API.Services.Interfaces.Completed
         Task<ResultDTO> CreateProfile(ProfileCreateInput dto, string userAccountId);
         Task<ResultDTO> GetProfileById(Guid id);
         Task<ResultDTO> UpdateProfile(ProfileUpdateInput dto, string userAccountId);
-        Task<ResultDTO> DeleteProfileById(Guid id, string userAccountId);
+        Task<ResultDTO> DeleteProfileById(ProfileDeleteInput dto, string userAccountId);
 
         Task<ResultDTO> SearchQuery(ProfileSearchQueryInput dto);
         Task<ResultDTO> AddProfileToFavorites(Guid profileId, string userAccountId);

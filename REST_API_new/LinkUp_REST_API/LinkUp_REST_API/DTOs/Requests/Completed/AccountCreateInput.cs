@@ -1,24 +1,44 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LinkUp_REST_API.Util.ValidationDefitions;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 namespace LinkUp_REST_API.DTOs.Requests.Completed
 {
     public class AccountCreateInput
     {
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        [EmailAddress]
+        [StringLength(100)]
+        [DefaultValue("example@example.com")]
         public required string Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required.")]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]       // TODO: should be more complex
+        [StrongPassword]
+        [StringLength(100)]
+        [DefaultValue("Password123!")]
         public required string Password { get; set; }
 
         // PersonInformation
+        [Name]
+        [StringLength(100)]
+        [DefaultValue("John")]
         public required string FirstName { get; set; }
-        public required string Surname { get; set; }
-        public string? Phone { get; set; }
-        public DateOnly BirthDate { get; set; }
-        public required string Gender { get; set; }          // TODO: enum
 
+        [Name]
+        [StringLength(100)]
+        [DefaultValue("Doe")]  
+        public required string Surname { get; set; }
+
+        [Phone]
+        [StringLength(15)]
+        [DefaultValue("+1234567890")]
+        public string? Phone { get; set; }
+
+        [DefaultValue("2000-01-01")]
+        public DateOnly BirthDate { get; set; }
+
+        [StringLength(50)]
+        [DefaultValue("Male")] 
+        public required string Gender { get; set; }
     }
 
 }

@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="24.9.0">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="25.0.3">
   <diagram name="Side-1" id="uRIVfG4a6JclUUnOMwTy">
     <mxGraphModel dx="1941" dy="558" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -24,12 +24,6 @@
         </mxCell>
         <mxCell id="ofcRHr6eKQrfCEUH-8te-5" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;PersonInformation&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- firstName: String&lt;br&gt;- surname: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- phone: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- birthdate: Date&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- gender: String&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" parent="1" vertex="1">
           <mxGeometry x="560" y="99" width="160" height="140" as="geometry" />
-        </mxCell>
-        <mxCell id="ofcRHr6eKQrfCEUH-8te-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="ofcRHr6eKQrfCEUH-8te-6" target="ofcRHr6eKQrfCEUH-8te-4" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="ofcRHr6eKQrfCEUH-8te-6" value="Datatype for profilePicture er ikke afgjort" style="shape=note2;boundedLbl=1;whiteSpace=wrap;html=1;size=25;verticalAlign=top;align=center;" parent="1" vertex="1">
-          <mxGeometry x="70" y="300" width="150" height="70" as="geometry" />
         </mxCell>
         <mxCell id="ofcRHr6eKQrfCEUH-8te-9" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="ofcRHr6eKQrfCEUH-8te-8" target="ofcRHr6eKQrfCEUH-8te-5" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -142,22 +136,22 @@
         <mxCell id="1BrSdFC42K6r8kOYa1aX-3" value="A Pitch must have a profile when it&#39;s created, but I don&#39;t want it to be completely deleted when the profile is destroyed" style="shape=note2;boundedLbl=1;whiteSpace=wrap;html=1;size=25;verticalAlign=top;align=center;" parent="1" vertex="1">
           <mxGeometry x="750" y="390" width="230" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="M7u5wtWZ4UX_zSq7Wrps-1" value="0..1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;align=left;verticalAlign=bottom;rounded=0;entryX=-0.001;entryY=0.569;entryDx=0;entryDy=0;exitX=1.001;exitY=0.348;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="ofcRHr6eKQrfCEUH-8te-4" target="ofcRHr6eKQrfCEUH-8te-22">
+        <mxCell id="M7u5wtWZ4UX_zSq7Wrps-1" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;align=left;verticalAlign=bottom;rounded=0;entryX=-0.001;entryY=0.569;entryDx=0;entryDy=0;exitX=1.001;exitY=0.348;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" parent="1" source="ofcRHr6eKQrfCEUH-8te-4" target="ofcRHr6eKQrfCEUH-8te-22" edge="1">
           <mxGeometry x="-1" relative="1" as="geometry">
             <mxPoint x="470" y="300" as="sourcePoint" />
             <mxPoint x="590" y="391" as="targetPoint" />
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M7u5wtWZ4UX_zSq7Wrps-2" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="M7u5wtWZ4UX_zSq7Wrps-1">
+        <mxCell id="M7u5wtWZ4UX_zSq7Wrps-2" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="M7u5wtWZ4UX_zSq7Wrps-1" vertex="1" connectable="0">
           <mxGeometry x="0.7567" y="1" relative="1" as="geometry">
             <mxPoint x="2" y="-12" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="M7u5wtWZ4UX_zSq7Wrps-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="M7u5wtWZ4UX_zSq7Wrps-5" target="ofcRHr6eKQrfCEUH-8te-22">
+        <mxCell id="M7u5wtWZ4UX_zSq7Wrps-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="M7u5wtWZ4UX_zSq7Wrps-5" target="ofcRHr6eKQrfCEUH-8te-22" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="M7u5wtWZ4UX_zSq7Wrps-5" value="AccountId was dropped and recipientId was made mandatory due to GDPR, no dangling profiles are allowed if a user wants to delete his / her information" style="shape=note2;boundedLbl=1;whiteSpace=wrap;html=1;size=25;verticalAlign=top;align=center;" vertex="1" parent="1">
+        <mxCell id="M7u5wtWZ4UX_zSq7Wrps-5" value="AccountId was dropped and recipientId was made mandatory due to GDPR, no dangling profiles are allowed if a user wants to delete his / her information" style="shape=note2;boundedLbl=1;whiteSpace=wrap;html=1;size=25;verticalAlign=top;align=center;" parent="1" vertex="1">
           <mxGeometry x="793.5" y="260" width="230" height="100" as="geometry" />
         </mxCell>
       </root>

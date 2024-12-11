@@ -1,17 +1,13 @@
-# UC7: Send pitch
-
 openapi: 3.0.0
 info:
   version: 1.0.0
   title: Sample API
-  description: A sample API to illustrate OpenAPI concepts
+  description: A sample API to illustrate OpenAPI concepts. Rate-limiting is applied on all endpoints - 5 requests pr 5 seconds
 
 servers:
   # - url: https://api.example.com
   #   description: Production server
-  - url: http://localhost:8080/api/v1/pitch/
-    description: Local development server
-  - url: https://localhost:8080/api/v1/pitch/
+  - url: http://localhost:7042/api/v1/Pitches/
     description: Local development server
 
 components:
@@ -21,90 +17,77 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    Profile:
+    PitchCreateInput:
       type: object
       properties:
-        profileId:
-          type: string
-          format: guid
-          example: 9fb538b8-57ca-4497-9911-57f780befce2
-          description: Name of the user
-        profilePicture:
-          type: string
-          example: "[datatype?]"
-          description: TODO - figure out what fileformat / datatype profile picture should be
-        name:
-          type: string
-          example: "Alice Smith"
-          description: Name of the user
-        age:
-          type: number
-          example: 27
-          description: Derived from birth date
-        title:
-          type: string
-          example: guitarist
-          description: ""
-        alternativeTitle:
-          type: string
-          example: music teacher
-          description: ""
-        yearsOfExperience:
-          type: number
-          example: 7
-          description: ""
-        institution:
-          type: string
-          example: EAAA
-          description: ""
-        graduationYear:
-          type: number
-          example: 2019
-          description: ""
-        availability:
-          type: string
-          example: Meget tilgængelig
-          description: ""
-        flag:
-          type: boolean
-          example: true
-          description: Flag if the current user has saved the profile for later visit
-    ProfilePitch:
-      type: object
-      properties:
-        profileId:
-          type: string
-          format: guid
-          example: 9fb538b8-57ca-4497-9911-57f780befce2
-          description: Id of the profile
-        profilePicture:
-          type: string
-          example: "[datatype?]"
-          description: TODO - figure out what fileformat / datatype profile picture should be
-        name:
-          type: string
-          example: "Alice Smith"
-          description: Name of the user
-        title:
-          type: string
-          example: guitarist
-          description: ""
-        textMessage:
-          type: object
-          example: [Association?]
-          description: "Passage of the pitch-text"
         sendingDate:
-          type: object
-          example: [Association?]
-          description: "Date and time that the message was send"
+          type: string
+          format: date-time
+          description: The date and time when the pitch is sent.
+          example: "2023-12-10T00:00:00"
+          default: "2023-12-10T00:00:00"
+        textMessage:
+          type: string
+          maxLength: 5000
+          description: The content of the pitch message.
+          example: "Default pitch message text."
+          default: "Default pitch message text."
+        recipientProfileId:
+          type: string
+          format: uuid
+          description: The unique identifier of the recipient's profile.
+          example: "00000000-0000-0000-0000-000000000000"
+          default: "00000000-0000-0000-0000-000000000000"
+        senderProfileId:
+          type: string
+          format: uuid
+          description: The unique identifier of the sender's profile.
+          example: "00000000-0000-0000-0000-000000000000"
+          default: "00000000-0000-0000-0000-000000000000"
+      required:
+        - textMessage
+        - recipientProfileId
+        - senderProfileId
 
-
+    Pitch:
+      type: object
+      properties:
+        pitchId:
+          type: string
+          format: uuid
+          description: Unique identifier for the pitch.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        sendingDate:
+          type: string
+          format: date-time
+          description: The date and time when the pitch was sent.
+          example: "2023-12-10T12:00:00Z"
+        textMessage:
+          type: string
+          description: The content of the pitch message.
+          example: "We would like to collaborate with you on this project."
+        recipientProfileId:
+          type: string
+          format: uuid
+          description: Unique identifier of the recipient's profile.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        profileId:
+          type: string
+          format: uuid
+          description: Unique identifier of the associated profile.
+          example: "987e6543-c21a-34d2-a456-426614174999"
+      required:
+        - pitchId
+        - sendingDate
+        - textMessage
+        - recipientProfileId
+        - profileId
 
 paths:
-  /sendPitch:
+  /createPitch:
     post:
       summary: ""
-      description: User want to send a "pitch" to a profile on another account (UC7)
+      description: User sends a pitch from one of his own profiles to a profile that belongs to another account. Endpoint is restricted to logged in users
       security:
         - BearerAuth: []
       requestBody:
@@ -112,23 +95,16 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                profileId:
-                  type: string
-                  format: guid
-                  example: 9fb538b8-57ca-4497-9911-57f780befce2
-                  description: "id of profile the user wants to send a pitch to"
-                textMessage:
-                  type: string
-                  example: Im looking for people with technical skills for collaboration ...
-                  description: ""
-              required:
-                - profileId
-                - textMessage
+              $ref: "#/components/schemas/Pitch"
       responses:
-        "200":
-          description: pitch has succesfully been send to the other account's profile
+        "201":
+          description: Keyword for particular profile has been created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Keyword"
+        "400":
+          description: Invalid dto provided or invalid AccountId for logged in user
           content:
             application/json:
               schema:
@@ -136,9 +112,9 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Pitch has succesfully been send"
+                    example: "Invalid inputs"
         "401":
-          description: User hasn't signed in before sending a pitch
+          description: User is not logged in
           content:
             application/json:
               schema:
@@ -146,19 +122,9 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "You have to sign in before you can send a pitch to another profile"
-        "403":
-          description: User tries to send a pitch to another profile from a profile that doesn't belong to the user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You're tyring to send a pitch to another profile from a profile that doesn't belong to your account"
+                    example: "You must be logged in before you can send a pitch"
         "404":
-          description: User tries to send a pitch to a profile that doesn't exist
+          description: Errors(:) 1. Could not find logged in user, 2. Profile user tries to send a pitch doesn't exist
           content:
             application/json:
               schema:
@@ -166,9 +132,9 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "The profile that you're trying to send a pitch to doesn't exist"
+                    example: "Logged in account was not found / Recipient profile was not found"
         "409":
-          description: User needs to create a profile before the user can send a pitch to another profile
+          description: Errors(:) 1. Logged in account doesn't have any profile to send from, 2. Logged in account does not contain a profile with a ProfielId that match SendingProfileId provided in the DTO, 3. Logged in account tries to send a pitch from one of user's own profiles to another of user's profiles
           content:
             application/json:
               schema:
@@ -176,35 +142,45 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "You need to create a profile before you can send a pitch to another profile"
+                    example: "You must have at least one account before you are allowed to send a pitch / Logged in account doesn't contain sending-profile / You cannot send a pitch to your own profiles"
+        "500":
+          description: System failed to create Pitch
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Failed to create pitch due to internal server error"
 
-  /getIncomingPitches/{id}:
+  /getAllAssociatedPitches:
     get:
-      summary: "Get pitch by ids"
-      description: User wants to get all incoming pitches to user's profiles
+      summary: ""
+      description: Retrieves all piches send from user's profiles and send to user's profiles. Pitches are retrieved from AccountId provided from JWT text-string. Endpoint is restricted to logged in users
       security:
         - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            description: id of the account for the user 
-            format: guid
-            type: string
-            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
       responses:
         "200":
-          description: user has succesfully extracted all incoming pitches from user's profiles
+          description: All pitches associated to the logged in user's profiles are retrieved
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ProfilePitch' 
-                description: array of all the pitches attached to user's account
+                  $ref: "#/components/schemas/Pitch"
+        "400":
+          description: Invalid information provided or invalid AccountId for logged in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input"
         "401":
-          description: User hasn't signed in to access all pitches for his / her account
+          description: User is not logged in
           content:
             application/json:
               schema:
@@ -212,9 +188,9 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "You have to sign in before you can access your pitches for your account"
-        "403":
-          description: User tries to access incoming pitches for other users' profiles
+                    example: "You must be logged in before you can get associated pitches for your account"
+        "404":
+          description: Logged in user was not found
           content:
             application/json:
               schema:
@@ -222,35 +198,41 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "You don't have permission to access pitches for this account"
+                    example: "Logged in user was not found"
 
-  /getOutcomingPitches/{id}:
+  /getPitchById/{pitchId}:
     get:
-      summary: "Get pitch by ids"
-      description: User wants to get all outcoming pitches from user's profiles
+      summary: ""
+      description: User particular pitch from PitchId if the pitch containing this PitchId is associated with logged in user. Endpoint is restricted to logged in users
       security:
         - BearerAuth: []
       parameters:
-        - name: id
+        - name: PitchId
           in: path
           required: true
           schema:
-            description: id of the account for the user 
-            format: guid
+            description: PitchId is a guid
             type: string
             example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
       responses:
         "200":
-          description: user has succesfully extracted all outcoming pitches from user's profiles
+          description: Pitch with provided PitchId has been retrieved and is associated with logged in user
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProfilePitch' 
-                description: array of all the pitches attached to user's account
+                $ref: "#/components/schemas/Pitch"
+        "400":
+          description: Invalid information provided or invalid AccountId for logged in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input"
         "401":
-          description: User hasn't signed in to access all pitches for user's account
+          description: User is not logged in
           content:
             application/json:
               schema:
@@ -258,9 +240,9 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "You have to sign in before you can access your pitches for your account"
+                    example: "You must be logged in before you can get associated pitches for your account"
         "403":
-          description: User tries to access outcoming pitches for other users' profiles
+          description: User has provided a PitchId to a Pitch that is not associated with logged in user
           content:
             application/json:
               schema:
@@ -268,6 +250,102 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "You don't have permission to access pitches for this account"
+                    example: "You are not associated with the pitch"
+        "404":
+          description: Errors(:) 1. Logged in user was not found, 2. Pitch with particual PitchId does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged in user was not found / Pitch was not found"
+        "409":
+          description: User doesn't have any profiles in user's account and user can't possibly have any pitches associated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User has no profiles at current moment and is unable to retrieve any associated pitches"
 
-
+  /deleteSendPitch/{pitchId}:
+    delete:
+      summary: ""
+      description: User deletes pitch send from one of the user's profiles. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: PitchId
+          in: path
+          required: true
+          schema:
+            description: PitchId is a guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        "204":
+          description: no content
+        "400":
+          description: Invalid information provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Update account info or logged in account is null"
+        "401":
+          description: User is not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You must be logged in before you can delete sended pitches"
+        "403":
+          description: User tries to delete a pitch not send from one of the user's profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "None of your profiles have send this pitch"
+        "404":
+          description: Errors(:) 1. Logged in user was not found, 2. Pitch with provided PitchId was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged in user was not found / Pitch was not found"
+        "409":
+          description: User does not have any profiles at the current moment and it's not possible for the user to remove any sended pitches from user's profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User has no profiles at current moment and is unable to retrieve any associated pitches send from this account"
+        "500":
+          description: System failed to delete particular Pitch sended from logged in user's profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Pitch wasn't deleted due to internal server error"

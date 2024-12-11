@@ -7,7 +7,7 @@ namespace LinkUp_REST_API.Models
     {
         [Key]
         public Guid KeywordId { get; set; }
-        public string? Availability { get; set; }           // TODO: Enum
+        public string? Availability { get; set; }           // TODO: Enum 
         public int? YearsOfExperience { get; set; }
 
         // Foreign keys

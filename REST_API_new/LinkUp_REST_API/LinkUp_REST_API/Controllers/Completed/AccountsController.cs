@@ -3,10 +3,11 @@ using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace LinkUp_REST_API.Controllers.Completed
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
     {
@@ -260,7 +261,7 @@ namespace LinkUp_REST_API.Controllers.Completed
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteOwnAccount()
+        public async Task<IActionResult> DeleteOwnAccount([FromBody] AccountDeleteInput dto)
         {
             try
             {
@@ -280,7 +281,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return Unauthorized("You must to be logged in before you can delete your own account");
                 }
 
-                var result = await _accountService.DeleteOwnAccount(loggedInAccount);
+                var result = await _accountService.DeleteOwnAccount(dto, loggedInAccount);
 
                 if (result.isSucces)
                 {
