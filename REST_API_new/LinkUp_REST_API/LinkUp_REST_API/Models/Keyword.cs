@@ -17,6 +17,7 @@ namespace LinkUp_REST_API.Models
         // Navigation properties
         [JsonIgnore]
         public Profile? Profile { get; set; }
+        [JsonIgnore]
         public Education? Education { get; set; }
     }
 }

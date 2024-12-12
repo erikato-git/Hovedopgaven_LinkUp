@@ -31,7 +31,9 @@ namespace LinkUp_REST_API.Services.Completed
             _dbContext = dataContext;
         }
 
-        public async Task<bool> DeleteMedia(string mediaId)
+        // TODO: Consider to add more cohesion to the design and place handling of media in another class
+
+        public async Task<bool> DeleteMedia(string mediaId, Profile profile)
         {
             if (string.IsNullOrEmpty(mediaId.ToString()))
             {
@@ -54,6 +56,7 @@ namespace LinkUp_REST_API.Services.Completed
                 return false;
             }
 
+            profile.MediaId = null;
             _dbContext.Medias.Remove(mediafound);
 
             var saved = await _dbContext.SaveChangesAsync() > 0;
@@ -65,6 +68,14 @@ namespace LinkUp_REST_API.Services.Completed
 
             return true;
         }
+
+        private async Task<string?> DeletePhotoFromCloudinary(string publicId)
+        {
+            var deleteParams = new DeletionParams(publicId);
+            var result = await _cloudinary.DestroyAsync(deleteParams);
+            return result.Result == "ok" ? result.Result : null;
+        }
+
 
         public async Task<Media?> SaveMedia(IFormFile file, Profile profile)
         {
@@ -82,6 +93,7 @@ namespace LinkUp_REST_API.Services.Completed
             }
 
             // Add media object to database
+            profile.MediaId = uploadResult.MediaId;
             profile.ProfilePicture = uploadResult;
 
             _dbContext.Profiles.Update(profile);
@@ -105,20 +117,29 @@ namespace LinkUp_REST_API.Services.Completed
 
             if (file.Length > 0)
             {
+                // Read uploaded file
                 await using var stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(file.Name, stream),
-                    Transformation = new Transformation().Height(500).Width(500).Crop("fill")
+                    Transformation = new Transformation().Height(500).Width(500).Crop("fill")       // Random crop
                 };
 
+                // Call Cloudinary
                 var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
+                // Sanitize data
                 if (uploadResult.Error != null)
                 {
                     throw new Exception(uploadResult.Error.Message);
                 }
 
+                if (string.IsNullOrEmpty(uploadResult.PublicId) || string.IsNullOrEmpty(uploadResult.Url?.ToString()))
+                {
+                    throw new Exception("Invalid upload response: Missing PublicId or URL.");
+                }
+
+                // Map to Media and return
                 var media = new Media
                 {
                     MediaId = uploadResult.PublicId,
@@ -133,12 +154,8 @@ namespace LinkUp_REST_API.Services.Completed
             return null;
         }
 
-        public async Task<string?> DeletePhotoFromCloudinary(string publicId)
-        {
-            var deleteParams = new DeletionParams(publicId);
-            var result = await _cloudinary.DestroyAsync(deleteParams);
-            return result.Result == "ok" ? result.Result : null;
-        }
+
+
 
         public async Task<IEnumerable<ProfileSearchQueryOutput>?> QuerySearchedProfiles(ProfileSearchQueryInput searchQuery)
         {

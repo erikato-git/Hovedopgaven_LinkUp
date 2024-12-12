@@ -11,11 +11,11 @@ namespace LinkUp_REST_API.Models
         public required string URL { get; set; }
 
         // Foreign keys
-        public Guid ProfileId { get; set; }
+        public Guid? ProfileId { get; set; }        // needs to be detach when profile or account are deleted, then media-element in cloudinary can be tracked an deleted
 
         // Navigation property
         [JsonIgnore]
-        public Profile? Profile { get; set; }        // TODO: How can I ensure that images that belongs to a profile / account are deleted together from Cloudinary
+        public Profile? Profile { get; set; }       
     
     }
 }

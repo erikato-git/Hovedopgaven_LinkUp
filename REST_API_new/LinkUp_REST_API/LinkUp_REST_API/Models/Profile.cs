@@ -31,6 +31,7 @@ namespace LinkUp_REST_API.Models
 
         [JsonIgnore]
         public Keyword? Keyword { get; set; }
+        [JsonIgnore]
         public List<Pitch>? Pitches { get; set; }
         public Portfolio? Portfolio { get; set; }
         public AudienceSpecification? AudienceSpecification { get; set; }

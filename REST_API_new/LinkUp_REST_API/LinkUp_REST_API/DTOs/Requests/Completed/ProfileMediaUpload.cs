@@ -2,6 +2,7 @@
 {
     public class ProfileMediaUpload
     {
+        public Guid ProfileId { get; set; }
         public required IFormFile UploadFile { get; set; }
     }
 }

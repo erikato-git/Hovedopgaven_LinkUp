@@ -25,7 +25,7 @@ using LinkUp_REST_API.Services.Completed;
 using LinkUp_REST_API_TESTS.TestHelpers.Completed;
 using LinkUp_REST_API.DTOs.Requests.Completed;
 
-namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
+namespace LinkUp_REST_API_TESTS.IntegrationTests
 {
     [Collection("Shared collection")]
     public class ProfileTests : IAsyncLifetime
@@ -382,6 +382,16 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
             var notFoundResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
         }
+
+
+        // TODO: Make test of UploadProfilePicture with image
+
+
+        // TODO: Make test of RemoveProfilePicture (populate DbInitializerForTests)
+
+
+        // TODO: Update Manual med to ovenstående endpoints
+
 
 
 

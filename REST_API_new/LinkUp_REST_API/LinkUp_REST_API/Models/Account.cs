@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace LinkUp_REST_API.Models
 {
@@ -16,7 +17,9 @@ namespace LinkUp_REST_API.Models
         public Guid PersonInformationId { get; set; }
 
         // Navigation properties
+        [JsonIgnore]
         public required PersonInformation PersonInformation { get; set; }
+        [JsonIgnore]
         public List<Profile>? Profiles { get; set; } = new List<Profile>();
     }
 }

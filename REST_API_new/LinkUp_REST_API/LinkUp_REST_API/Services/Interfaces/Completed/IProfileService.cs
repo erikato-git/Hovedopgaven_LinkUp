@@ -5,7 +5,8 @@ namespace LinkUp_REST_API.Services.Interfaces.Completed
 {
     public interface IProfileService
     {
-        Task<ResultDTO> UploadFile(ProfileMediaUpload dto, string userAccountId);
+        Task<ResultDTO> UploadProfilePicture(ProfileMediaUpload dto, string userAccountId);
+        Task<ResultDTO> RemoveProfilePicture(string mediaId, string userAccountId);
         Task<ResultDTO> CreateProfile(ProfileCreateInput dto, string userAccountId);
         Task<ResultDTO> GetProfileById(Guid id);
         Task<ResultDTO> UpdateProfile(ProfileUpdateInput dto, string userAccountId);

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace LinkUp_REST_API.Models
 {
@@ -13,6 +14,7 @@ namespace LinkUp_REST_API.Models
         public required string Gender { get; set; }          // TODO: enum
 
         // Foreign key
+        [JsonIgnore]
         public Guid AccountId { get; set; }
 
     }

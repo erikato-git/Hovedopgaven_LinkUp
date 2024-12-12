@@ -38,6 +38,7 @@ builder.Services.AddDbContext<DataContext>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));     // IOptions-pattern
 
 builder.Services.AddControllers();
+
 builder.Services.AddOpenApi();
 
 // Extensions
