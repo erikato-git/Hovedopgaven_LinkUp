@@ -1,4 +1,6 @@
-﻿using LinkUp_REST_API.DTOs.Requests.Completed;
+﻿using LinkUp_REST_API.Core;
+using LinkUp_REST_API.DTOs.Requests.Completed;
+using LinkUp_REST_API.DTOs.Responses.Completed;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
 using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
@@ -122,33 +124,42 @@ namespace LinkUp_REST_API.Services.Completed
             return ResultDTO.Succes(queriedProfiles, 200, "Profiles have been retrieved");
         }
 
-        public async Task<ResultDTO> DeleteProfileById(Guid profileId, string userAccountId)
+        public async Task<ResultDTO> DeleteProfileById(ProfileDeleteInput dto, string userAccountId)
         {
-            if (string.IsNullOrEmpty(profileId.ToString()) || string.IsNullOrEmpty(userAccountId))
+            if (string.IsNullOrEmpty(dto.ProfileId.ToString()) || string.IsNullOrEmpty(userAccountId))
             {
                 return ResultDTO.Failure(400, "Invalid inputs");
             }
 
-            // Check if user has particular profile
-            var profilesForAccount = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+            // Check logged in user exist
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
 
-            if (profilesForAccount == null)
+            if (loggedInUser == null)
             {
-                return ResultDTO.Failure(404, "Account has no profiles");
+                return ResultDTO.Failure(404, "Account does not have any profiles");
             }
 
-            var profileToDelete = profilesForAccount.Profiles?.FirstOrDefault(x => x.ProfileId == profileId);
+            // Check correct password has been provided
+            var hashedPassword = Authentication.HashingPasswordWithSaltUsingSHA256(dto.Password, Guid.Parse(userAccountId));
+
+            if(!loggedInUser.Password.Equals(hashedPassword))
+            {
+                return ResultDTO.Failure(403, "Invalid password");
+            }
+
+            // Check if user has particular profile
+            var profileToDelete = loggedInUser.Profiles?.FirstOrDefault(x => x.ProfileId == dto.ProfileId);
 
             if (profileToDelete == null)
             {
-                return ResultDTO.Failure(403, $"Your account doesn't contain profile with profileId {profileId}");
+                return ResultDTO.Failure(403, $"Your account doesn't contain profile with profileId {dto.ProfileId}");
             }
 
             var deleted = await _profileRepository.DeleteProfileAsync(Guid.Parse(userAccountId), profileToDelete);
 
             if (!deleted)
             {
-                return ResultDTO.Failure(500, $"Profile {profileId} wasn't deleted due to internal server error");
+                return ResultDTO.Failure(500, $"Profile {dto.ProfileId} wasn't deleted due to internal server error");
             }
 
             // TODO: Remember to delete images from cloud
@@ -162,6 +173,22 @@ namespace LinkUp_REST_API.Services.Completed
             if (dto == null || string.IsNullOrEmpty(userAccountId))
             {
                 return ResultDTO.Failure(400, "Invalid inputs");
+            }
+
+            // Check logged in user exist
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if (loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Account has no profiles");
+            }
+
+            // Check correct password has been provided
+            var hashedPassword = Authentication.HashingPasswordWithSaltUsingSHA256(dto.Password, Guid.Parse(userAccountId));
+
+            if (!loggedInUser.Password.Equals(hashedPassword))
+            {
+                return ResultDTO.Failure(403, "Invalid password");
             }
 
             // Check if user has authorization
@@ -217,6 +244,14 @@ namespace LinkUp_REST_API.Services.Completed
                 return ResultDTO.Failure(400, "Inputs are invalid");
             }
 
+            // Check logged in user exist
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if (loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Logged in account was not found");
+            }
+
             // Check AccountId in dto match userAccountId
             if (!dto.AccountId.ToString().Equals(userAccountId))
             {
@@ -234,20 +269,129 @@ namespace LinkUp_REST_API.Services.Completed
                 return ResultDTO.Failure(500, $"Profile could not be created for account {userAccountId} due to internal server error");
             }
 
-            // TODO: Handle ProfilePicture
-            //if (dto.ProfilePicture != null || dto.ProfilePicture?.Length > 0)
-            //{
-            //    // Save Media
-            //    var mediaSaved = await _helper.SaveMedia(dto.ProfilePicture, createdProfile);
 
-            //    if (mediaSaved)
-            //    {
-            //        return ResultDTO.Succes(createdProfile, 201, "Profile has been created with profile picture");
-            //    }
-            //}
+            // TODO: Handle ProfilePicture
+            
 
             return ResultDTO.Succes(createdProfile, 201, "Profile has been created");
         }
 
+        public async Task<ResultDTO> UploadProfilePicture(ProfileMediaUpload dto, string userAccountId)
+        {
+            if ( dto == null || string.IsNullOrEmpty(userAccountId) )
+            {
+                return ResultDTO.Failure(400, "Invalid inputs");
+            }
+
+            // Check if uploaded file exceeds 10 MB (maximum image file size for Cloudinary)
+            if( dto.UploadFile.Length > 10 * 1024 * 1024 )
+            {
+                return ResultDTO.Failure(413, "File size can't exceed 10 MB");
+            }
+
+            // Check if uploaded file is limited to allowed content-types
+            var allowedContentTypes = new[] { "image/jpeg", "image/png", "image/gif", "video/mp4", "video/mpeg" };
+
+            if ( !allowedContentTypes.Contains(dto.UploadFile.ContentType) )
+            {
+                return ResultDTO.Failure(415, "Invalid content-type. Allowed content-type: JPG, PNG, GIF, MP4 and MPEG");
+            }
+
+            // User and profile
+
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if(loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Logged in account was not found");
+            }
+
+            // Check user's account contains profile with provided ProfileId
+            var profile = loggedInUser.Profiles?.FirstOrDefault(x => x.ProfileId == dto.ProfileId);
+
+            if (profile == null)
+            {
+                return ResultDTO.Failure(404, "Account does not contain Profile with specified ProfileId");
+            }
+
+            // If ProfilePicture is not null, remove media from Cloudinary and database
+            if(!string.IsNullOrEmpty(profile.MediaId))
+            {
+                var mediaRemoved = await _helper.DeleteMedia(profile.MediaId, profile);
+
+                if(!mediaRemoved)
+                {
+                    return ResultDTO.Failure(500, "System failed to remove existing profile-picture");
+                }
+            }
+
+            // Upload result to Cloudinary
+
+            if (dto.UploadFile == null || dto.UploadFile?.Length == 0)
+            {
+                return ResultDTO.Failure(400, "Invalid upload file");
+            }
+
+            // Save Media
+            var mediaSaved = await _helper.SaveMedia(dto.UploadFile!, profile);
+
+            if (mediaSaved == null)
+            {
+                return ResultDTO.Failure(500, "System failed to upload or failed save upload-result");
+            }
+
+            // Mapping to response-DTO
+            var mediaOutput = new MediaOutput
+            {
+                MediaId = mediaSaved.MediaId,
+                URL = mediaSaved.URL,
+                ProfileId = profile.ProfileId,
+            };
+
+            return ResultDTO.Succes(mediaOutput, 201, "Profile has been created with profile picture");
+
+        }
+
+        public async Task<ResultDTO> RemoveProfilePicture(string mediaId, string userAccountId)
+        {
+            // null checks - 400
+            if( string.IsNullOrEmpty(mediaId) || string.IsNullOrEmpty(userAccountId) )
+            {
+                return ResultDTO.Failure(400, "Invalid inputs");
+            }
+
+            // check logged in user exist - 404
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if( loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Logged in user was not found");
+            }
+
+            // check logged in user has any profiles - 409
+            if( loggedInUser.Profiles == null || loggedInUser.Profiles.Count == 0 )
+            {
+                return ResultDTO.Failure(409, $"Logged in user has no profiles and can't possibly have any profile-picture with mediaId {mediaId}");
+            }
+
+            // check if any of logged in user's profile contain provided MediaId - 403
+            var containsMedia = loggedInUser.Profiles.FirstOrDefault(x => x.MediaId == mediaId);
+
+            if( containsMedia == null )
+            {
+                return ResultDTO.Failure(404, $"Profile-picture with mediaId {mediaId} was not found");
+            }
+
+            // remove from cloudinary and database - 500
+            var mediaDeleted = await _helper.DeleteMedia(mediaId, containsMedia);
+
+            if(!mediaDeleted)
+            {
+                return ResultDTO.Failure(500, $"Failed to remove profile-picture {mediaId}");
+            }
+
+            return ResultDTO.Succes(mediaDeleted, 204, $"Profile-picture {mediaId} has been removed from database and cloud");
+
+        }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LinkUp_REST_API.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class PitchesController : ControllerBase
     {
@@ -159,7 +159,7 @@ namespace LinkUp_REST_API.Controllers
 
 
         // DeletePitchById: restricted to sendingProfile pitches
-        [HttpDelete("deletePitch/{pitchId}")]
+        [HttpDelete("deleteSendPitch/{pitchId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -3,6 +3,7 @@ using LinkUp_REST_API.Controllers.Completed;
 using LinkUp_REST_API.Core;
 using LinkUp_REST_API.Core.Interfaces;
 using LinkUp_REST_API.Data.DbContextConnections;
+using LinkUp_REST_API.DTOs.Requests.Completed;
 using LinkUp_REST_API.Repositories;
 using LinkUp_REST_API.Repositories.Completed;
 using LinkUp_REST_API.Repositories.Interfaces.Completed;
@@ -171,6 +172,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
         public async Task UpdateAccount_Should_Return200_When_UpdateAccountInputIsValid()
         {
             var updateAccountDto = AccountTestHelper.GenerateValidAccountUpdateInput();
+            updateAccountDto.Password = AccountTestHelper.GetValidPassword();
             updateAccountDto.AccountId = AuthenticationTestHelper.GetValidAccountId1();
             updateAccountDto.Email = "";
 
@@ -210,6 +212,7 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
         public async Task UpdateAccount_Should_Return409_When_LoggedInUserTriesToChangeEmailToAnExistingEmail()
         {
             var updateAccountDto = AccountTestHelper.GenerateValidAccountUpdateInput();
+            updateAccountDto.Password = AccountTestHelper.GetValidPassword();
             updateAccountDto.Email = AccountTestHelper.GetValidEmail();     // existing mail
 
             var result = await _sut.UpdateAccount(updateAccountDto);
@@ -321,7 +324,12 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
         [Fact]
         public async Task DeleteOwnAccount_Should_Return200_When_LoggedInUserDeletesOwnAccount()
         {
-            var result = await _sut.DeleteOwnAccount();
+            var dto = new AccountDeleteInput
+            { 
+                Password = AccountTestHelper.GetValidPassword() 
+            };
+
+            var result = await _sut.DeleteOwnAccount(dto);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
@@ -331,22 +339,31 @@ namespace LinkUp_REST_API_TESTS.IntegrationTests.Completed
         public async Task DeleteOwnAccount_Should_Return401_When_UserIsNotLoggedIn()
         {
             AuthenticationTestHelper.ResetHttpContext(_sut.ControllerContext);
+            var dto = new AccountDeleteInput
+            {
+                Password = AccountTestHelper.GetValidPassword()
+            };
 
-            var result = await _sut.DeleteOwnAccount();
+            var result = await _sut.DeleteOwnAccount(dto);
 
             var unauthResult = Assert.IsType<UnauthorizedObjectResult>(result);
             Assert.Equal(StatusCodes.Status401Unauthorized, unauthResult.StatusCode);
         }
 
         [Fact]
-        public async Task DeleteOwnAccount_Should_Return500_When_FailedToDeleteLoggedInAccount()
+        public async Task DeleteOwnAccount_Should_Return404_When_LoggedInUserWasNotFound()
         {
             AuthenticationTestHelper.SetAccountIdClaimInHttpContext(_sut.ControllerContext, Guid.NewGuid());
+            
+            var dto = new AccountDeleteInput
+            {
+                Password = AccountTestHelper.GetValidPassword()
+            };
 
-            var result = await _sut.DeleteOwnAccount();
+            var result = await _sut.DeleteOwnAccount(dto);
 
             var objectResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+            Assert.Equal(StatusCodes.Status404NotFound, objectResult.StatusCode);
         }
 
 

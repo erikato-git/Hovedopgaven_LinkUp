@@ -1,0 +1,862 @@
+# UC3: Søg profiler
+# UC4: Udvid søgning
+# UC5: Se profiler
+# UC6: Gem profil
+# UC8.1: Opret profil
+# UC8.2: Opdater profil
+# UC8.3: Slet profil
+# UC8.4: Læs profil
+# UC9: Se gemte profiler
+
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Sample API
+  description: A sample API to illustrate OpenAPI concepts. Rate-limiting is applied on all endpoints - 5 requests pr 5 seconds. There are no roles in the system only users at the current moment.
+
+servers:
+  # - url: https://api.example.com
+  #   description: Production server
+  - url: http://localhost:7042/api/v1/Profiles/
+    description: Local development server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ProfileCreateInput:
+      type: object
+      properties:
+        profession:
+          type: string
+          description: The user's profession.
+          maxLength: 100
+          example: "Software Developer"
+          default: "Software Developer"
+        title:
+          type: string
+          description: The user's title.
+          maxLength: 100
+          example: "Mr."
+          default: "Mr."
+        alternativeTitle:
+          type: string
+          description: An alternative title for the user.
+          maxLength: 100
+          example: ""
+          default: ""
+        profileDescription:
+          type: string
+          description: A detailed description of the user's profile.
+          maxLength: 5000
+          example: "Profile description not provided."
+          default: "Profile description not provided."
+        accountId:
+          type: string
+          format: uuid
+          description: The unique identifier for the associated account.
+          maxLength: 36
+          example: "00000000-0000-0000-0000-000000000000"
+          default: "00000000-0000-0000-0000-000000000000"
+        availability:
+          type: string
+          description: The user's current availability status.
+          maxLength: 100
+          example: "Available"
+          default: "Available"
+        yearsOfExperience:
+          type: integer
+          description: The user's years of experience, in digits (0-99).
+          minimum: 0
+          maximum: 99
+          example: 0
+          default: 0
+        nameOfEducation:
+          type: string
+          description: The name of the user's educational qualification.
+          maxLength: 100
+          example: "Bachelor's Degree"
+          default: "Bachelor's Degree"
+        institution:
+          type: string
+          description: The name of the institution attended by the user.
+          maxLength: 100
+          example: "XYZ University"
+          default: "XYZ University"
+        graduationYear:
+          type: integer
+          description: The year the user graduated (4 digits).
+          minimum: 1000
+          maximum: 9999
+          example: 2022
+          default: 2022
+      required:
+        - profession
+        - title
+        - accountId
+
+    Profile:
+      type: object
+      properties:
+        profileId:
+          type: string
+          format: uuid
+          description: Unique identifier for the profile.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        profession:
+          type: string
+          description: The user's profession.
+          example: "Software Developer"
+        title:
+          type: string
+          description: The user's title.
+          example: "Mr."
+        alternativeTitle:
+          type: string
+          description: An alternative title for the user.
+          example: "Team Lead"
+        profilePicture:
+          type: object
+          description: Media object representing the user's profile picture.
+          nullable: true
+        profileDescription:
+          type: string
+          description: A description of the user's profile.
+          example: "Experienced developer specializing in web applications."
+        accountId:
+          type: string
+          format: uuid
+          description: Unique identifier for the associated account.
+          example: "00000000-0000-0000-0000-000000000000"
+        keywordId:
+          type: string
+          format: uuid
+          description: Unique identifier for the associated keyword.
+          nullable: true
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        portfolioId:
+          type: string
+          format: uuid
+          description: Unique identifier for the associated portfolio.
+          nullable: true
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        audienceSpecificationId:
+          type: string
+          format: uuid
+          description: Unique identifier for the associated audience specification.
+          nullable: true
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        keyword:
+          $ref: "#/components/schemas/Keyword"
+        pitches:
+          type: array
+          items:
+            $ref: "#/components/schemas/Pitch"
+      required:
+        - profileId
+        - profession
+        - title
+
+    Keyword:
+      type: object
+      properties:
+        keywordId:
+          type: string
+          format: uuid
+          description: Unique identifier for the keyword.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        availability:
+          type: string
+          description: The user's availability (e.g., Available, Busy).
+          example: "Available"
+        yearsOfExperience:
+          type: integer
+          description: The user's years of experience.
+          example: 5
+        profileId:
+          type: string
+          format: uuid
+          description: Unique identifier for the associated profile.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        education:
+          $ref: "#/components/schemas/Education"
+      required:
+        - keywordId
+
+    Education:
+      type: object
+      properties:
+        educationId:
+          type: string
+          format: uuid
+          description: Unique identifier for the education.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        nameOfEducation:
+          type: string
+          description: The name of the educational program.
+          example: "Computer Science"
+        institution:
+          type: string
+          description: The name of the educational institution.
+          example: "XYZ University"
+        graduationYear:
+          type: integer
+          description: The year of graduation.
+          example: 2022
+        keywordId:
+          type: string
+          format: uuid
+          description: Unique identifier for the associated keyword.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      required:
+        - educationId
+
+    ProfileUpdateInput:
+      type: object
+      properties:
+        profileId:
+          type: string
+          format: uuid
+          description: Unique identifier for the profile.
+          example: "00000000-0000-0000-0000-000000000000"
+          default: "00000000-0000-0000-0000-000000000000"
+        profession:
+          type: string
+          description: The user's profession.
+          maxLength: 100
+          example: "Software Developer"
+          default: "Software Developer"
+        title:
+          type: string
+          description: The user's title.
+          maxLength: 100
+          example: "Mr."
+          default: "Mr."
+        alternativeTitle:
+          type: string
+          description: An alternative title for the user.
+          maxLength: 100
+          example: ""
+          default: ""
+        profileDescription:
+          type: string
+          description: A brief description of the user's profile.
+          maxLength: 100
+          example: "No description available."
+          default: "No description available."
+        password:
+          type: string
+          description: The user's password (strong password required).
+          maxLength: 100
+          example: "Password123!"
+          default: "Password123!"
+        availability:
+          type: string
+          description: The user's availability status.
+          maxLength: 100
+          example: "Available"
+          default: "Available"
+        yearsOfExperience:
+          type: integer
+          description: The user's years of experience.
+          example: 5
+          default: 5
+        nameOfEducation:
+          type: string
+          description: The name of the user's educational qualification.
+          maxLength: 100
+          example: "Bachelor's Degree"
+          default: "Bachelor's Degree"
+        institution:
+          type: string
+          description: The name of the educational institution attended by the user.
+          maxLength: 100
+          example: "XYZ University"
+          default: "XYZ University"
+        graduationYear:
+          type: integer
+          description: The year the user graduated.
+          example: 2022
+          default: 2022
+      required:
+        - profileId
+        - password
+
+    ProfileDeleteInput:
+      type: object
+      properties:
+        profileId:
+          type: string
+          format: uuid
+          description: Unique identifier for the profile to be deleted.
+          example: "00000000-0000-0000-0000-000000000000"
+          default: "00000000-0000-0000-0000-000000000000"
+        password:
+          type: string
+          description: The user's password (strong password required) to authenticate the profile deletion request.
+          maxLength: 100
+          example: "Password123!"
+          default: "Password123!"
+      required:
+        - profileId
+        - password
+
+    ProfileSearchQueryOutput:
+      type: object
+      properties:
+        profileId:
+          type: string
+          format: uuid
+          description: Unique identifier for the profile.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        profession:
+          type: string
+          description: The user's profession.
+          example: "Software Developer"
+        title:
+          type: string
+          description: The user's title.
+          example: "Mr."
+        alternativeTitle:
+          type: string
+          description: An alternative title for the user.
+          example: "Team Lead"
+        age:
+          type: integer
+          description: The user's age.
+          example: 30
+        yearsOfExperience:
+          type: integer
+          description: The user's years of experience.
+          example: 5
+        graduationYear:
+          type: integer
+          description: The year the user graduated.
+          example: 2020
+        availability:
+          type: string
+          description: The user's availability status.
+          example: "Available"
+        institution:
+          type: string
+          description: The name of the institution the user attended.
+          example: "XYZ University"
+      required:
+        - profileId
+        - profession
+        - title
+
+    FavoriteProfiles:
+      type: array
+      description: A list of unique profile identifiers marked as favorites.
+      items:
+        type: string
+        format: uuid
+        description: Unique identifier for a profile.
+        example: "123e4567-e89b-12d3-a456-426614174000"
+
+paths:
+  /createProfile:
+    post:
+      summary: ""
+      description: Create a profile for logged in account. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileCreateInput"
+      responses:
+        "201":
+          description: Profile has been created for logged in account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+        "400":
+          description: Invalid information provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Update account info or logged in account is null"
+        "401":
+          description: User is not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You must be logged in before you can create a profile for your account"
+        "403":
+          description: User tries to create a profile for another account than user's own account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You cannot create a profile for this account"
+        "404":
+          description: System could not find logged in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged in account was not found"
+        "500":
+          description: System failed to create a profile for logged in account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile could not be created for account {userAccountId} due to internal server error"
+
+  /updateProfile:
+    put:
+      summary: ""
+      description: Update a profile that belongs to logged in account, only that has been specified in the input-DTO will be updated, user needs to provide password to update any properties for particular profile. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileUpdateInput"
+      responses:
+        "200":
+          description: Profile has been updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+        "400":
+          description: Invalid information provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Update account info or logged in account is null"
+        "401":
+          description: User is not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You must to be logged in before you can update your profile"
+        "403":
+          description: Errors(:) 1. User has provided invalid password, 2. User has provided another AccountId that AccountId from claims provided by JWT text-string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid password / You don't have authorization to update this profile"
+        "404":
+          description: User tries to update a profile that does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile not found"
+        "500":
+          description: System failed to update profile for provided ProfileId from user-input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Failed to update profile {dto.ProfileId} due to internal server error"
+
+  /deleteProfile:
+    delete:
+      summary: ""
+      description: Delete profile based on ProfileId from user-input and logged in account contains any profile with that ProfileId, user also needs to provide valid password to apply this action. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileDeleteInput"
+      responses:
+        "204":
+          description: no content
+        "400":
+          description: Invalid information provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Update account info or logged in account is null"
+        "401":
+          description: User is not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You must to be logged in before you can delete one of your own profiles"
+        "403":
+          description: Errors(:) 1. User has provided invalid password, 2. User tries to delete a profile that doesn't belong to user's account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid password / Your account doesn't contain profile with provided profileId"
+        "404":
+          description: Logged in account doen not have any profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account does not have any profiles"
+        "500":
+          description: System failed to delete particular profile based from provided ProfileId from user-input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile {ProfileId} wasn't deleted due to internal server error"
+
+  /getProfile/{profileId}:
+    get:
+      summary: ""
+      description: User gets any profile based on ProfileId from the URL. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            description: id is a guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        "200":
+          description: Profile based on ProfileId has been retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+        "400":
+          description: Invalid profileId provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input"
+        "401":
+          description: User is not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You must to be logged in before you can delete one of your own profiles"
+        "404":
+          description: Logged in account doen not have any profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account does not have any profiles"
+
+  /searchProfiles?{searchQuery}:
+    get:
+      summary: ""
+      description: User gets profiles in the database based on search criteria. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: profession
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+            default: "Software Developer"
+            example: "Software Developer"
+          description: Filter by profession.
+        - name: title
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+            default: "Mr."
+            example: "Mr."
+          description: Filter by title.
+        - name: alternativeTitle
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+            default: ""
+            example: ""
+          description: Filter by alternative title.
+        - name: age
+          in: query
+          schema:
+            type: integer
+            default: 25
+            example: 25
+          description: Filter by age.
+        - name: yearsOfExperience
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 99
+            default: 5
+            example: 5
+          description: Filter by years of experience.
+        - name: graduationYear
+          in: query
+          schema:
+            type: integer
+            default: 2020
+            example: 2020
+          description: Filter by graduation year.
+        - name: availability
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+            default: "Available"
+            example: "Available"
+          description: Filter by availability status.
+        - name: institution
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+            default: "XYZ University"
+            example: "XYZ University"
+          description: Filter by institution name.
+      responses:
+        "200":
+          description: Filtered and sorted profiles based on search criteria have been retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProfileSearchQueryOutput"
+        "400":
+          description: Invalid search criteria provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input"
+        "401":
+          description: User is not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You must to be logged in before you can search for profiles"
+        "500":
+          description: System failed to filter and sort profiles based on provided search criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Failed to retrieve profiles due to internal server error"
+
+  /addToFavorites/{profileId}:
+    get:
+      summary: ""
+      description: User add profile from another account to a list of favorite profiles. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            description: id is a guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        "200":
+          description: ProfileId from another account has succesfully been added to a list of favorite profiles for logged in account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FavoriteProfiles"
+        "400":
+          description: Invalid profileId provided or invalid AccountId for logged in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input"
+        "401":
+          description: User is not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You must to be logged in before you can add a profile to favorites"
+        "404":
+          description: Logged in account was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Could not find logged in user"
+        "409":
+          description: Errors(:) 1. Logged in user tries to add a profile that belongs to user's own account, 2. Logged in user tries to add a profile to list of favorite profiles that already exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You cannot add profile that belongs to your own account / Your list of favorites already contains this profile"
+        "500":
+          description: System failed to add provided profile-id to list of favorite profiles for logged in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Changes could not be saved to account due to internal server errorr"
+
+  /removeFromFavorites/{profileId}:
+    get:
+      summary: ""
+      description: User remove profile from list of favorite profiles based on provided ProfileId. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            description: id is a guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        "204":
+          description: ProfileId from another account has succesfully been added to a list of favorite profiles for logged in account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FavoriteProfiles"
+        "400":
+          description: Invalid profileId provided or invalid AccountId for logged in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input"
+        "401":
+          description: User is not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You must to be logged in before you can remove a profile from favorites"
+        "404":
+          description: Errors(:) 1. Logged in account was not found, 2. The ProfileId logged in user has provided does not exist in the list of favorite profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Could not find logged in user / Your list of favorites does not contain profile to be removed"
+        "500":
+          description: System failed to remove provided profile-id from the list of favorite profiles for logged in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Changes could not be saved to account due to internal server error"

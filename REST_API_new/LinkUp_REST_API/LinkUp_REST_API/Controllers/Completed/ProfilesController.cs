@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LinkUp_REST_API.Controllers.Completed
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class ProfilesController : ControllerBase
     {
@@ -19,6 +19,106 @@ namespace LinkUp_REST_API.Controllers.Completed
             _profileService = profileService;
             _authentication = authentication;
         }
+
+
+        [HttpPost("uploadProfilePicture")]  
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status413PayloadTooLarge)]
+        [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UploadProfilePicture([FromForm] ProfileMediaUpload upload)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
+                }
+
+                var isUserLoggedIn = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(isUserLoggedIn))
+                {
+                    return Unauthorized("You must be logged in before you can upload a file for your profile-picture");
+                }
+
+                var result = await _profileService.UploadProfilePicture(upload, isUserLoggedIn);
+
+                if (result.isSucces)
+                {
+                    // TODO: insert 'GetByAccountId' path in ""
+                    return Created("", result);
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+                //return BadRequest(ex);
+                return BadRequest("Upload file failed");
+            }
+        }
+
+
+        [HttpDelete("removeProfilePicture")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoveProfilePicture(string mediaId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(new { Message = "Invalid input.", Errors = errors });
+                }
+
+                var isUserLoggedIn = _authentication.GetCurrentUserId(User);
+
+                if (string.IsNullOrEmpty(isUserLoggedIn))
+                {
+                    return Unauthorized("You must be logged in before you can remmove a profile-picture for one of your profiles");
+                }
+
+                var result = await _profileService.RemoveProfilePicture(mediaId, isUserLoggedIn);
+
+                if (result.isSucces)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return StatusCode(result.StatusCode, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., _logger.LogError(ex, "Login failed"))
+
+                return BadRequest(ex);
+
+                //return BadRequest("Upload file failed");
+            }
+        }
+
+
+
+
+
 
         //CreateProfile
         [HttpPost("createProfile")]
@@ -157,13 +257,13 @@ namespace LinkUp_REST_API.Controllers.Completed
 
 
         //DeleteProfileById
-        [HttpDelete("deleteProfile/{profileId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpDelete("deleteProfile")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteProfileById(Guid profileId)
+        public async Task<IActionResult> DeleteProfileById([FromBody] ProfileDeleteInput dto)
         {
             try
             {
@@ -183,7 +283,7 @@ namespace LinkUp_REST_API.Controllers.Completed
                     return Unauthorized("You must to be logged in before you can delete one of your own profiles");
                 }
 
-                var result = await _profileService.DeleteProfileById(profileId, loggedInAccount);
+                var result = await _profileService.DeleteProfileById(dto, loggedInAccount);
 
                 if (result.isSucces)
                 {
@@ -209,7 +309,7 @@ namespace LinkUp_REST_API.Controllers.Completed
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> SearchQuery([FromQuery] ProfileSearchQueryInput query)
+        public async Task<IActionResult> SearchProfiles([FromQuery] ProfileSearchQueryInput query)
         {
             try
             {

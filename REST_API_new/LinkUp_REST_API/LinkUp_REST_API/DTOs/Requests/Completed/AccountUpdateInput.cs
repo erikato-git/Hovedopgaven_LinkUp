@@ -1,36 +1,45 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LinkUp_REST_API.Util.ValidationDefitions;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace LinkUp_REST_API.DTOs.Requests.Completed
 {
     public class AccountUpdateInput
     {
+        [DefaultValue("00000000-0000-0000-0000-000000000000")]
         public required Guid AccountId { get; set; }
 
-        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        [EmailAddress]
+        [StringLength(100)]
+        [DefaultValue("example@example.com")]
         public string? Email { get; set; }
 
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]
-        public string? Password { get; set; }
+        [StrongPassword]
+        [StringLength(100)]
+        [DefaultValue("Password123!")]
+        public required string Password { get; set; }
 
-        //public required Guid PersonInformationId { get; set; }
-
-        [RegularExpression(@"^[A-Za-z]+(?: [A-Za-z]+)*$", ErrorMessage = "First name should only contain letters and spaces.")]
-        [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
+        [Name]
+        [StringLength(100)]
+        [DefaultValue("John")]
         public string? FirstName { get; set; }
 
-        [RegularExpression(@"^[A-Za-z]+(?: [A-Za-z]+)*$", ErrorMessage = "Surname should only contain letters and spaces.")]
-        [StringLength(50, ErrorMessage = "Surname cannot be longer than 50 characters.")]
+        [Name]
+        [StringLength(100)]
+        [DefaultValue("Doe")]
         public string? Surname { get; set; }
 
         [Phone]
-        [RegularExpression(@"^\+?[1-9]\d{1,14}$", ErrorMessage = "Phone number is not in a valid format.")]
+        [StringLength(15)]
+        [DefaultValue("+1234567890")]
         public string? Phone { get; set; }
 
-        public DateOnly? BirthDate { get; set; }
+        [DefaultValue("2000-01-01")]
+        public DateOnly BirthDate { get; set; }
 
-        [RegularExpression(@"^(Male|Female|Other)$", ErrorMessage = "Gender must be Male, Female, or Other.")]
+        [StringLength(50)]
+        [DefaultValue("Male")]
         public string? Gender { get; set; }
-
     }
 
 }

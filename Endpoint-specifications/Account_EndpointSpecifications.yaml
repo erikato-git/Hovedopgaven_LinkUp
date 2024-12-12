@@ -1,0 +1,641 @@
+# UC1: Login
+# UC2.1: Opret konto
+# UC2.2: Opdater konto
+# UC2.3: Slet konto
+# UC2.4: Læs konto
+
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Sample API
+  description: A sample API to illustrate OpenAPI concepts. Rate-limiting is applied on all endpoints - 5 requests pr 5 seconds. AccoutsController handles personal information for users and sensitive information as password. It handles actions for users' accounts such as update and delete. This controller is most sensitive for attackers. There are no roles in the system only users at the current moment.
+
+servers:
+  - url: http://localhost:7042/api/v1/Accounts/
+    description: Local development server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: The user's email address.
+          default: "example@example.com"
+          maxLength: 100
+        password:
+          type: string
+          description: The user's password (strong password required).
+          default: "Password123!"
+          maxLength: 100
+      required:
+        - email
+        - password
+
+    LoginOutput:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+          description: Unique identifier for the account.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        email:
+          type: string
+          description: The user's email address.
+          example: "example@example.com"
+        firstName:
+          type: string
+          description: The user's first name.
+          example: "John"
+        surname:
+          type: string
+          description: The user's surname.
+          example: "Doe"
+        phone:
+          type: string
+          description: The user's phone number.
+          example: "+1234567890"
+        birthDate:
+          type: string
+          format: date
+          description: The user's birth date.
+          example: "2000-01-01"
+        gender:
+          type: string
+          description: The user's gender.
+          example: "Male"
+        profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              profileId:
+                type: string
+                format: uuid
+                description: Profile unique identifier.
+                example: "1c26f95e-8a76-4f76-918e-5ed51b981db4"
+              profileName:
+                type: string
+                description: Name of the profile.
+                example: "Profile 1"
+
+    AccountCreateInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: The user's email address.
+          default: "example@example.com"
+          maxLength: 100
+        password:
+          type: string
+          description: The user's password (strong password required).
+          default: "Password123!"
+          maxLength: 100
+        firstName:
+          type: string
+          description: The user's first name.
+          default: "John"
+          maxLength: 100
+        surname:
+          type: string
+          description: The user's surname.
+          default: "Doe"
+          maxLength: 100
+        phone:
+          type: string
+          description: The user's phone number.
+          default: "+1234567890"
+          maxLength: 15
+        birthDate:
+          type: string
+          format: date
+          description: The user's birth date.
+          default: "2000-01-01"
+        gender:
+          type: string
+          description: The user's gender.
+          default: "Male"
+          maxLength: 50
+      required:
+        - email
+        - password
+        - firstName
+        - surname
+        - gender
+
+    AccountUpdateInput:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+          description: Unique identifier for the account.
+          example: "00000000-0000-0000-0000-000000000000"
+          default: "00000000-0000-0000-0000-000000000000"
+        email:
+          type: string
+          format: email
+          description: The user's email address.
+          example: "example@example.com"
+          default: "example@example.com"
+        password:
+          type: string
+          description: The user's password (strong password required).
+          example: "Password123!"
+          default: "Password123!"
+        firstName:
+          type: string
+          description: The user's first name.
+          example: "John"
+          default: "John"
+        surname:
+          type: string
+          description: The user's surname.
+          example: "Doe"
+          default: "Doe"
+        phone:
+          type: string
+          description: The user's phone number.
+          example: "+1234567890"
+          default: "+1234567890"
+        birthDate:
+          type: string
+          format: date
+          description: The user's birth date.
+          example: "2000-01-01"
+          default: "2000-01-01"
+        gender:
+          type: string
+          description: The user's gender.
+          example: "Male"
+          default: "Male"
+      required:
+        - accountId
+        - password
+
+    Account:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+          description: The unique identifier for the account.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        email:
+          type: string
+          description: The user's email address.
+          example: "example@example.com"
+        password:
+          type: string
+          description: The user's password (encrypted).
+          example: "Password123!"
+        favoriteProfiles:
+          type: array
+          items:
+            type: string
+            format: uuid
+            description: List of favorite profile IDs associated with the account.
+            example: ["e5b05151-d8cd-4b1a-8f60-d019789de790"]
+        personInformationId:
+          type: string
+          format: uuid
+          description: The unique identifier for the person's information.
+          example: "a123b456-c789-d012-e345-f67890123456"
+        personInformation:
+          $ref: "#/components/schemas/PersonInformation"
+        profiles:
+          type: array
+          items:
+            type: object
+            description: List of profiles associated with the account.
+            properties:
+              profileId:
+                type: string
+                format: uuid
+                description: The unique identifier for the profile.
+                example: "e5b05151-d8cd-4b1a-8f60-d019789de790"
+
+    PersonInformation:
+      type: object
+      properties:
+        personInformationId:
+          type: string
+          format: uuid
+          description: The unique identifier for the person's information.
+          example: "a123b456-c789-d012-e345-f67890123456"
+        firstName:
+          type: string
+          description: The user's first name.
+          example: "John"
+        surname:
+          type: string
+          description: The user's surname.
+          example: "Doe"
+        phone:
+          type: string
+          description: The user's phone number.
+          example: "+1234567890"
+        birthDate:
+          type: string
+          format: date
+          description: The user's birth date.
+          example: "2000-01-01"
+        gender:
+          type: string
+          description: The user's gender.
+          example: "Male"
+        accountId:
+          type: string
+          format: uuid
+          description: The unique identifier for the associated account.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+
+    AccountExternalDetailsOutput:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+          description: The unique identifier for the account.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        email:
+          type: string
+          format: email
+          description: The user's email address.
+          example: "example@example.com"
+        firstName:
+          type: string
+          description: The user's first name.
+          example: "John"
+        surname:
+          type: string
+          description: The user's surname.
+          example: "Doe"
+        phone:
+          type: string
+          description: The user's phone number.
+          example: "+1234567890"
+        birthDate:
+          type: string
+          format: date
+          description: The user's birth date.
+          example: "2000-01-01"
+        gender:
+          type: string
+          description: The user's gender.
+          example: "Male"
+      required:
+        - accountId
+        - email
+        - firstName
+        - surname
+        - birthDate
+        - gender
+
+    AccountDeleteInput:
+      type: object
+      properties:
+        password:
+          type: string
+          description: The user's password, required for account deletion.
+          example: "Password123!"
+          maxLength: 100
+      required:
+        - password
+
+paths:
+  /login:
+    post:
+      summary: ""
+      description: Authenticate user and returns a JWT token. Anybody can access this endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Succesful login, returns basic account info with JWT text-string used for authentication
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginOutput"
+        "400":
+          description: Unauthorized. Errors(:) 1. Email specified in login-dto doesn't exist, 2. Password in login-dto is invalid. Generic error-response (It won't help attackers)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid username or password."
+        "500":
+          description: System failed to generate JWT text-string for valid login credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Could not generate JWT token."
+
+  /createAccount:
+    post:
+      summary: ""
+      description: User creates an account. Anybody can access this endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountCreateInput"
+      responses:
+        "201":
+          description: System creates account and returns account-info with JWT text-string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginOutput"
+        "400":
+          description: Invalid information provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "email or password is invalid"
+        "409":
+          description: Errors(:) 1. User specifies age below 13, 2. User specifies an email that's already taken,
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User must be min. 13 years old / Email already exist"
+        "500":
+          description: Errors(:) 1. System failed to create new account, 2. System could not generate JWT text-string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Failed to create account due to internal server error / Could not generate JWT token"
+
+  /updateAccount:
+    put:
+      summary: ""
+      description: User updates account, only properties that are specified will be updated, user needs to provide password to update any information. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountUpdateInput"
+      responses:
+        "200":
+          description: System has updated new account informations entered correctly
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          description: Invalid information provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Update account info or logged in account is null"
+        "401":
+          description: User is not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You must to be logged in before you can access your own account"
+        "403":
+          description: Errors(:) 1. User tries to update another user's account, 2. Provided password doesn't match with password for logged in account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You don't have authorization to update this account"
+        "404":
+          description: Errors(:) 1. Could not find logged in user, 2. Could not find account for email provided in the DTO
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Could not find logged in user / Could not find target account"
+        "409":
+          description: Errors(:) 1. Email is already taken (vulnerable for attackers), 2. User tries to update birthdate to an age below 13
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You cannot change your email to an email that already exist / User must be min. 13 years old"
+
+  /getOwnAccount:
+    get:
+      summary: ""
+      description: User gets account-information by AccountId provided from JWT text-string. This endpoint returns sensitive information as login credentials (email and hashed-password) Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: System has updated new account informations entered correctly
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          description: Invalid information provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No AccountId was found"
+        "404":
+          description: Account for logged in user was not found from AccountId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account {userAccountId} was not found"
+
+  /getExternalAccountById:
+    get:
+      summary: ""
+      description: Get information about another account for logged in account. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            description: id is a guid
+            type: string
+            example: ex. 9fb538b8-57ca-4497-9911-57f780befce2
+      responses:
+        "200":
+          description: System has updated new account informations entered correctly
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountExternalDetailsOutput"
+        "400":
+          description: External AccountId or AccountId for logged in user is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Inputs are invalid"
+        "401":
+          description: User is not signed in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to sign in before you can delete your account"
+        "403":
+          description: Errors(:) User tries to access own account from this endpoint
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You cannot access your own account from this endpoint"
+        "404":
+          description: Account from AccountId was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account {userAccountId} was not found"
+
+  /deleteOwnAccount:
+    delete:
+      summary: ""
+      description: User deletes own account, AccountId is extracted from claims provided from JWT text-string, user needs to provide valid password as input to delete own account. Endpoint is restricted to logged in users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountDeleteInput"
+      responses:
+        "200":
+          description: User's own account has succesfully been deleted by cascade deletion and all profiles and send pitches are gone
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account {userAccountId} deleted"
+        "400":
+          description: input is invalid or logged in user was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Inputs are invalid"
+        "401":
+          description: User is not signed in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You need to sign in before you can delete your account"
+        "403":
+          description: Provided password doesn't match password for logged in user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Access denied"
+        "404":
+          description: Account was not found from AccountId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account {userAccountId} was not found"
+        "500":
+          description: System could not remove account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Account {userAccountId} deleted"

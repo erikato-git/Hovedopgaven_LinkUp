@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LinkUp_REST_API.Migrations
 {
     /// <inheritdoc />
-    public partial class LinkupInit : Migration
+    public partial class LinkUp : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,21 +24,6 @@ namespace LinkUp_REST_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Accounts", x => x.AccountId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Educations",
-                columns: table => new
-                {
-                    EducationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NameOfEducation = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Institution = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GraduationYear = table.Column<int>(type: "int", nullable: true),
-                    KeywordId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Educations", x => x.EducationId);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,6 +59,7 @@ namespace LinkUp_REST_API.Migrations
                     AlternativeTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfileDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MediaId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     KeywordId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     PortfolioId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     AudienceSpecificationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -121,12 +107,6 @@ namespace LinkUp_REST_API.Migrations
                 {
                     table.PrimaryKey("PK_Keywords", x => x.KeywordId);
                     table.ForeignKey(
-                        name: "FK_Keywords_Educations_EducationId",
-                        column: x => x.EducationId,
-                        principalTable: "Educations",
-                        principalColumn: "EducationId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Keywords_Profiles_ProfileId",
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
@@ -138,7 +118,7 @@ namespace LinkUp_REST_API.Migrations
                 name: "Medias",
                 columns: table => new
                 {
-                    MediaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MediaId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     URL = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -192,6 +172,27 @@ namespace LinkUp_REST_API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Educations",
+                columns: table => new
+                {
+                    EducationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NameOfEducation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Institution = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GraduationYear = table.Column<int>(type: "int", nullable: true),
+                    KeywordId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Educations", x => x.EducationId);
+                    table.ForeignKey(
+                        name: "FK_Educations_Keywords_KeywordId",
+                        column: x => x.KeywordId,
+                        principalTable: "Keywords",
+                        principalColumn: "KeywordId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AudienceSpecifications_ProfileId",
                 table: "AudienceSpecifications",
@@ -199,11 +200,10 @@ namespace LinkUp_REST_API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Keywords_EducationId",
-                table: "Keywords",
-                column: "EducationId",
-                unique: true,
-                filter: "[EducationId] IS NOT NULL");
+                name: "IX_Educations_KeywordId",
+                table: "Educations",
+                column: "KeywordId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Keywords_ProfileId",
@@ -247,7 +247,7 @@ namespace LinkUp_REST_API.Migrations
                 name: "AudienceSpecifications");
 
             migrationBuilder.DropTable(
-                name: "Keywords");
+                name: "Educations");
 
             migrationBuilder.DropTable(
                 name: "Medias");
@@ -262,7 +262,7 @@ namespace LinkUp_REST_API.Migrations
                 name: "PortfolioItems");
 
             migrationBuilder.DropTable(
-                name: "Educations");
+                name: "Keywords");
 
             migrationBuilder.DropTable(
                 name: "Profiles");

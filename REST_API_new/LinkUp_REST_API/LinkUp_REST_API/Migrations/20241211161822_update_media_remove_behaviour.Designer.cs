@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinkUp_REST_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241206115646_Update_Keyword_Education_CascadeDeletion")]
-    partial class Update_Keyword_Education_CascadeDeletion
+    [Migration("20241211161822_update_media_remove_behaviour")]
+    partial class update_media_remove_behaviour
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -104,11 +104,10 @@ namespace LinkUp_REST_API.Migrations
 
             modelBuilder.Entity("LinkUp_REST_API.Models.Media", b =>
                 {
-                    b.Property<Guid>("MediaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("MediaId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("ProfileId")
+                    b.Property<Guid?>("ProfileId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("URL")
@@ -118,7 +117,8 @@ namespace LinkUp_REST_API.Migrations
                     b.HasKey("MediaId");
 
                     b.HasIndex("ProfileId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ProfileId] IS NOT NULL");
 
                     b.ToTable("Medias");
                 });
@@ -236,6 +236,9 @@ namespace LinkUp_REST_API.Migrations
                     b.Property<Guid?>("KeywordId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("MediaId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("PortfolioId")
                         .HasColumnType("uniqueidentifier");
 
@@ -284,8 +287,7 @@ namespace LinkUp_REST_API.Migrations
                     b.HasOne("LinkUp_REST_API.Models.Profile", "Profile")
                         .WithOne("ProfilePicture")
                         .HasForeignKey("LinkUp_REST_API.Models.Media", "ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Profile");
                 });

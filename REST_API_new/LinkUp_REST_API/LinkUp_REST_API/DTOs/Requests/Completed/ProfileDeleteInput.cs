@@ -4,12 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LinkUp_REST_API.DTOs.Requests.Completed
 {
-    public class LoginInput
+    public class ProfileDeleteInput
     {
-        [EmailAddress]
-        [StringLength(100)]
-        [DefaultValue("example@example.com")]
-        public required string Email { get; set; }
+        [DefaultValue("00000000-0000-0000-0000-000000000000")]
+        public required Guid ProfileId { get; set; }
 
         [StrongPassword]
         [StringLength(100)]

@@ -8,6 +8,7 @@ using LinkUp_REST_API.Services.Interfaces.Completed;
 using LinkUp_REST_API.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using Account = CloudinaryDotNet.Account;
 
 namespace LinkUp_REST_API.Services.Completed
@@ -25,11 +26,14 @@ namespace LinkUp_REST_API.Services.Completed
                 config.Value.ApiSecret
             );
             _cloudinary = new Cloudinary(account);
+            _cloudinary.Api.Secure = true;
 
             _dbContext = dataContext;
         }
 
-        public async Task<bool> DeleteMedia(Guid mediaId)
+        // TODO: Consider to add more cohesion to the design and place handling of media in another class
+
+        public async Task<bool> DeleteMedia(string mediaId, Profile profile)
         {
             if (string.IsNullOrEmpty(mediaId.ToString()))
             {
@@ -52,6 +56,7 @@ namespace LinkUp_REST_API.Services.Completed
                 return false;
             }
 
+            profile.MediaId = null;
             _dbContext.Medias.Remove(mediafound);
 
             var saved = await _dbContext.SaveChangesAsync() > 0;
@@ -64,7 +69,15 @@ namespace LinkUp_REST_API.Services.Completed
             return true;
         }
 
-        public async Task<bool> SaveMedia(IFormFile file, Profile profile)
+        private async Task<string?> DeletePhotoFromCloudinary(string publicId)
+        {
+            var deleteParams = new DeletionParams(publicId);
+            var result = await _cloudinary.DestroyAsync(deleteParams);
+            return result.Result == "ok" ? result.Result : null;
+        }
+
+
+        public async Task<Media?> SaveMedia(IFormFile file, Profile profile)
         {
             if (file == null || profile == null)
             {
@@ -72,14 +85,15 @@ namespace LinkUp_REST_API.Services.Completed
             }
 
             // Add file to Cloudinary
-            var uploadResult = await AddPhotoToCloudinary(file);
+            var uploadResult = await AddPhotoToCloudinary(file, profile);
 
             if (uploadResult == null)
             {
-                return false;
+                return null;
             }
 
             // Add media object to database
+            profile.MediaId = uploadResult.MediaId;
             profile.ProfilePicture = uploadResult;
 
             _dbContext.Profiles.Update(profile);
@@ -87,47 +101,61 @@ namespace LinkUp_REST_API.Services.Completed
 
             if (!saved)
             {
-                return false;
+                return null;
             }
 
-            return true;
+            return uploadResult;
         }
 
 
-        public async Task<Media> AddPhotoToCloudinary(IFormFile file)
+        private async Task<Media?> AddPhotoToCloudinary(IFormFile file, Profile profile)
         {
+            if (file == null || profile == null)
+            {
+                throw new ArgumentNullException("File or profile is invalid");
+            }
+
             if (file.Length > 0)
             {
+                // Read uploaded file
                 await using var stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(file.Name, stream),
-                    Transformation = new Transformation().Height(500).Width(500).Crop("fill")
+                    Transformation = new Transformation().Height(500).Width(500).Crop("fill")       // Random crop
                 };
 
+                // Call Cloudinary
                 var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
+                // Sanitize data
                 if (uploadResult.Error != null)
                 {
                     throw new Exception(uploadResult.Error.Message);
                 }
 
-                return new Media
+                if (string.IsNullOrEmpty(uploadResult.PublicId) || string.IsNullOrEmpty(uploadResult.Url?.ToString()))
                 {
-                    MediaId = Guid.Parse(uploadResult.PublicId),
+                    throw new Exception("Invalid upload response: Missing PublicId or URL.");
+                }
+
+                // Map to Media and return
+                var media = new Media
+                {
+                    MediaId = uploadResult.PublicId,
                     URL = uploadResult.Url.ToString(),
+                    ProfileId = profile.ProfileId,
+                    Profile = profile
                 };
+                
+                return media;
             }
 
             return null;
         }
 
-        public async Task<string?> DeletePhotoFromCloudinary(string publicId)
-        {
-            var deleteParams = new DeletionParams(publicId);
-            var result = await _cloudinary.DestroyAsync(deleteParams);
-            return result.Result == "ok" ? result.Result : null;
-        }
+
+
 
         public async Task<IEnumerable<ProfileSearchQueryOutput>?> QuerySearchedProfiles(ProfileSearchQueryInput searchQuery)
         {

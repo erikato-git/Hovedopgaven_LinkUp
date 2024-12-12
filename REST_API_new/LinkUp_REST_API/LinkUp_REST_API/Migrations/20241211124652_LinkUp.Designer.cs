@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinkUp_REST_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241206100204_Linkup-Init")]
-    partial class LinkupInit
+    [Migration("20241211124652_LinkUp")]
+    partial class LinkUp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,6 +70,9 @@ namespace LinkUp_REST_API.Migrations
 
                     b.HasKey("EducationId");
 
+                    b.HasIndex("KeywordId")
+                        .IsUnique();
+
                     b.ToTable("Educations");
                 });
 
@@ -93,10 +96,6 @@ namespace LinkUp_REST_API.Migrations
 
                     b.HasKey("KeywordId");
 
-                    b.HasIndex("EducationId")
-                        .IsUnique()
-                        .HasFilter("[EducationId] IS NOT NULL");
-
                     b.HasIndex("ProfileId")
                         .IsUnique();
 
@@ -105,9 +104,8 @@ namespace LinkUp_REST_API.Migrations
 
             modelBuilder.Entity("LinkUp_REST_API.Models.Media", b =>
                 {
-                    b.Property<Guid>("MediaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("MediaId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("ProfileId")
                         .HasColumnType("uniqueidentifier");
@@ -237,6 +235,9 @@ namespace LinkUp_REST_API.Migrations
                     b.Property<Guid?>("KeywordId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("MediaId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("PortfolioId")
                         .HasColumnType("uniqueidentifier");
 
@@ -258,20 +259,24 @@ namespace LinkUp_REST_API.Migrations
                     b.ToTable("Profiles");
                 });
 
+            modelBuilder.Entity("LinkUp_REST_API.Models.Education", b =>
+                {
+                    b.HasOne("LinkUp_REST_API.Models.Keyword", "Keyword")
+                        .WithOne("Education")
+                        .HasForeignKey("LinkUp_REST_API.Models.Education", "KeywordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Keyword");
+                });
+
             modelBuilder.Entity("LinkUp_REST_API.Models.Keyword", b =>
                 {
-                    b.HasOne("LinkUp_REST_API.Models.Education", "Education")
-                        .WithOne("Keyword")
-                        .HasForeignKey("LinkUp_REST_API.Models.Keyword", "EducationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("LinkUp_REST_API.Models.Profile", "Profile")
                         .WithOne("Keyword")
                         .HasForeignKey("LinkUp_REST_API.Models.Keyword", "ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Education");
 
                     b.Navigation("Profile");
                 });
@@ -348,9 +353,9 @@ namespace LinkUp_REST_API.Migrations
                     b.Navigation("Profiles");
                 });
 
-            modelBuilder.Entity("LinkUp_REST_API.Models.Education", b =>
+            modelBuilder.Entity("LinkUp_REST_API.Models.Keyword", b =>
                 {
-                    b.Navigation("Keyword");
+                    b.Navigation("Education");
                 });
 
             modelBuilder.Entity("LinkUp_REST_API.Models.Profile", b =>

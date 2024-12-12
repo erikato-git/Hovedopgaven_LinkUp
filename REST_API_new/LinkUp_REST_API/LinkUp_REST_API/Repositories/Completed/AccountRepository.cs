@@ -96,7 +96,7 @@ namespace LinkUp_REST_API.Repositories.Completed
 
             if (dto.BirthDate != null && dto.BirthDate != default)
             {
-                existingAccount.PersonInformation.BirthDate = dto.BirthDate.Value;
+                existingAccount.PersonInformation.BirthDate = dto.BirthDate;
             }
 
             if (!string.IsNullOrEmpty(dto.Gender))

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LinkUp_REST_API.Controllers.Completed
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class KeywordsController : ControllerBase
     {

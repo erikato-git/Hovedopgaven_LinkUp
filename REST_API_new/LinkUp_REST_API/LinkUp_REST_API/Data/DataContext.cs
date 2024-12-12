@@ -96,6 +96,13 @@ namespace LinkUp_REST_API.Data.DbContextConnections
                 .HasForeignKey<Education>(e => e.KeywordId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Profile to Media (One-to-One relationship)
+            modelBuilder.Entity<Profile>()
+                .HasOne(p => p.ProfilePicture)  // Navigation property in Profile
+                .WithOne(m => m.Profile)       // Navigation property in Media
+                .HasForeignKey<Media>(m => m.ProfileId) // Foreign key in Media
+                .OnDelete(DeleteBehavior.SetNull);      // If Media objects are lost we cannot attach it to element in Cloudinary that are supposed to be deleted
+
         }
     }
 }

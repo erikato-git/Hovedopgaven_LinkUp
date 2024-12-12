@@ -20,11 +20,27 @@ namespace LinkUp_REST_API.Services.Completed
         }
 
 
-        public async Task<ResultDTO> DeleteOwnAccount(string userAccountId)
+        public async Task<ResultDTO> DeleteOwnAccount(AccountDeleteInput dto, string userAccountId)
         {
             if (string.IsNullOrEmpty(userAccountId))
             {
                 return ResultDTO.Failure(400, "Input is invalid");
+            }
+
+            // get logged in account
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if(loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Logged in user does not exist");
+            }
+
+            // check password is valid
+            var hashedPassword = Authentication.HashingPasswordWithSaltUsingSHA256(dto.Password, Guid.Parse(userAccountId));
+
+            if(!loggedInUser.Password.Equals(hashedPassword))
+            {
+                return ResultDTO.Failure(403, "Access denied");     // generic error message
             }
 
             // Delete account also checks if user exist
@@ -185,6 +201,21 @@ namespace LinkUp_REST_API.Services.Completed
                 return ResultDTO.Failure(403, "You don't have authorization to update this account");
             }
 
+            // Check password in password in dto match logged in user
+            var loggedInUser = await _accountRepository.GetByIdAsync(Guid.Parse(userAccountId));
+
+            if(loggedInUser == null)
+            {
+                return ResultDTO.Failure(404, "Could not find logged in user");
+            }
+ 
+            var hashedPassword = Authentication.HashingPasswordWithSaltUsingSHA256(dto.Password,Guid.Parse(userAccountId));
+
+            if (!loggedInUser.Password.Equals(hashedPassword))
+            {
+                return ResultDTO.Failure(403, "You don't have authorization to update this account");  
+            }
+
             // if email is changed: check if it's changed to an already existing email
             if (!string.IsNullOrEmpty(dto.Email))
             {
@@ -202,7 +233,7 @@ namespace LinkUp_REST_API.Services.Completed
                 // Check new user is min. 13 (GDPR)
                 var minAge = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-13));
 
-                if (dto.BirthDate?.Year >= minAge.Year)
+                if (dto.BirthDate.Year >= minAge.Year)
                 {
                     return ResultDTO.Failure(409, "User must be min. 13 years old");
                 }
